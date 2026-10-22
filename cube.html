@@ -142,7 +142,6 @@
     flex: 0 0 calc((100% - 2.5vw) / 2.15);
     aspect-ratio: 16 / 9;
     border-radius: var(--radio);
-    border: 2px solid var(--borde);
     background: var(--placeholder);
     scroll-snap-align: start;
     overflow: hidden;
@@ -175,7 +174,7 @@
 
   <!-- HERO -->
   <section class="hero" aria-label="Destacado: BIGFOOT">
-    <img class="hero-img" src="bigfoot.webp" alt="BIGFOOT">
+    <img class="hero-img" data-img="bigfoot.webp" alt="BIGFOOT">
     <div class="hero-info">
       <p class="hero-genero">Acción • 2026</p>
       <p class="hero-sinopsis">La huida de un monstruo gigante traerá consigo una sorpresa inesperada.</p>
@@ -191,6 +190,12 @@
 </div>
 
 <script>
+  // Dirección donde están las imágenes (jsDelivr sirve los archivos de tu repositorio de GitHub).
+  // Para usar otro repositorio, cambia solo esta línea.
+  const IMG_BASE = "https://cdn.jsdelivr.net/gh/Parallax-Oficial/cube@main/";
+
+  document.querySelectorAll('img[data-img]').forEach(i => { i.src = IMG_BASE + i.dataset.img; });
+
   // Cada sección: título + lista de portadas (nombre del archivo en /img y texto alternativo).
   // Las que no tienen imagen todavía se muestran como portada vacía.
   const secciones = [
@@ -213,7 +218,7 @@
     const sec = document.createElement('section');
     sec.className = 'seccion';
     const items = portadas
-      ? portadas.map(p => `<div class="portada"><img src="${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('')
+      ? portadas.map(p => `<div class="portada"><img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('')
       : '<div class="portada"></div>'.repeat(PORTADAS_POR_SECCION);
     sec.innerHTML = `<h2>${titulo}</h2><div class="carrusel">${items}</div>`;
     contenedor.appendChild(sec);
