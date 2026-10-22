@@ -82,7 +82,9 @@
   /* ---------- HERO ---------- */
   .hero {
     position: relative;
-    margin: 6px var(--margen) 0;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always; /* no deja saltarse banners al deslizar */
     aspect-ratio: 16 / 9;
     border-radius: var(--radio);
     border: 2px solid var(--borde);
@@ -96,6 +98,27 @@
     pointer-events: none;
   }
   .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hero-wrap { margin: 6px var(--margen) 0; }
+  .hero-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    border-radius: var(--radio);
+  }
+  .hero-track::-webkit-scrollbar { display: none; }
+  .dots { display: flex; justify-content: center; gap: 8px; margin-top: 14px; }
+  .dot {
+    width: 8px; height: 8px; padding: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,.3);
+    transition: background .2s;
+  }
+  .dot.activo { background: #fff; }
+  .hero-info {
+    text-shadow: 0 1px 8px rgba(0,0,0,.75);
+  }
   .hero-info {
     position: absolute; left: 7%; right: 22%; bottom: 8%;
     z-index: 2;
@@ -146,6 +169,20 @@
     background: var(--placeholder);
     scroll-snap-align: start;
     overflow: hidden;
+    position: relative;
+  }
+  .badge {
+    position: absolute; top: 8px; left: 8px;
+    z-index: 2;
+    background: rgba(0,0,0,.65);
+    color: var(--verde);
+    font-size: clamp(.55rem, 2.2vw, .7rem);
+    font-weight: 600;
+    letter-spacing: .3px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
   .portada img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -173,16 +210,10 @@
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="hero" aria-label="Destacado: BIGFOOT">
-    <img class="hero-img" data-img="bigfoot.webp" alt="BIGFOOT">
-    <div class="hero-info">
-      <p class="hero-genero">Acción • 2026</p>
-      <p class="hero-sinopsis">La huida de un monstruo gigante traerá consigo una sorpresa inesperada.</p>
-    </div>
-    <button class="play-btn" aria-label="Reproducir">
-      <svg viewBox="0 0 24 24"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z" fill="#000"/></svg>
-    </button>
+  <!-- HERO (varios banners) -->
+  <section class="hero-wrap" aria-label="Destacados">
+    <div class="hero-track" id="heroTrack"></div>
+    <div class="dots" id="dots"></div>
   </section>
 
   <!-- SECCIONES -->
@@ -195,7 +226,70 @@
   // Para usar otro repositorio, cambia solo esta línea.
   const IMG_BASE = "https://cdn.jsdelivr.net/gh/Parallax-Oficial/cube@main/";
 
-  document.querySelectorAll('img[data-img]').forEach(i => { i.src = IMG_BASE + i.dataset.img; });
+
+  // ---------- HERO ----------
+  const heroes = [
+    { img: "bigfoot.webp", alt: "BIGFOOT",
+      genero: "Acción • 2026",
+      sinopsis: "La huida de un monstruo gigante traerá consigo una sorpresa inesperada." },
+    { img: "eternamente-vivo-hero.webp", alt: "Eternamente Vivo con Valak Seraphel",
+      genero: "Sobrenatural • 2026",
+      sinopsis: "En una realidad paralela, un demonio le ofrece a Martino “lindos recuerdos”." },
+    { img: "golem-hero.webp", alt: "Golem: El Protector de Judíos",
+      genero: "Thriller • 2026",
+      sinopsis: "La última noche de su madre judía será la primera de su leyenda." },
+    { img: "familia-rani-hero.webp", alt: "La Familia Rani",
+      genero: "Thriller • 2025",
+      sinopsis: "Un viaje a la mente más espectacular y grotesca de su autor." }
+  ];
+
+  const track = document.getElementById('heroTrack');
+  const dotsBox = document.getElementById('dots');
+  const PLAY = '<svg viewBox="0 0 24 24"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z" fill="#000"/></svg>';
+
+  heroes.forEach((h, i) => {
+    track.insertAdjacentHTML('beforeend',
+      `<article class="hero" aria-label="${h.alt}">
+        <img class="hero-img" src="${IMG_BASE}${h.img}" alt="${h.alt}">
+        <div class="hero-info">
+          <p class="hero-genero">${h.genero}</p>
+          <p class="hero-sinopsis">${h.sinopsis}</p>
+        </div>
+        <button class="play-btn" aria-label="Reproducir ${h.alt}">${PLAY}</button>
+      </article>`);
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 0 ? ' activo' : '');
+    d.setAttribute('aria-label', 'Ir al banner ' + (i + 1));
+    d.onclick = () => { irA(i); iniciarAuto(); };
+    dotsBox.appendChild(d);
+  });
+
+  track.addEventListener('scroll', () => {
+    const i = Math.round(track.scrollLeft / track.clientWidth);
+    [...dotsBox.children].forEach((d, n) => d.classList.toggle('activo', n === i));
+  }, { passive: true });
+
+  // ---------- Cambio automático ----------
+  const SEGUNDOS_AUTO = 5;   // cambia aquí cada cuántos segundos pasa solo (4 a 6 recomendado)
+  let timerAuto = null;
+
+  function irA(i) { track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }); }
+  function actual() { return Math.round(track.scrollLeft / track.clientWidth); }
+  function detenerAuto() { clearInterval(timerAuto); timerAuto = null; }
+  function iniciarAuto() {
+    detenerAuto();
+    timerAuto = setInterval(() => irA((actual() + 1) % heroes.length), SEGUNDOS_AUTO * 1000);
+  }
+
+  // Si la persona toca o desliza, se pausa y se reinicia la cuenta al soltar
+  track.addEventListener('touchstart', detenerAuto, { passive: true });
+  track.addEventListener('touchend', iniciarAuto, { passive: true });
+  track.addEventListener('touchcancel', iniciarAuto, { passive: true });
+  track.addEventListener('mouseenter', detenerAuto);
+  track.addEventListener('mouseleave', iniciarAuto);
+  document.addEventListener('visibilitychange', () => document.hidden ? detenerAuto() : iniciarAuto());
+
+  iniciarAuto();
 
   // Cada sección: título + lista de portadas (nombre del archivo en /img y texto alternativo).
   // Las que no tienen imagen todavía se muestran como portada vacía.
@@ -207,8 +301,36 @@
       { img: "gorgeous-vortex.webp",   alt: "Gorgeous Vortex" },
       { img: "retorcidos.webp",        alt: "Retorcidos" }
     ]},
-    { titulo: "Cero Capítulos" },
-    { titulo: "Tres Capítulos" },
+    { titulo: "Cero Capítulos", portadas: [
+      { img: "muevete-al-minuto.webp", alt: "Muévete al Minuto" },
+      { img: "metalosis-maligna.webp", alt: "Metalosis Maligna" },
+      { img: "retorcidos.webp",        alt: "Retorcidos" },
+      { img: "nada.webp",              alt: "Nada" },
+      { img: "retorcidos-2.webp",      alt: "Retorcidos 2" },
+      { img: "strike.webp",            alt: "Strike" },
+      { img: "gorgeous-vortex.webp",   alt: "Gorgeous Vortex" },
+      { img: "obedece.webp",           alt: "Obedece" },
+      { img: "ultimate.webp",          alt: "Ultimate" },
+      { img: "valentine.webp",         alt: "Valentine" }
+    ]},
+    { titulo: "Tres Capítulos", portadas: [
+      { img: "mama-dogs.webp", alt: "Mama Dogs" },
+      { img: "el-telefono.webp", alt: "El Teléfono" },
+      { img: "bigfoot-2.webp", alt: "Bigfoot" },
+      { img: "ratman.webp", alt: "Ratman" },
+      { img: "without-warning.webp", alt: "Without Warning" },
+      { img: "golem.webp", alt: "Golem" },
+      { img: "el-ciguenon.webp", alt: "El Cigüeñon", pronto: true },
+      { img: "atraco.webp", alt: "Atraco", pronto: true },
+      { img: "frogman.webp", alt: "Frogman", pronto: true },
+      { img: "cuarentena.webp", alt: "Cuarentena", pronto: true },
+      { img: "cuarentena-revival.webp", alt: "Cuarentena Revival", pronto: true },
+      { img: "vigilia.webp", alt: "Vigilia", pronto: true },
+      { img: "cuarentena-2.webp", alt: "Cuarentena 2", pronto: true },
+      { img: "moby-dick-profundo.webp", alt: "Moby Dick Profundo", pronto: true },
+      { img: "cuarentena-iv.webp", alt: "Cuarentena IV", pronto: true },
+      { img: "apollo-18.webp", alt: "Apollo 18", pronto: true }
+    ]},
     { titulo: "Cuatro o Cinco Capítulos" },
     { titulo: "Recomendados de Mlive" }
   ];
@@ -219,7 +341,7 @@
     const sec = document.createElement('section');
     sec.className = 'seccion';
     const items = portadas
-      ? portadas.map(p => `<div class="portada"><img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('')
+      ? portadas.map(p => `<div class="portada">${p.pronto ? '<span class="badge">Próximamente</span>' : ''}<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('')
       : '<div class="portada"></div>'.repeat(PORTADAS_POR_SECCION);
     sec.innerHTML = `<h2>${titulo}</h2><div class="carrusel">${items}</div>`;
     contenedor.appendChild(sec);
