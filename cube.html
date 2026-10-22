@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cube</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde: #c6ff00;
+    --fondo: #000000;
+    --texto: #ffffff;
+    --texto-suave: #b9b9b9;
+    --borde: #1c1c1c;
+    --placeholder: #141414;
+    --radio: 15px;
+    --margen: 4vw;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body { background: var(--fondo); }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    color: var(--texto);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  .app { max-width: 1100px; margin: 0 auto; }
+
+  /* ---------- HEADER ---------- */
+  header {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 3vw, 16px);
+    padding: 12px var(--margen);
+    min-height: 64px;
+  }
+
+  .menu-btn {
+    flex: 0 0 auto;
+    width: 25px; height: 25px;
+    display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 4.5px;
+  }
+  .menu-btn span { display: block; flex: 0 0 auto; height: 2.2px; width: 100%; background: #fff; border-radius: 2px; }
+
+  .logo {
+    flex: 0 0 auto;
+    font-weight: 800;
+    font-size: clamp(1.7rem, 8vw, 2.4rem);
+    line-height: 1;
+    letter-spacing: -.5px;
+    text-transform: lowercase;
+    color: var(--verde);
+    display: flex; align-items: center;
+    padding-bottom: 4px;
+    margin-left: 6px;
+  }
+
+  .header-der { margin-left: auto; display: flex; align-items: center; gap: clamp(8px, 3vw, 14px); flex: 0 0 auto; }
+
+  .buscar-btn { flex: 0 0 auto; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+  .buscar-btn svg { width: 24px; height: 24px; }
+
+  .unete-btn {
+    flex: 0 0 auto;
+    background: #fff; color: #000;
+    font-weight: 600; font-size: clamp(.72rem, 3.2vw, .9rem);
+    padding: 9px clamp(12px, 4vw, 18px);
+    border-radius: 999px;
+    white-space: nowrap;
+    line-height: 1.2;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    margin: 6px var(--margen) 0;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radio);
+    border: 2px solid var(--borde);
+    background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+    overflow: hidden;
+  }
+  .hero::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.85) 0%, rgba(0,0,0,0) 55%);
+    pointer-events: none;
+  }
+  .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hero-info {
+    position: absolute; left: 7%; right: 22%; bottom: 8%;
+    z-index: 2;
+    font-weight: 400;
+    color: var(--texto-suave);
+  }
+  .hero-genero { font-size: clamp(.8rem, 3.2vw, 1.1rem); margin-bottom: 2px; }
+  .hero-sinopsis { font-size: clamp(.85rem, 3.6vw, 1.25rem); line-height: 1.25; }
+
+  .play-btn {
+    position: absolute; right: 7%; bottom: 8%;
+    z-index: 2;
+    width: clamp(52px, 14vw, 84px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--verde);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .play-btn svg { width: 44%; height: 44%; margin-left: 6%; }
+
+  /* ---------- SECCIONES ---------- */
+  .seccion { margin-top: 44px; }
+
+  .seccion h2 {
+    font-weight: 700;
+    font-size: clamp(1.25rem, 5.4vw, 1.9rem);
+    padding: 0 var(--margen);
+    margin-bottom: 18px;
+    letter-spacing: -.2px;
+  }
+
+  .carrusel {
+    display: flex;
+    gap: 2.5vw;
+    padding: 0 var(--margen);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: var(--margen);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .carrusel::-webkit-scrollbar { display: none; }
+
+  .portada {
+    flex: 0 0 calc((100% - 2.5vw) / 2.15);
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radio);
+    border: 2px solid var(--borde);
+    background: var(--placeholder);
+    scroll-snap-align: start;
+    overflow: hidden;
+  }
+  .portada img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  @media (min-width: 700px) {
+    :root { --margen: 28px; }
+    .carrusel { gap: 18px; }
+    .portada { flex-basis: 30%; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header>
+    <button class="menu-btn" aria-label="Menú"><span></span><span></span><span></span></button>
+    <div class="logo">cube</div>
+    <div class="header-der">
+      <button class="buscar-btn" aria-label="Buscar historias">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
+      <button class="unete-btn">Únete a Cube</button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" aria-label="Destacado: BIGFOOT">
+    <img class="hero-img" src="bigfoot.webp" alt="BIGFOOT">
+    <div class="hero-info">
+      <p class="hero-genero">Acción • 2026</p>
+      <p class="hero-sinopsis">La huida de un monstruo gigante traerá consigo una sorpresa inesperada.</p>
+    </div>
+    <button class="play-btn" aria-label="Reproducir">
+      <svg viewBox="0 0 24 24"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z" fill="#000"/></svg>
+    </button>
+  </section>
+
+  <!-- SECCIONES -->
+  <main id="secciones"></main>
+
+</div>
+
+<script>
+  // Cada sección: título + lista de portadas (nombre del archivo en /img y texto alternativo).
+  // Las que no tienen imagen todavía se muestran como portada vacía.
+  const secciones = [
+    { titulo: "Te Recomendamos", portadas: [
+      { img: "eternamente-vivo.webp",  alt: "Eternamente Vivo con Amadeus Shell" },
+      { img: "las-entrevistas.webp",   alt: "Las Entrevistas" },
+      { img: "metalosis-maligna.webp", alt: "Metalosis Maligna" },
+      { img: "gorgeous-vortex.webp",   alt: "Gorgeous Vortex" },
+      { img: "retorcidos.webp",        alt: "Retorcidos" }
+    ]},
+    { titulo: "Cero Capítulos" },
+    { titulo: "Tres Capítulos" },
+    { titulo: "Cuatro o Cinco Capítulos" },
+    { titulo: "Recomendados de Mlive" }
+  ];
+  const PORTADAS_POR_SECCION = 5;
+
+  const contenedor = document.getElementById('secciones');
+  secciones.forEach(({ titulo, portadas }) => {
+    const sec = document.createElement('section');
+    sec.className = 'seccion';
+    const items = portadas
+      ? portadas.map(p => `<div class="portada"><img src="${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('')
+      : '<div class="portada"></div>'.repeat(PORTADAS_POR_SECCION);
+    sec.innerHTML = `<h2>${titulo}</h2><div class="carrusel">${items}</div>`;
+    contenedor.appendChild(sec);
+  });
+</script>
+</body>
+</html>
