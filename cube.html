@@ -337,6 +337,47 @@
     .pie-cols { gap: 30px; }
     .pie-cols a { font-size: .95rem; }
   }
+
+.sesion-usuario {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.avatar-mini {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #c6ff00;
+  color: #000;
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+.nombre-usuario-mini {
+  font-size: 0.9rem;
+  color: #fff;
+  display: none;
+}
+.cerrar-sesion-mini {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #1c1c1c;
+  color: #999;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+}
+.cerrar-sesion-mini:hover {
+  background: #ff4d4d;
+  color: #fff;
+}
+@media (min-width: 600px) {
+  .nombre-usuario-mini { display: inline; }
+}
 </style>
 </head>
 <body>
@@ -354,7 +395,12 @@
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
       </button>
-      <a href="cuenta.html" class="unete-btn">Únete a Cube</a>
+      <button class="unete-btn" id="btn-unete">Únete a Cube</button>
+      <div class="sesion-usuario" id="sesion-usuario">
+        <a href="cuenta.html" class="avatar-mini" id="avatar-mini"></a>
+        <span class="nombre-usuario-mini" id="nombre-usuario-mini"></span>
+        <button class="cerrar-sesion-mini" id="cerrar-sesion-mini" title="Cerrar sesión">✕</button>
+      </div>
     </div>
   </header>
 
@@ -774,6 +820,36 @@
   document.getElementById('anio').textContent = new Date().getFullYear();
   // Los enlaces del pie aún no llevan a ninguna página: se evita que salten al inicio
   document.querySelectorAll('.pie a[href="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+</script>
+<script src="supabase.js"></script>
+<script>
+async function actualizarUsuario() {
+  const usuario = await window.cubeAuth.obtenerUsuarioActual();
+  const btnUnete = document.getElementById('btn-unete');
+  const sesionUsuario = document.getElementById('sesion-usuario');
+  const nombreUsuario = document.getElementById('nombre-usuario-mini');
+  const avatar = document.getElementById('avatar-mini');
+  
+  if (usuario) {
+    btnUnete.style.display = 'none';
+    sesionUsuario.style.display = 'flex';
+    const nombre = usuario.user_metadata?.username || usuario.email?.split('@')[0] || 'Usuario';
+    nombreUsuario.textContent = nombre;
+    avatar.textContent = nombre.charAt(0).toUpperCase();
+  } else {
+    btnUnete.style.display = 'block';
+    sesionUsuario.style.display = 'none';
+  }
+}
+
+document.addEventListener('click', async e => {
+  if (e.target.closest('#cerrar-sesion-mini')) {
+    await window.cubeAuth.cerrarSesion();
+    window.location.reload();
+  }
+});
+
+document.addEventListener('DOMContentLoaded', actualizarUsuario);
 </script>
 </body>
 </html>
