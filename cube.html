@@ -191,17 +191,59 @@
     .carrusel { gap: 18px; }
     .portada { flex-basis: 30%; }
   }
+
+  /* ---------- BÚSQUEDA ---------- */
+  #buscar { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
+  body.buscando #buscar { display: block; }
+  body.buscando #home { display: none; }
+
+  .buscar-top { display: flex; align-items: center; gap: 10px; }
+  .volver-btn { flex: 0 0 auto; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; margin-left: -6px; }
+  .volver-btn svg { width: 26px; height: 26px; }
+  .buscador {
+    flex: 1; min-width: 0;
+    display: flex; align-items: center; gap: 10px;
+    height: 56px; padding: 0 18px;
+    background: var(--placeholder);
+    border: 2px solid var(--borde);
+    border-radius: 20px;
+  }
+  .buscador input {
+    flex: 1; min-width: 0;
+    background: none; border: none; outline: none;
+    color: #fff; font-family: inherit; font-size: 1rem;
+  }
+  .buscador input::placeholder { color: #8a8a8a; }
+  .buscador input::-webkit-search-cancel-button { display: none; }
+  .buscador svg { flex: 0 0 auto; width: 26px; height: 26px; }
+  .buscador:focus-within { border-color: #3a3a3a; }
+
+  #buscar h2 {
+    font-weight: 700;
+    font-size: clamp(1.25rem, 5.4vw, 1.9rem);
+    margin: 30px 0 18px;
+    letter-spacing: -.2px;
+  }
+  .grilla { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .grilla .portada { flex: none; width: 100%; }
+  .sin-resultados { color: var(--texto-suave); font-size: 1rem; padding: 10px 0; }
+  .sin-resultados[hidden] { display: none; }
+  @media (min-width: 700px) {
+    .grilla { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+  }
 </style>
 </head>
 <body>
 <div class="app">
+
+<div id="home">
 
   <!-- HEADER -->
   <header>
     <button class="menu-btn" aria-label="Menú"><span></span><span></span><span></span></button>
     <div class="logo">cube</div>
     <div class="header-der">
-      <button class="buscar-btn" aria-label="Buscar historias">
+      <button class="buscar-btn" id="abrirBuscar" aria-label="Buscar historias">
         <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
@@ -218,6 +260,24 @@
 
   <!-- SECCIONES -->
   <main id="secciones"></main>
+
+</div><!-- /home -->
+
+<!-- BÚSQUEDA -->
+<section id="buscar" aria-label="Buscar historias">
+  <div class="buscar-top">
+    <button class="volver-btn" id="cerrarBuscar" aria-label="Volver">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <label class="buscador">
+      <input id="campoBuscar" type="search" placeholder="¿Qué quieres ver hoy?" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Buscar historias">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </label>
+  </div>
+  <h2 id="tituloBuscar">Todas las historias</h2>
+  <div class="grilla" id="grilla"></div>
+  <p class="sin-resultados" id="sinResultados" hidden>No encontramos historias con ese nombre.</p>
+</section>
 
 </div>
 
@@ -375,6 +435,72 @@
       : '<div class="portada"></div>'.repeat(PORTADAS_POR_SECCION);
     sec.innerHTML = `<h2>${titulo}</h2><div class="carrusel">${items}</div>`;
     contenedor.appendChild(sec);
+  });
+
+  // ---------- BÚSQUEDA ----------
+  // Catálogo: todas las portadas de todas las secciones, sin repetir, ordenadas de la A a la Z.
+  const catalogo = [];
+  const vistas = new Set();
+  secciones.forEach(sec => (sec.portadas || []).forEach(p => {
+    if (!vistas.has(p.img)) { vistas.add(p.img); catalogo.push(p); }
+  }));
+  catalogo.sort((a, b) => a.alt.localeCompare(b.alt, 'es', { sensitivity: 'base' }));
+
+  const normal  = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  const compacto = t => normal(t).replace(/[^a-z0-9]/g, '');   // así "cch" encuentra "C·C·H"
+
+  const grilla = document.getElementById('grilla');
+  const campo = document.getElementById('campoBuscar');
+  const tituloBuscar = document.getElementById('tituloBuscar');
+  const sinResultados = document.getElementById('sinResultados');
+
+  // Se crean las portadas una sola vez y luego solo se muestran u ocultan
+  const tarjetas = catalogo.map(p => {
+    const el = document.createElement('div');
+    el.className = 'portada';
+    el.innerHTML = (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
+      `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy">`;
+    grilla.appendChild(el);
+    return { el, normal: normal(p.alt), compacto: compacto(p.alt) };
+  });
+
+  function filtrar() {
+    const q = normal(campo.value), qc = compacto(campo.value);
+    let visibles = 0;
+    tarjetas.forEach(t => {
+      const coincide = !q || t.normal.includes(q) || (qc && t.compacto.includes(qc));
+      t.el.style.display = coincide ? '' : 'none';
+      if (coincide) visibles++;
+    });
+    tituloBuscar.textContent = q ? 'Resultados' : 'Todas las historias';
+    sinResultados.hidden = visibles > 0;
+  }
+  campo.addEventListener('input', filtrar);
+  campo.addEventListener('keydown', e => { if (e.key === 'Enter') campo.blur(); });
+
+  let scrollGuardado = 0;
+  function abrirBuscar() {
+    scrollGuardado = window.scrollY;
+    detenerAuto();
+    document.body.classList.add('buscando');
+    window.scrollTo(0, 0);
+    history.pushState({ buscar: true }, '');
+    campo.focus();
+  }
+  function cerrarBuscar() {
+    if (history.state && history.state.buscar) { history.back(); return; }
+    salirBuscar();
+  }
+  function salirBuscar() {
+    document.body.classList.remove('buscando');
+    campo.value = ''; filtrar();
+    window.scrollTo(0, scrollGuardado);
+    iniciarAuto();
+  }
+  document.getElementById('abrirBuscar').addEventListener('click', abrirBuscar);
+  document.getElementById('cerrarBuscar').addEventListener('click', cerrarBuscar);
+  window.addEventListener('popstate', () => {
+    if (document.body.classList.contains('buscando')) salirBuscar();
   });
 </script>
 </body>
