@@ -28,7 +28,6 @@
     font-family: 'Poppins', sans-serif;
     color: var(--texto);
     min-height: 100vh;
-    padding-bottom: 40px;
   }
 
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
@@ -298,6 +297,46 @@
   .apartado-top { display: flex; align-items: center; gap: 10px; min-height: 56px; }
   #apartado h1 { font-weight: 700; font-size: clamp(1.4rem, 6vw, 2rem); letter-spacing: -.3px; }
   .apartado-cant { color: var(--texto-suave); font-size: .9rem; margin: 6px 0 22px 36px; }
+
+  /* ---------- PIE DE PÁGINA ---------- */
+  .pie { background: #0a0a0a; margin-top: 70px; padding: 54px var(--margen) calc(40px + env(safe-area-inset-bottom, 0px)); }
+  body.buscando .pie, body.en-apartado .pie { display: none; }
+  .pie-in { max-width: 1100px; margin: 0 auto; }
+
+  .pie-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+  .pie-linea { padding: 0 14px 16px; border-bottom: 2px solid #1c1c1c; }
+  .pie .logo { margin: 0; padding: 0; font-size: clamp(2.3rem, 10vw, 3rem); }
+  .redes { display: flex; align-items: center; gap: 22px; }
+  .redes a { display: flex; color: #8d8d8d; transition: color .2s, transform .2s; }
+  .redes a:hover, .redes a:active { color: #fff; transform: translateY(-2px); }
+  .redes svg { width: 30px; height: 30px; fill: currentColor; }
+
+  .pie-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 44px; text-align: center; }
+  .pie-cols h4 {
+    font-weight: 600; font-size: .82rem; letter-spacing: .6px; text-transform: uppercase;
+    color: #a3a3a3; margin-bottom: 26px;
+  }
+  .pie-cols ul { list-style: none; }
+  .pie-cols li + li { margin-top: 20px; }
+  .pie-cols a {
+    color: #7d7d7d; font-size: .88rem; line-height: 1.45; text-decoration: none;
+    transition: color .2s;
+  }
+  .pie-cols a:hover, .pie-cols a:active { color: #fff; }
+
+  .pie-legal { margin-top: 56px; padding-top: 34px; border-top: 2px solid #161616; text-align: center; }
+  .pie-legal p { color: #5f5f5f; font-size: .8rem; line-height: 1.7; }
+  .pie-legal .copy { margin-bottom: 16px; }
+  .pie-legal .desc { max-width: 520px; margin: 0 auto 6px; }
+  .pie-enlaces { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-top: 22px; }
+  .pie-enlaces a { color: #5f5f5f; font-size: .76rem; text-decoration: none; transition: color .2s; }
+  .pie-enlaces a:hover { color: #fff; }
+
+  @media (min-width: 700px) {
+    .pie { padding-top: 70px; }
+    .pie-cols { gap: 30px; }
+    .pie-cols a { font-size: .95rem; }
+  }
 </style>
 </head>
 <body>
@@ -388,6 +427,60 @@
 </nav>
 
 </div>
+
+<!-- PIE DE PÁGINA -->
+<footer class="pie">
+  <div class="pie-in">
+    <div class="pie-top">
+      <div class="pie-linea"><div class="logo">cube</div></div>
+      <div class="pie-linea redes">
+        <a href="#" aria-label="Instagram de Cube">
+          <svg viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm4.5 3.2a4.8 4.8 0 1 1 0 9.6 4.8 4.8 0 0 1 0-9.6Zm0 2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6Zm5.1-3.5a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3Z"/></svg>
+        </a>
+        <a href="#" aria-label="Discord de Cube">
+          <svg viewBox="0 0 24 24"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.2.5a18.4 18.4 0 0 0-6.4 0L8.6 3a19.7 19.7 0 0 0-4.9 1.4C.6 9 -.3 13.5.1 18a19.9 19.9 0 0 0 6 3l1.3-2.1c-.7-.3-1.4-.6-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1L17.9 21a19.9 19.9 0 0 0 6-3c.5-5.2-.8-9.7-3.6-13.6ZM8.5 15.2c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Zm7 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="pie-cols">
+      <nav aria-label="Ayuda">
+        <h4>Ayuda</h4>
+        <ul>
+          <li><a href="#">Centro de ayuda</a></li>
+          <li><a href="#">Reportar problemas</a></li>
+          <li><a href="#">Contáctanos</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Empresa">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#">Acerca de nosotros</a></li>
+          <li><a href="#">Nuestra marca</a></li>
+          <li><a href="#">¿Qué es Cube?</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Socios">
+        <h4>Socios</h4>
+        <ul>
+          <li><a href="#">Asóciate con nosotros</a></li>
+          <li><a href="#">Negocia con nosotros</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="pie-legal">
+      <p class="copy">Propiedad intelectual © <span id="anio">2026</span> Cube, Inc.</p>
+      <p class="desc">Cube es una plataforma de streaming literario que prioriza el entretenimiento y consumo rápido.</p>
+      <p>Todos los derechos reservados.</p>
+      <div class="pie-enlaces">
+        <a href="#">Términos de uso</a>
+        <a href="#">Política de privacidad</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
 
 <script>
   // Dirección donde están las imágenes (jsDelivr sirve los archivos de tu repositorio de GitHub).
@@ -676,6 +769,11 @@
     if (v !== 'buscar' && body.classList.contains('buscando')) salirBuscar();
     if (v !== 'apartado' && body.classList.contains('en-apartado')) salirApartado();
   });
+
+  // ---------- Pie de página ----------
+  document.getElementById('anio').textContent = new Date().getFullYear();
+  // Los enlaces del pie aún no llevan a ninguna página: se evita que salten al inicio
+  document.querySelectorAll('.pie a[href="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
 </script>
 </body>
 </html>
