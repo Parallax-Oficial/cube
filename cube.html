@@ -196,7 +196,7 @@
     .portada { flex-basis: 30%; }
   }
 
-  /* ---------- BÚSQUEDA, APARTADOS Y VISTA DETALLE HISTORIA ---------- */
+  /* ---------- VISTAS Y APARTADOS ---------- */
   #buscar, #apartado, #vistaFavoritos, #vistaGuardados, #detalleHistoria { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
   body.buscando #buscar { display: block; }
   body.buscando #home { display: none; }
@@ -245,8 +245,8 @@
   #apartado h1 { font-weight: 700; font-size: clamp(1.4rem, 6vw, 2rem); }
   .apartado-cant { color: var(--texto-suave); font-size: .9rem; margin: 6px 0 22px 36px; }
 
-  /* ---------- ESTILO VISTA DETALLE HISTORIA (NO HERO) ---------- */
-  .detalle-banner {
+  /* ---------- DETALLE HISTORIA (ESTILO STREAMING PROFESIONAL) ---------- */
+  .detalle-hero {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -254,34 +254,55 @@
     border: 2px solid var(--borde);
     background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
     overflow: hidden;
-    margin-top: 14px;
+    margin-top: 10px;
   }
-  .detalle-banner::after {
+  .detalle-hero::after {
     content: "";
     position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,.85) 0%, rgba(0,0,0,0) 55%);
+    background: linear-gradient(to top, rgba(0,0,0,.9) 0%, rgba(0,0,0,0.2) 60%);
     pointer-events: none;
   }
   .detalle-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-  .detalle-info-box {
-    position: absolute; left: 7%; right: 22%; bottom: 8%;
-    z-index: 2;
-    font-weight: 400;
-    color: var(--texto);
-    text-shadow: 0 1px 8px rgba(0,0,0,.75);
-  }
-  .detalle-titulo-historia { font-size: clamp(1.2rem, 5vw, 2rem); font-weight: 700; margin-bottom: 4px; letter-spacing: -.3px; }
-  .detalle-meta { font-size: clamp(.85rem, 3.5vw, 1.15rem); color: var(--texto-suave); }
   
-  .detalle-acciones-extra {
-    display: flex; gap: 12px; margin-top: 24px; padding: 0 4vw;
+  .detalle-hero-content {
+    position: absolute; left: 6%; right: 6%; bottom: 6%;
+    z-index: 2;
+    display: flex; justify-content: space-between; align-items: flex-end;
   }
-  .accion-secundaria-btn {
-    flex: 1; padding: 12px; border-radius: 12px; background: var(--placeholder);
-    border: 1px solid var(--borde); font-weight: 600; font-size: .95rem; text-align: center;
-    transition: border-color .2s;
+  .detalle-info-left { max-width: 70%; }
+  .detalle-titulo { font-size: clamp(1.4rem, 5.5vw, 2.4rem); font-weight: 800; line-height: 1.1; margin-bottom: 6px; letter-spacing: -.5px; }
+  .detalle-meta { font-size: clamp(.85rem, 3.2vw, 1.1rem); color: var(--texto-suave); }
+
+  /* Acciones flotantes en el banner (corazón y guardado) */
+  .detalle-acciones-flotantes {
+    display: flex; gap: 12px; align-items: center;
   }
-  .accion-secundaria-btn:hover { border-color: var(--verde); color: var(--verde); }
+  .accion-icon-btn {
+    width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px); transition: background .2s, border-color .2s;
+  }
+  .accion-icon-btn svg { width: 22px; height: 22px; fill: #fff; stroke: #fff; }
+  .accion-icon-btn.activo svg { fill: var(--verde); stroke: var(--verde); }
+  .accion-icon-btn:hover { background: rgba(255,255,255,0.15); border-color: #fff; }
+
+  /* Gran Botón Ver Ahora */
+  .ver-ahora-btn {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    width: 100%; height: 58px; background: var(--verde); color: #000;
+    font-weight: 700; font-size: 1.1rem; border-radius: 999px; margin-top: 22px;
+    transition: opacity .2s;
+  }
+  .ver-ahora-btn svg { width: 24px; height: 24px; fill: #000; }
+  .ver-ahora-btn:hover { opacity: .9; }
+
+  /* Sinopsis y Secciones Posteriores */
+  .detalle-sinopsis-box { margin-top: 26px; padding: 0 2vw; }
+  .detalle-sinopsis-box h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; color: var(--texto-suave); }
+  .detalle-sinopsis-box p { font-size: .95rem; line-height: 1.5; color: rgba(255,255,255,0.75); font-style: italic; }
+
+  .detalle-recomendados { margin-top: 40px; }
+  .detalle-recomendados h3 { font-weight: 700; font-size: clamp(1.1rem, 4.5vw, 1.5rem); margin-bottom: 16px; }
 
   /* ---------- MENÚ LATERAL Y MODALES ---------- */
   body.menu-abierto, body.auth-abierto, body.perfil-abierto { overflow: hidden; }
@@ -337,7 +358,7 @@
   .cat-underground { color: #c4343c; }
   .cat-platinum { color: #c3c8d1; }
 
-  /* ---------- MODAL AUTENTICACIÓN ---------- */
+  /* ---------- MODALES AUTENTICACIÓN Y PERFIL ---------- */
   .auth-modal {
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
     width: min(90vw, 420px); background: #0a0a0a; border: 2px solid var(--borde);
@@ -361,7 +382,6 @@
   }
   .auth-btn:hover { opacity: .9; }
 
-  /* ---------- MODAL PERFIL ---------- */
   .perfil-modal {
     position: fixed; top: 0; right: 0; bottom: 0; z-index: 60;
     width: min(86vw, 360px); background: #000; border-left: 1px solid var(--borde);
@@ -418,7 +438,6 @@
     <button class="menu-btn" id="abrirMenu" aria-label="Menú"><span></span><span></span><span></span></button>
     <div class="logo">cube</div>
     <div class="header-der" id="headerDer">
-      <!-- Icono de Suscripción (Corona) -->
       <button class="suscribe-btn" id="btnSuscribir" aria-label="Suscripción">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14v2H5v-2z"/></svg>
       </button>
@@ -457,7 +476,7 @@
   <p class="sin-resultados" id="sinResultados" hidden>No encontramos historias con ese nombre.</p>
 </section>
 
-<!-- APARTADO DE CATEGORÍA / CAPÍTULOS -->
+<!-- APARTADO CATEGORÍAS -->
 <section id="apartado" aria-label="Historias">
   <div class="apartado-top">
     <button class="volver-btn" id="cerrarApartado" aria-label="Volver">
@@ -493,29 +512,48 @@
   <p class="sin-resultados" id="sinGuardados" hidden>No tienes historias guardadas.</p>
 </section>
 
-<!-- VISTA DETALLE DE HISTORIA -->
+<!-- VISTA DETALLE DE HISTORIA (PROFESIONAL / TUBI STYLE) -->
 <section id="detalleHistoria" aria-label="Detalle de la historia">
   <div class="apartado-top">
     <button class="volver-btn" id="cerrarDetalle" aria-label="Volver">
       <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
-    <h2 id="detalleNavTitulo" style="font-size: 1.2rem; font-weight: 600;">Detalle</h2>
+    <h2 id="detalleNavTitulo" style="font-size: 1.1rem; font-weight: 500; color: var(--texto-suave);">Detalle</h2>
   </div>
   
-  <div class="detalle-banner">
+  <div class="detalle-hero">
     <img class="detalle-img" id="detalleImg" src="" alt="">
-    <div class="detalle-info-box">
-      <p class="detalle-titulo-historia" id="detalleTitulo">Título</p>
-      <p class="detalle-meta" id="detalleMeta">Género • 2026</p>
+    <div class="detalle-hero-content">
+      <div class="detalle-info-left">
+        <h1 class="detalle-titulo" id="detalleTitulo">Título</h1>
+        <p class="detalle-meta" id="detalleMeta">Género • 2026</p>
+      </div>
+      <div class="detalle-acciones-flotantes">
+        <!-- Favorito (Corazón) -->
+        <button class="accion-icon-btn" id="btnAccionFavorito" aria-label="Favorito">
+          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </button>
+        <!-- Guardar (Bookmark) -->
+        <button class="accion-icon-btn" id="btnAccionGuardado" aria-label="Guardar para más tarde">
+          <svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+        </button>
+      </div>
     </div>
-    <button class="play-btn" id="detallePlayBtn" aria-label="Reproducir historia">
-      <svg viewBox="0 0 24 24"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z" fill="#000"/></svg>
-    </button>
   </div>
 
-  <div class="detalle-acciones-extra">
-    <button class="accion-secundaria-btn" id="btnAccionFavorito">Añadir a Favoritos</button>
-    <button class="accion-secundaria-btn" id="btnAccionGuardado">Añadir a Guardados</button>
+  <div class="detalle-sinopsis-box">
+    <h3>Sinopsis</h3>
+    <p id="detalleSinopsis">Próximamente la sinopsis oficial de esta historia estará disponible aquí...</p>
+  </div>
+
+  <button class="ver-ahora-btn" id="btnVerAhora">
+    <svg viewBox="0 0 24 24"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z"/></svg>
+    Ver ahora
+  </button>
+
+  <div class="detalle-recomendados">
+    <h3>Puede Que También Te Guste</h3>
+    <div class="carrusel" id="detalleRecomendadosGrilla" style="padding: 0;"></div>
   </div>
 </section>
 
@@ -586,7 +624,7 @@
   </div>
   <div class="perfil-opciones">
     <button class="perfil-opcion-btn" id="irFavoritos"><span>Favoritos</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2"><polyline points="9 6 15 12 9 18"/></svg></button>
-    <button class="perfil-opcion-btn" id="irGuardados"><span>Guardados</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2"><polyline points="9 6 15 12 9 18"/></svg></button>
+    <button class="perfil-opcion-btn" id="irGuardados"><span>Guardados (Ver más tarde)</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2"><polyline points="9 6 15 12 9 18"/></svg></button>
     <button class="perfil-opcion-btn cerrar-sesion-btn" id="btnCerrarSesion">Cerrar Sesión</button>
   </div>
 </div>
@@ -658,6 +696,9 @@
     const idx = usuarios.findIndex(u => u.email === user.email);
     if (idx >= 0) {
       usuarios[idx] = user;
+      guardarListaUsuarios(usuarios);
+    } else {
+      usuarios.push(user);
       guardarListaUsuarios(usuarios);
     }
   }
@@ -739,7 +780,7 @@
   track.addEventListener('mouseleave', iniciarAuto);
   iniciarAuto();
 
-  // ---------- SECCIONES Y CATÁLOGO CON GÉNEROS Y AÑOS ASIGNADOS ----------
+  // ---------- SECCIONES Y CATÁLOGO ----------
   const secciones = [
     { titulo: "Te Recomendamos", portadas: [
       { img: "eternamente-vivo.webp",  alt: "Eternamente Vivo con Amadeus Shell", genero: "Sobrenatural", anio: "2025" },
@@ -770,7 +811,10 @@
       { img: "el-ciguenon.webp", alt: "El Cigüeñon", genero: "Comedia", pronto: true, anio: "2027" },
       { img: "atraco.webp", alt: "Atraco", genero: "Acción", pronto: true, anio: "2027" },
       { img: "frogman.webp", alt: "Frogman", genero: "Terror", pronto: true, anio: "2027" },
-      { img: "cuarentena.webp", alt: "Cuarentena", genero: "Suspenso", pronto: true, anio: "2027" }
+      { img: "cuarentena.webp", alt: "Cuarentena", genero: "Suspenso", pronto: true, anio: "2027" },
+      { img: "cuarentena-revival.webp", alt: "Cuarentena Revival", genero: "Suspenso", pronto: true, anio: "2027" },
+      { img: "cuarentena-2.webp", alt: "Cuarentena 2", genero: "Suspenso", pronto: true, anio: "2027" },
+      { img: "cuarentena-iv.webp", alt: "Cuarentena IV", genero: "Suspenso", pronto: true, anio: "2027" }
     ]},
     { titulo: "Cuatro o Cinco Capítulos", portadas: [
       { img: "eternamente-vivo.webp", alt: "Eternamente Vivo con Amadeus Shell", genero: "Sobrenatural", anio: "2025" },
@@ -814,8 +858,24 @@
   }));
   catalogo.sort((a, b) => a.alt.localeCompare(b.alt, 'es', { sensitivity: 'base' }));
 
-  // ---------- GESTIÓN DE VISTA DETALLE DE HISTORIA ----------
+  // ---------- GESTIÓN VISTA DETALLE & RECOMENDADOS ----------
   let historiaSeleccionada = null;
+
+  function actualizarBotonesDetalle(p) {
+    const usuario = obtenerUsuario();
+    const btnFav = document.getElementById('btnAccionFavorito');
+    const btnGuar = document.getElementById('btnAccionGuardado');
+    
+    if (usuario) {
+      const esFav = (usuario.favoritos || []).some(item => item.img === p.img);
+      const esGuar = (usuario.guardados || []).some(item => item.img === p.img);
+      btnFav.classList.toggle('activo', esFav);
+      btnGuar.classList.toggle('activo', esGuar);
+    } else {
+      btnFav.classList.remove('activo');
+      btnGuar.classList.remove('activo');
+    }
+  }
 
   function abrirDetalleHistoria(p) {
     historiaSeleccionada = p;
@@ -824,17 +884,21 @@
     document.getElementById('detalleMeta').textContent = `${p.genero} • ${p.anio}`;
     document.getElementById('detalleImg').src = `${IMG_BASE}${p.img}`;
     document.getElementById('detalleImg').alt = p.alt;
+    document.getElementById('detalleSinopsis').textContent = `Próximamente la sinopsis oficial de ${p.alt} estará disponible aquí...`;
 
-    const usuario = obtenerUsuario();
-    if (usuario) {
-      const esFav = (usuario.favoritos || []).some(item => item.img === p.img);
-      const esGuar = (usuario.guardados || []).some(item => item.img === p.img);
-      document.getElementById('btnAccionFavorito').textContent = esFav ? "Quitar de Favoritos" : "Añadir a Favoritos";
-      document.getElementById('btnAccionGuardado').textContent = esGuar ? "Quitar de Guardados" : "Añadir a Guardados";
-    } else {
-      document.getElementById('btnAccionFavorito').textContent = "Añadir a Favoritos";
-      document.getElementById('btnAccionGuardado').textContent = "Añadir a Guardados";
-    }
+    actualizarBotonesDetalle(p);
+
+    // Criterio "Puede que también te guste": máximo 5 portadas compartiendo género o nombre similar
+    const recomendadosBox = document.getElementById('detalleRecomendadosGrilla');
+    const sugeridos = catalogo
+      .filter(item => item.img !== p.img && (item.genero === p.genero || item.alt.toLowerCase().split(' ')[0] === p.alt.toLowerCase().split(' ')[0]))
+      .slice(0, 5);
+
+    recomendadosBox.innerHTML = sugeridos.map(s => 
+      `<div class="portada" data-img="${s.img}" data-alt="${s.alt}" data-genero="${s.genero}" data-anio="${s.anio}" data-pronto="${s.pronto || false}">` +
+      (s.pronto ? '<span class="badge">Próximamente</span>' : '') +
+      `<img src="${IMG_BASE}${s.img}" alt="${s.alt}" loading="lazy"></div>`
+    ).join('');
 
     detenerAuto();
     body.classList.add('en-detalle');
@@ -849,10 +913,11 @@
 
   document.getElementById('cerrarDetalle').addEventListener('click', () => history.back());
 
+  // Acción Favorito (Corazón)
   document.getElementById('btnAccionFavorito').addEventListener('click', () => {
     let usuario = obtenerUsuario();
     if (!usuario) {
-      alert("Debes iniciar sesión o registrarte para usar Favoritos.");
+      alert("Debes iniciar sesión o registrarte para añadir a Favoritos.");
       abrirAuth();
       return;
     }
@@ -860,18 +925,18 @@
     const idx = usuario.favoritos.findIndex(item => item.img === historiaSeleccionada.img);
     if (idx >= 0) {
       usuario.favoritos.splice(idx, 1);
-      document.getElementById('btnAccionFavorito').textContent = "Añadir a Favoritos";
     } else {
       usuario.favoritos.push(historiaSeleccionada);
-      document.getElementById('btnAccionFavorito').textContent = "Quitar de Favoritos";
     }
     guardarSesionActiva(usuario);
+    actualizarBotonesDetalle(historiaSeleccionada);
   });
 
+  // Acción Guardar (Bookmark / Ver más tarde)
   document.getElementById('btnAccionGuardado').addEventListener('click', () => {
     let usuario = obtenerUsuario();
     if (!usuario) {
-      alert("Debes iniciar sesión o registrarte para usar Guardados.");
+      alert("Debes iniciar sesión o registrarte para guardar historias.");
       abrirAuth();
       return;
     }
@@ -879,15 +944,17 @@
     const idx = usuario.guardados.findIndex(item => item.img === historiaSeleccionada.img);
     if (idx >= 0) {
       usuario.guardados.splice(idx, 1);
-      document.getElementById('btnAccionGuardado').textContent = "Añadir a Guardados";
     } else {
       usuario.guardados.push(historiaSeleccionada);
-      document.getElementById('btnAccionGuardado').textContent = "Quitar de Guardados";
     }
     guardarSesionActiva(usuario);
+    actualizarBotonesDetalle(historiaSeleccionada);
   });
 
-  // Delegación global de clics en portadas
+  document.getElementById('btnVerAhora').addEventListener('click', () => {
+    alert(`Reproduciendo "${historiaSeleccionada.alt}"...`);
+  });
+
   document.addEventListener('click', e => {
     const portada = e.target.closest('.portada');
     if (portada && portada.dataset.img) {
