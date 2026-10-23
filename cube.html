@@ -65,8 +65,8 @@
 
   .header-der { margin-left: auto; display: flex; align-items: center; gap: clamp(8px, 3vw, 14px); flex: 0 0 auto; }
 
-  .buscar-btn { flex: 0 0 auto; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
-  .buscar-btn svg { width: 24px; height: 24px; }
+  .suscribe-btn, .buscar-btn { flex: 0 0 auto; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+  .suscribe-btn svg, .buscar-btn svg { width: 24px; height: 24px; }
 
   .unete-btn {
     flex: 0 0 auto;
@@ -78,7 +78,6 @@
     line-height: 1.2;
   }
 
-  /* Perfil en Header */
   .perfil-avatar-btn {
     width: 36px; height: 36px; border-radius: 50%; overflow: hidden;
     border: 2px solid var(--verde); display: flex; align-items: center; justify-content: center;
@@ -197,8 +196,8 @@
     .portada { flex-basis: 30%; }
   }
 
-  /* ---------- BÚSQUEDA Y VISTAS ---------- */
-  #buscar, #apartado, #vistaFavoritos, #vistaGuardados { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
+  /* ---------- BÚSQUEDA, APARTADOS Y VISTA DETALLE HISTORIA ---------- */
+  #buscar, #apartado, #vistaFavoritos, #vistaGuardados, #detalleHistoria { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
   body.buscando #buscar { display: block; }
   body.buscando #home { display: none; }
   body.en-apartado #apartado { display: block; }
@@ -207,6 +206,8 @@
   body.en-favoritos #home { display: none; }
   body.en-guardados #vistaGuardados { display: block; }
   body.en-guardados #home { display: none; }
+  body.en-detalle #detalleHistoria { display: block; }
+  body.en-detalle #home { display: none; }
 
   .buscar-top, .apartado-top { display: flex; align-items: center; gap: 10px; }
   .volver-btn { flex: 0 0 auto; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; margin-left: -6px; }
@@ -244,8 +245,46 @@
   #apartado h1 { font-weight: 700; font-size: clamp(1.4rem, 6vw, 2rem); }
   .apartado-cant { color: var(--texto-suave); font-size: .9rem; margin: 6px 0 22px 36px; }
 
+  /* ---------- ESTILO VISTA DETALLE HISTORIA (NO HERO) ---------- */
+  .detalle-banner {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radio);
+    border: 2px solid var(--borde);
+    background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+    overflow: hidden;
+    margin-top: 14px;
+  }
+  .detalle-banner::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.85) 0%, rgba(0,0,0,0) 55%);
+    pointer-events: none;
+  }
+  .detalle-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .detalle-info-box {
+    position: absolute; left: 7%; right: 22%; bottom: 8%;
+    z-index: 2;
+    font-weight: 400;
+    color: var(--texto);
+    text-shadow: 0 1px 8px rgba(0,0,0,.75);
+  }
+  .detalle-titulo-historia { font-size: clamp(1.2rem, 5vw, 2rem); font-weight: 700; margin-bottom: 4px; letter-spacing: -.3px; }
+  .detalle-meta { font-size: clamp(.85rem, 3.5vw, 1.15rem); color: var(--texto-suave); }
+  
+  .detalle-acciones-extra {
+    display: flex; gap: 12px; margin-top: 24px; padding: 0 4vw;
+  }
+  .accion-secundaria-btn {
+    flex: 1; padding: 12px; border-radius: 12px; background: var(--placeholder);
+    border: 1px solid var(--borde); font-weight: 600; font-size: .95rem; text-align: center;
+    transition: border-color .2s;
+  }
+  .accion-secundaria-btn:hover { border-color: var(--verde); color: var(--verde); }
+
   /* ---------- MENÚ LATERAL Y MODALES ---------- */
-  body.menu-abierto, body.auth-abierto, body.perfil-abierto, body.modal-historia-abierto { overflow: hidden; }
+  body.menu-abierto, body.auth-abierto, body.perfil-abierto { overflow: hidden; }
   
   .menu-overlay {
     position: fixed; inset: 0; z-index: 50;
@@ -263,7 +302,7 @@
     transition: transform .3s cubic-bezier(.22,.8,.3,1), visibility .3s;
     padding-top: env(safe-area-inset-top, 0px);
   }
-  body.menu-abierto .menu-overlay, body.auth-abierto .menu-overlay, body.perfil-abierto .menu-overlay, body.modal-historia-abierto .menu-overlay { opacity: 1; visibility: visible; }
+  body.menu-abierto .menu-overlay, body.auth-abierto .menu-overlay, body.perfil-abierto .menu-overlay { opacity: 1; visibility: visible; }
   body.menu-abierto .menu { transform: none; visibility: visible; }
 
   .menu-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 10px 22px; }
@@ -348,25 +387,9 @@
   .perfil-opcion-btn:hover { background: #1f1f1f; }
   .cerrar-sesion-btn { color: #ff4d4d; margin-top: 20px; }
 
-  /* ---------- MODAL HISTORIA ---------- */
-  .modal-historia {
-    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
-    width: min(90vw, 380px); background: #0a0a0a; border: 2px solid var(--borde);
-    border-radius: var(--radio); z-index: 70; padding: 24px; text-align: center;
-    opacity: 0; visibility: hidden; transition: all .25s ease;
-  }
-  body.modal-historia-abierto .modal-historia { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
-  .modal-historia h3 { font-size: 1.2rem; margin-bottom: 16px; font-weight: 700; }
-  .modal-historia-acciones { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
-  .accion-btn {
-    padding: 12px; border-radius: 10px; background: var(--placeholder); font-weight: 600; font-size: .95rem;
-    border: 1px solid var(--borde); transition: border-color .2s;
-  }
-  .accion-btn:hover { border-color: var(--verde); color: var(--verde); }
-
   /* ---------- PIE DE PÁGINA ---------- */
   .pie { background: #0a0a0a; margin-top: 70px; padding: 54px var(--margen) calc(40px + env(safe-area-inset-bottom, 0px)); }
-  body.buscando .pie, body.en-apartado .pie, body.en-favoritos .pie, body.en-guardados .pie { display: none; }
+  body.buscando .pie, body.en-apartado .pie, body.en-favoritos .pie, body.en-guardados .pie, body.en-detalle .pie { display: none; }
   .pie-in { max-width: 1100px; margin: 0 auto; }
   .pie-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
   .pie-linea { padding: 0 14px 16px; border-bottom: 2px solid #1c1c1c; }
@@ -395,12 +418,15 @@
     <button class="menu-btn" id="abrirMenu" aria-label="Menú"><span></span><span></span><span></span></button>
     <div class="logo">cube</div>
     <div class="header-der" id="headerDer">
+      <!-- Icono de Suscripción (Corona) -->
+      <button class="suscribe-btn" id="btnSuscribir" aria-label="Suscripción">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14v2H5v-2z"/></svg>
+      </button>
       <button class="buscar-btn" id="abrirBuscar" aria-label="Buscar historias">
         <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
       </button>
-      <!-- Se inyecta dinámicamente: Botón Unete o Avatar -->
     </div>
   </header>
 
@@ -431,7 +457,7 @@
   <p class="sin-resultados" id="sinResultados" hidden>No encontramos historias con ese nombre.</p>
 </section>
 
-<!-- APARTADO -->
+<!-- APARTADO DE CATEGORÍA / CAPÍTULOS -->
 <section id="apartado" aria-label="Historias">
   <div class="apartado-top">
     <button class="volver-btn" id="cerrarApartado" aria-label="Volver">
@@ -465,6 +491,32 @@
   </div>
   <div class="grilla" id="grillaGuardados"></div>
   <p class="sin-resultados" id="sinGuardados" hidden>No tienes historias guardadas.</p>
+</section>
+
+<!-- VISTA DETALLE DE HISTORIA -->
+<section id="detalleHistoria" aria-label="Detalle de la historia">
+  <div class="apartado-top">
+    <button class="volver-btn" id="cerrarDetalle" aria-label="Volver">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h2 id="detalleNavTitulo" style="font-size: 1.2rem; font-weight: 600;">Detalle</h2>
+  </div>
+  
+  <div class="detalle-banner">
+    <img class="detalle-img" id="detalleImg" src="" alt="">
+    <div class="detalle-info-box">
+      <p class="detalle-titulo-historia" id="detalleTitulo">Título</p>
+      <p class="detalle-meta" id="detalleMeta">Género • 2026</p>
+    </div>
+    <button class="play-btn" id="detallePlayBtn" aria-label="Reproducir historia">
+      <svg viewBox="0 0 24 24"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z" fill="#000"/></svg>
+    </button>
+  </div>
+
+  <div class="detalle-acciones-extra">
+    <button class="accion-secundaria-btn" id="btnAccionFavorito">Añadir a Favoritos</button>
+    <button class="accion-secundaria-btn" id="btnAccionGuardado">Añadir a Guardados</button>
+  </div>
 </section>
 
 <!-- MENÚ LATERAL -->
@@ -502,14 +554,12 @@
     <button class="auth-tab activo" id="tabRegistroBtn">Registrarse</button>
     <button class="auth-tab" id="tabLoginBtn">Iniciar Sesión</button>
   </div>
-  <!-- Formulario Registro -->
   <form class="auth-form" id="formRegistro">
     <label>Nombre de usuario <input type="text" id="regNombre" required></label>
     <label>Correo electrónico <input type="email" id="regEmail" required></label>
     <label>Contraseña <input type="password" id="regPassword" required></label>
     <button type="submit" class="auth-btn">Crear Cuenta</button>
   </form>
-  <!-- Formulario Login -->
   <form class="auth-form" id="formLogin" style="display:none;">
     <label>Correo electrónico <input type="email" id="logEmail" required></label>
     <label>Contraseña <input type="password" id="logPassword" required></label>
@@ -538,17 +588,6 @@
     <button class="perfil-opcion-btn" id="irFavoritos"><span>Favoritos</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2"><polyline points="9 6 15 12 9 18"/></svg></button>
     <button class="perfil-opcion-btn" id="irGuardados"><span>Guardados</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2"><polyline points="9 6 15 12 9 18"/></svg></button>
     <button class="perfil-opcion-btn cerrar-sesion-btn" id="btnCerrarSesion">Cerrar Sesión</button>
-  </div>
-</div>
-
-<!-- MODAL ACCIÓN HISTORIA -->
-<div class="modal-historia" id="modalHistoria">
-  <h3 id="modalHistoriaTitulo">Historia</h3>
-  <p style="font-size: .85rem; color: var(--texto-suave);">Elige una opción para esta historia:</p>
-  <div class="modal-historia-acciones">
-    <button class="accion-btn" id="btnToggleFavorito">Añadir a Favoritos</button>
-    <button class="accion-btn" id="btnToggleGuardado">Añadir a Guardados</button>
-    <button class="accion-btn" style="background:transparent; border-color:var(--borde);" id="cerrarModalHistoria">Cancelar</button>
   </div>
 </div>
 
@@ -599,7 +638,6 @@
   const IMG_BASE = "https://cdn.jsdelivr.net/gh/Parallax-Oficial/cube@main/";
   const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c6ff00'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
 
-  // ---------- GESTIÓN DE MÚLTIPLES USUARIOS CON LOCALSTORAGE ----------
   function obtenerListaUsuarios() {
     const lista = localStorage.getItem('cube_usuarios_registrados');
     return lista ? JSON.parse(lista) : [];
@@ -616,7 +654,6 @@
 
   function guardarSesionActiva(user) {
     localStorage.setItem('cube_sesion_activa', JSON.stringify(user));
-    // Sintonizar cambios también en la lista general de usuarios
     let usuarios = obtenerListaUsuarios();
     const idx = usuarios.findIndex(u => u.email === user.email);
     if (idx >= 0) {
@@ -629,7 +666,10 @@
     const headerDer = document.getElementById('headerDer');
     const usuario = obtenerUsuario();
     
-    const buscarBtnHTML = `
+    const iconosCentro = `
+      <button class="suscribe-btn" id="btnSuscribir" aria-label="Suscripción">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14v2H5v-2z"/></svg>
+      </button>
       <button class="buscar-btn" id="abrirBuscar" aria-label="Buscar historias">
         <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -637,17 +677,18 @@
       </button>`;
 
     if (usuario) {
-      headerDer.innerHTML = buscarBtnHTML + `
+      headerDer.innerHTML = iconosCentro + `
         <button class="perfil-avatar-btn" id="abrirPerfilModal" aria-label="Perfil">
           <img src="${usuario.foto || DEFAULT_AVATAR}" alt="Perfil">
         </button>`;
       document.getElementById('abrirPerfilModal').addEventListener('click', abrirPerfil);
     } else {
-      headerDer.innerHTML = buscarBtnHTML + `
+      headerDer.innerHTML = iconosCentro + `
         <button class="unete-btn" id="abrirUnete">Únete a Cube</button>`;
       document.getElementById('abrirUnete').addEventListener('click', abrirAuth);
     }
     document.getElementById('abrirBuscar').addEventListener('click', abrirBuscar);
+    document.getElementById('btnSuscribir').addEventListener('click', () => alert("Módulo de Suscripción próximamente."));
   }
 
   // ---------- HERO ----------
@@ -698,51 +739,51 @@
   track.addEventListener('mouseleave', iniciarAuto);
   iniciarAuto();
 
-  // ---------- SECCIONES Y CATÁLOGO ----------
+  // ---------- SECCIONES Y CATÁLOGO CON GÉNEROS Y AÑOS ASIGNADOS ----------
   const secciones = [
     { titulo: "Te Recomendamos", portadas: [
-      { img: "eternamente-vivo.webp",  alt: "Eternamente Vivo con Amadeus Shell" },
-      { img: "las-entrevistas.webp",   alt: "Las Entrevistas" },
-      { img: "metalosis-maligna.webp", alt: "Metalosis Maligna" },
-      { img: "gorgeous-vortex.webp",   alt: "Gorgeous Vortex" },
-      { img: "retorcidos.webp",        alt: "Retorcidos" }
+      { img: "eternamente-vivo.webp",  alt: "Eternamente Vivo con Amadeus Shell", genero: "Sobrenatural", anio: "2025" },
+      { img: "las-entrevistas.webp",   alt: "Las Entrevistas", genero: "Thriller", anio: "2025" },
+      { img: "metalosis-maligna.webp", alt: "Metalosis Maligna", genero: "Terror", anio: "2025" },
+      { img: "gorgeous-vortex.webp",   alt: "Gorgeous Vortex", genero: "Suspenso", anio: "2026" },
+      { img: "retorcidos.webp",        alt: "Retorcidos", genero: "Terror", anio: "2026" }
     ]},
     { titulo: "Cero Capítulos", portadas: [
-      { img: "muevete-al-minuto.webp", alt: "Muévete al Minuto" },
-      { img: "metalosis-maligna.webp", alt: "Metalosis Maligna" },
-      { img: "retorcidos.webp",        alt: "Retorcidos" },
-      { img: "nada.webp",              alt: "Nada" },
-      { img: "retorcidos-2.webp",      alt: "Retorcidos 2" },
-      { img: "strike.webp",            alt: "Strike" },
-      { img: "gorgeous-vortex.webp",   alt: "Gorgeous Vortex" },
-      { img: "obedece.webp",           alt: "Obedece" },
-      { img: "ultimate.webp",          alt: "Ultimate" },
-      { img: "valentine.webp",         alt: "Valentine" }
+      { img: "muevete-al-minuto.webp", alt: "Muévete al Minuto", genero: "Acción", anio: "2026" },
+      { img: "metalosis-maligna.webp", alt: "Metalosis Maligna", genero: "Terror", anio: "2025" },
+      { img: "retorcidos.webp",        alt: "Retorcidos", genero: "Terror", anio: "2026" },
+      { img: "nada.webp",              alt: "Nada", genero: "Drama", anio: "2026" },
+      { img: "retorcidos-2.webp",      alt: "Retorcidos 2", genero: "Terror", anio: "2026" },
+      { img: "strike.webp",            alt: "Strike", genero: "Acción", anio: "2026" },
+      { img: "gorgeous-vortex.webp",   alt: "Gorgeous Vortex", genero: "Suspenso", anio: "2026" },
+      { img: "obedece.webp",           alt: "Obedece", genero: "Psicológico", anio: "2026" },
+      { img: "ultimate.webp",          alt: "Ultimate", genero: "Acción", anio: "2026" },
+      { img: "valentine.webp",         alt: "Valentine", genero: "Romance", anio: "2026" }
     ]},
     { titulo: "Tres Capítulos", portadas: [
-      { img: "mama-dogs.webp", alt: "Mama Dogs" },
-      { img: "el-telefono.webp", alt: "El Teléfono" },
-      { img: "bigfoot-2.webp", alt: "Bigfoot" },
-      { img: "ratman.webp", alt: "Ratman" },
-      { img: "without-warning.webp", alt: "Without Warning" },
-      { img: "golem.webp", alt: "Golem" },
-      { img: "el-ciguenon.webp", alt: "El Cigüeñon", pronto: true },
-      { img: "atraco.webp", alt: "Atraco", pronto: true },
-      { img: "frogman.webp", alt: "Frogman", pronto: true },
-      { img: "cuarentena.webp", alt: "Cuarentena", pronto: true }
+      { img: "mama-dogs.webp", alt: "Mama Dogs", genero: "Terror", anio: "2026" },
+      { img: "el-telefono.webp", alt: "El Teléfono", genero: "Suspenso", anio: "2026" },
+      { img: "bigfoot-2.webp", alt: "Bigfoot", genero: "Acción", anio: "2026" },
+      { img: "ratman.webp", alt: "Ratman", genero: "Terror", anio: "2026" },
+      { img: "without-warning.webp", alt: "Without Warning", genero: "Thriller", anio: "2026" },
+      { img: "golem.webp", alt: "Golem", genero: "Fantasía", anio: "2026" },
+      { img: "el-ciguenon.webp", alt: "El Cigüeñon", genero: "Comedia", pronto: true, anio: "2027" },
+      { img: "atraco.webp", alt: "Atraco", genero: "Acción", pronto: true, anio: "2027" },
+      { img: "frogman.webp", alt: "Frogman", genero: "Terror", pronto: true, anio: "2027" },
+      { img: "cuarentena.webp", alt: "Cuarentena", genero: "Suspenso", pronto: true, anio: "2027" }
     ]},
     { titulo: "Cuatro o Cinco Capítulos", portadas: [
-      { img: "eternamente-vivo.webp", alt: "Eternamente Vivo con Amadeus Shell" },
-      { img: "fenomeno-vulgar.webp", alt: "Fenómeno Vulgar" },
-      { img: "eternamente-vivo-dante.webp", alt: "Eternamente Vivo con Dante el Grande" },
-      { img: "la-familia-rani.webp", alt: "La Familia Rani" },
-      { img: "menem.webp", alt: "Menem" }
+      { img: "eternamente-vivo.webp", alt: "Eternamente Vivo con Amadeus Shell", genero: "Sobrenatural", anio: "2025" },
+      { img: "fenomeno-vulgar.webp", alt: "Fenómeno Vulgar", genero: "Underground", anio: "2026" },
+      { img: "eternamente-vivo-dante.webp", alt: "Eternamente Vivo con Dante el Grande", genero: "Sobrenatural", anio: "2026" },
+      { img: "la-familia-rani.webp", alt: "La Familia Rani", genero: "Thriller", anio: "2025" },
+      { img: "menem.webp", alt: "Menem", genero: "Documental", anio: "2026" }
     ]},
     { titulo: "Recomendados de Mlive", portadas: [
-      { img: "divina-comedia.webp", alt: "Divina Comedia" },
-      { img: "las-entrevistas.webp", alt: "Las Entrevistas" },
-      { img: "triangle-room.webp", alt: "Triangle Room" },
-      { img: "eternamente-vivo-biografia.webp", alt: "Eternamente Vivo: Biografía, la vida del autor" }
+      { img: "divina-comedia.webp", alt: "Divina Comedia", genero: "Clásico", anio: "2026" },
+      { img: "las-entrevistas.webp", alt: "Las Entrevistas", genero: "Thriller", anio: "2025" },
+      { img: "triangle-room.webp", alt: "Triangle Room", genero: "Psicológico", anio: "2026" },
+      { img: "eternamente-vivo-biografia.webp", alt: "Eternamente Vivo: Biografía, la vida del autor", genero: "Biografía", anio: "2026" }
     ]}
   ];
 
@@ -751,7 +792,7 @@
     const sec = document.createElement('section');
     sec.className = 'seccion';
     const items = portadas.map(p => 
-      `<div class="portada" data-img="${p.img}" data-alt="${p.alt}" data-pronto="${p.pronto || false}">` +
+      `<div class="portada" data-img="${p.img}" data-alt="${p.alt}" data-genero="${p.genero || 'Drama'}" data-anio="${p.anio || (p.pronto ? '2027' : '2026')}" data-pronto="${p.pronto || false}">` +
       (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
       `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`
     ).join('');
@@ -762,81 +803,99 @@
   const catalogo = [];
   const vistas = new Set();
   secciones.forEach(sec => (sec.portadas || []).forEach(p => {
-    if (!vistas.has(p.img)) { vistas.add(p.img); catalogo.push(p); }
+    if (!vistas.has(p.img)) { 
+      vistas.add(p.img); 
+      catalogo.push({
+        ...p,
+        genero: p.genero || 'Drama',
+        anio: p.anio || (p.pronto ? '2027' : '2026')
+      }); 
+    }
   }));
   catalogo.sort((a, b) => a.alt.localeCompare(b.alt, 'es', { sensitivity: 'base' }));
 
-  // ---------- GESTIÓN DE FAVORITOS Y GUARDADOS ----------
+  // ---------- GESTIÓN DE VISTA DETALLE DE HISTORIA ----------
   let historiaSeleccionada = null;
-  const modalHistoria = document.getElementById('modalHistoria');
-  const btnToggleFavorito = document.getElementById('btnToggleFavorito');
-  const btnToggleGuardado = document.getElementById('btnToggleGuardado');
 
-  function abrirModalHistoria(p) {
+  function abrirDetalleHistoria(p) {
+    historiaSeleccionada = p;
+    document.getElementById('detalleNavTitulo').textContent = p.alt;
+    document.getElementById('detalleTitulo').textContent = p.alt;
+    document.getElementById('detalleMeta').textContent = `${p.genero} • ${p.anio}`;
+    document.getElementById('detalleImg').src = `${IMG_BASE}${p.img}`;
+    document.getElementById('detalleImg').alt = p.alt;
+
     const usuario = obtenerUsuario();
+    if (usuario) {
+      const esFav = (usuario.favoritos || []).some(item => item.img === p.img);
+      const esGuar = (usuario.guardados || []).some(item => item.img === p.img);
+      document.getElementById('btnAccionFavorito').textContent = esFav ? "Quitar de Favoritos" : "Añadir a Favoritos";
+      document.getElementById('btnAccionGuardado').textContent = esGuar ? "Quitar de Guardados" : "Añadir a Guardados";
+    } else {
+      document.getElementById('btnAccionFavorito').textContent = "Añadir a Favoritos";
+      document.getElementById('btnAccionGuardado').textContent = "Añadir a Guardados";
+    }
+
+    detenerAuto();
+    body.classList.add('en-detalle');
+    window.scrollTo(0, 0);
+    history.pushState({ v: 'detalle' }, '');
+  }
+
+  function salirDetalle() {
+    body.classList.remove('en-detalle');
+    iniciarAuto();
+  }
+
+  document.getElementById('cerrarDetalle').addEventListener('click', () => history.back());
+
+  document.getElementById('btnAccionFavorito').addEventListener('click', () => {
+    let usuario = obtenerUsuario();
     if (!usuario) {
-      alert("Debes iniciar sesión o registrarte para añadir historias a Favoritos o Guardados.");
+      alert("Debes iniciar sesión o registrarte para usar Favoritos.");
       abrirAuth();
       return;
     }
-    historiaSeleccionada = p;
-    document.getElementById('modalHistoriaTitulo').textContent = p.alt;
-    
-    const esFav = (usuario.favoritos || []).some(item => item.img === p.img);
-    const esGuar = (usuario.guardados || []).some(item => item.img === p.img);
-    
-    btnToggleFavorito.textContent = esFav ? "Quitar de Favoritos" : "Añadir a Favoritos";
-    btnToggleGuardado.textContent = esGuar ? "Quitar de Guardados" : "Añadir a Guardados";
-
-    document.body.classList.add('modal-historia-abierto');
-  }
-
-  function cerrarModalHistoriaFunc() {
-    document.body.classList.remove('modal-historia-abierto');
-    historiaSeleccionada = null;
-  }
-
-  document.getElementById('cerrarModalHistoria').addEventListener('click', cerrarModalHistoriaFunc);
-  document.getElementById('menuOverlay').addEventListener('click', () => {
-    cerrarModalHistoriaFunc();
-    ocultarAuth();
-    ocultarPerfil();
-  });
-
-  btnToggleFavorito.addEventListener('click', () => {
-    if (!historiaSeleccionada) return;
-    let usuario = obtenerUsuario();
     usuario.favoritos = usuario.favoritos || [];
     const idx = usuario.favoritos.findIndex(item => item.img === historiaSeleccionada.img);
     if (idx >= 0) {
       usuario.favoritos.splice(idx, 1);
+      document.getElementById('btnAccionFavorito').textContent = "Añadir a Favoritos";
     } else {
       usuario.favoritos.push(historiaSeleccionada);
+      document.getElementById('btnAccionFavorito').textContent = "Quitar de Favoritos";
     }
     guardarSesionActiva(usuario);
-    cerrarModalHistoriaFunc();
   });
 
-  btnToggleGuardado.addEventListener('click', () => {
-    if (!historiaSeleccionada) return;
+  document.getElementById('btnAccionGuardado').addEventListener('click', () => {
     let usuario = obtenerUsuario();
+    if (!usuario) {
+      alert("Debes iniciar sesión o registrarte para usar Guardados.");
+      abrirAuth();
+      return;
+    }
     usuario.guardados = usuario.guardados || [];
     const idx = usuario.guardados.findIndex(item => item.img === historiaSeleccionada.img);
     if (idx >= 0) {
       usuario.guardados.splice(idx, 1);
+      document.getElementById('btnAccionGuardado').textContent = "Añadir a Guardados";
     } else {
       usuario.guardados.push(historiaSeleccionada);
+      document.getElementById('btnAccionGuardado').textContent = "Quitar de Guardados";
     }
     guardarSesionActiva(usuario);
-    cerrarModalHistoriaFunc();
   });
 
+  // Delegación global de clics en portadas
   document.addEventListener('click', e => {
     const portada = e.target.closest('.portada');
     if (portada && portada.dataset.img) {
-      abrirModalHistoria({
+      abrirDetalleHistoria({
         img: portada.dataset.img,
         alt: portada.dataset.alt,
+        genero: portada.dataset.genero,
+        anio: portada.dataset.anio,
         pronto: portada.dataset.pronto === 'true'
       });
     }
@@ -856,6 +915,8 @@
     el.className = 'portada';
     el.dataset.img = p.img;
     el.dataset.alt = p.alt;
+    el.dataset.genero = p.genero;
+    el.dataset.anio = p.anio;
     el.dataset.pronto = p.pronto || false;
     el.innerHTML = (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
       `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy">`;
@@ -908,7 +969,7 @@
     menu.setAttribute('aria-hidden', 'true');
   }
 
-  // ---------- AUTENTICACIÓN Y VALIDACIÓN ----------
+  // ---------- AUTENTICACIÓN ----------
   function abrirAuth() {
     detenerAuto();
     body.classList.add('auth-abierto');
@@ -932,7 +993,6 @@
     document.getElementById('formRegistro').style.display = 'none';
   });
 
-  // Registro con validación de duplicados
   document.getElementById('formRegistro').addEventListener('submit', e => {
     e.preventDefault();
     const nombre = document.getElementById('regNombre').value.trim();
@@ -965,7 +1025,6 @@
     document.getElementById('formRegistro').reset();
   });
 
-  // Login con validación de credenciales
   document.getElementById('formLogin').addEventListener('submit', e => {
     e.preventDefault();
     const email = document.getElementById('logEmail').value.trim().toLowerCase();
@@ -1010,7 +1069,6 @@
     iniciarAuto();
   });
 
-  // Cambiar foto de perfil
   const btnCambiarFoto = document.getElementById('btnCambiarFoto');
   const inputCambiarFoto = document.getElementById('inputCambiarFoto');
   btnCambiarFoto.addEventListener('click', () => inputCambiarFoto.click());
@@ -1042,7 +1100,7 @@
     
     const favs = usuario ? (usuario.favoritos || []) : [];
     grillaFav.innerHTML = favs.map(p => 
-      `<div class="portada" data-img="${p.img}" data-alt="${p.alt}" data-pronto="${p.pronto || false}">` +
+      `<div class="portada" data-img="${p.img}" data-alt="${p.alt}" data-genero="${p.genero}" data-anio="${p.anio}" data-pronto="${p.pronto || false}">` +
       (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
       `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`
     ).join('');
@@ -1062,7 +1120,7 @@
     
     const guars = usuario ? (usuario.guardados || []) : [];
     grillaGuar.innerHTML = guars.map(p => 
-      `<div class="portada" data-img="${p.img}" data-alt="${p.alt}" data-pronto="${p.pronto || false}">` +
+      `<div class="portada" data-img="${p.img}" data-alt="${p.alt}" data-genero="${p.genero}" data-anio="${p.anio}" data-pronto="${p.pronto || false}">` +
       (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
       `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`
     ).join('');
@@ -1093,7 +1151,7 @@
     document.getElementById('apartadoTitulo').textContent = ap.titulo;
     document.getElementById('apartadoCant').textContent = lista.length + (lista.length === 1 ? ' historia' : ' historias');
     document.getElementById('apartadoGrilla').innerHTML = lista.map(p =>
-      `<div class="portada" data-img="${p.img}" data-alt="${p.alt}" data-pronto="${p.pronto || false}">` +
+      `<div class="portada" data-img="${p.img}" data-alt="${p.alt}" data-genero="${p.genero}" data-anio="${p.anio}" data-pronto="${p.pronto || false}">` +
       (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
       `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('');
 
@@ -1112,14 +1170,14 @@
     ocultarMenu();
     ocultarAuth();
     ocultarPerfil();
-    cerrarModalHistoriaFunc();
-    if (!body.classList.contains('buscando') && !body.classList.contains('en-apartado') && !body.classList.contains('en-favoritos') && !body.classList.contains('en-guardados')) {
+    if (!body.classList.contains('buscando') && !body.classList.contains('en-apartado') && !body.classList.contains('en-favoritos') && !body.classList.contains('en-guardados') && !body.classList.contains('en-detalle')) {
       iniciarAuto();
     }
     if (body.classList.contains('buscando') && history.state?.v !== 'buscar') body.classList.remove('buscando');
     if (body.classList.contains('en-apartado') && history.state?.v !== 'apartado') body.classList.remove('en-apartado');
     if (body.classList.contains('en-favoritos') && history.state?.v !== 'favoritos') body.classList.remove('en-favoritos');
     if (body.classList.contains('en-guardados') && history.state?.v !== 'guardados') body.classList.remove('en-guardados');
+    if (body.classList.contains('en-detalle') && history.state?.v !== 'detalle') salirDetalle();
   });
 
   // Inicialización
