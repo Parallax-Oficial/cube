@@ -78,12 +78,20 @@
     line-height: 1.2;
   }
 
+  /* Perfil en Header */
+  .perfil-avatar-btn {
+    width: 36px; height: 36px; border-radius: 50%; overflow: hidden;
+    border: 2px solid var(--verde); display: flex; align-items: center; justify-content: center;
+    background: #222;
+  }
+  .perfil-avatar-btn img { width: 100%; height: 100%; object-fit: cover; }
+
   /* ---------- HERO ---------- */
   .hero {
     position: relative;
     flex: 0 0 100%;
     scroll-snap-align: start;
-    scroll-snap-stop: always; /* no deja saltarse banners al deslizar */
+    scroll-snap-stop: always;
     aspect-ratio: 16 / 9;
     border-radius: var(--radio);
     border: 2px solid var(--borde);
@@ -116,13 +124,11 @@
   }
   .dot.activo { background: #fff; }
   .hero-info {
-    text-shadow: 0 1px 8px rgba(0,0,0,.75);
-  }
-  .hero-info {
     position: absolute; left: 7%; right: 22%; bottom: 8%;
     z-index: 2;
     font-weight: 400;
     color: var(--texto-suave);
+    text-shadow: 0 1px 8px rgba(0,0,0,.75);
   }
   .hero-genero { font-size: clamp(.8rem, 3.2vw, 1.1rem); margin-bottom: 2px; }
   .hero-sinopsis { font-size: clamp(.85rem, 3.6vw, 1.25rem); line-height: 1.25; }
@@ -169,6 +175,7 @@
     scroll-snap-align: start;
     overflow: hidden;
     position: relative;
+    cursor: pointer;
   }
   .badge {
     position: absolute; top: 8px; left: 8px;
@@ -181,7 +188,6 @@
     padding: 4px 9px;
     border-radius: 999px;
     backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
   }
   .portada img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -191,12 +197,18 @@
     .portada { flex-basis: 30%; }
   }
 
-  /* ---------- BÚSQUEDA ---------- */
-  #buscar { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
+  /* ---------- BÚSQUEDA Y APARTADOS ---------- */
+  #buscar, #apartado, #vistaFavoritos, #vistaGuardados { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
   body.buscando #buscar { display: block; }
   body.buscando #home { display: none; }
+  body.en-apartado #apartado { display: block; }
+  body.en-apartado #home { display: none; }
+  body.en-favoritos #vistaFavoritos { display: block; }
+  body.en-favoritos #home { display: none; }
+  body.en-guardados #vistaGuardados { display: block; }
+  body.en-guardados #home { display: none; }
 
-  .buscar-top { display: flex; align-items: center; gap: 10px; }
+  .buscar-top, .apartado-top { display: flex; align-items: center; gap: 10px; }
   .volver-btn { flex: 0 0 auto; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; margin-left: -6px; }
   .volver-btn svg { width: 26px; height: 26px; }
   .buscador {
@@ -213,15 +225,13 @@
     color: #fff; font-family: inherit; font-size: 1rem;
   }
   .buscador input::placeholder { color: #8a8a8a; }
-  .buscador input::-webkit-search-cancel-button { display: none; }
   .buscador svg { flex: 0 0 auto; width: 26px; height: 26px; }
   .buscador:focus-within { border-color: #3a3a3a; }
 
-  #buscar h2 {
+  #buscar h2, #vistaFavoritos h2, #vistaGuardados h2 {
     font-weight: 700;
     font-size: clamp(1.25rem, 5.4vw, 1.9rem);
     margin: 30px 0 18px;
-    letter-spacing: -.2px;
   }
   .grilla { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
   .grilla .portada { flex: none; width: 100%; }
@@ -231,8 +241,12 @@
     .grilla { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
   }
 
-  /* ---------- MENÚ LATERAL ---------- */
-  body.menu-abierto { overflow: hidden; }
+  #apartado h1 { font-weight: 700; font-size: clamp(1.4rem, 6vw, 2rem); }
+  .apartado-cant { color: var(--texto-suave); font-size: .9rem; margin: 6px 0 22px 36px; }
+
+  /* ---------- MENÚ LATERAL & MODALES DE AUTENTICACIÓN / PERFIL ---------- */
+  body.menu-abierto, body.auth-abierto, body.perfil-abierto, body.modal-historia-abierto { overflow: hidden; }
+  
   .menu-overlay {
     position: fixed; inset: 0; z-index: 50;
     background: rgba(0,0,0,.65);
@@ -249,7 +263,7 @@
     transition: transform .3s cubic-bezier(.22,.8,.3,1), visibility .3s;
     padding-top: env(safe-area-inset-top, 0px);
   }
-  body.menu-abierto .menu-overlay { opacity: 1; visibility: visible; }
+  body.menu-abierto .menu-overlay, body.auth-abierto .menu-overlay, body.perfil-abierto .menu-overlay, body.modal-historia-abierto .menu-overlay { opacity: 1; visibility: visible; }
   body.menu-abierto .menu { transform: none; visibility: visible; }
 
   .menu-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 10px 22px; }
@@ -258,16 +272,13 @@
   .cerrar-menu svg { width: 24px; height: 24px; }
 
   .menu-scroll { flex: 1; overflow-y: auto; padding: 8px 20px calc(30px + env(safe-area-inset-bottom, 0px)) 22px; }
-  .menu-titulo {
-    font-weight: 700; font-size: 1.1rem; letter-spacing: -.2px;
-    margin: 26px 0 14px;
-  }
+  .menu-titulo { font-weight: 700; font-size: 1.1rem; margin: 26px 0 14px; }
   .menu-lista { list-style: none; }
   .menu-item {
     width: 100%;
     display: flex; align-items: center; justify-content: space-between;
     padding: 13px 2px;
-    font-size: .92rem; font-weight: 400; text-align: left;
+    font-size: .92rem; text-align: left;
     color: rgba(255,255,255,.7);
     transition: color .15s, transform .15s;
   }
@@ -279,105 +290,99 @@
   .cat {
     display: block; width: 100%; text-align: left;
     padding: 7px 2px;
-    font-weight: 600; font-size: 1.2rem; letter-spacing: -.3px;
-    text-transform: lowercase; line-height: 1.2;
-    transition: transform .15s, opacity .15s;
+    font-weight: 600; font-size: 1.2rem; text-transform: lowercase; line-height: 1.2;
   }
-  .cat:active { transform: translateX(4px); opacity: .8; }
-  .cat-tv          { color: #a56bff; }   /* morado */
-  .cat-doc         { color: #4fc3f7; }   /* celeste */
-  .cat-interactive { color: #1fd6a1; }   /* esmeralda */
-  .cat-underground { color: #c4343c; }   /* rojo apagado */
-  .cat-platinum    { color: #c3c8d1; }   /* plata */
+  .cat-tv { color: #a56bff; }
+  .cat-doc { color: #4fc3f7; }
+  .cat-interactive { color: #1fd6a1; }
+  .cat-underground { color: #c4343c; }
+  .cat-platinum { color: #c3c8d1; }
 
-  /* ---------- APARTADO (lista de historias de un grupo) ---------- */
-  #apartado { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
-  body.en-apartado #apartado { display: block; }
-  body.en-apartado #home { display: none; }
-  .apartado-top { display: flex; align-items: center; gap: 10px; min-height: 56px; }
-  #apartado h1 { font-weight: 700; font-size: clamp(1.4rem, 6vw, 2rem); letter-spacing: -.3px; }
-  .apartado-cant { color: var(--texto-suave); font-size: .9rem; margin: 6px 0 22px 36px; }
+  /* ---------- MODAL DE AUTENTICACIÓN (Únete / Iniciar / Registrar) ---------- */
+  .auth-modal {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
+    width: min(90vw, 420px); background: #0a0a0a; border: 2px solid var(--borde);
+    border-radius: var(--radio); z-index: 70; padding: 30px;
+    opacity: 0; visibility: hidden; transition: all .25s ease;
+  }
+  body.auth-abierto .auth-modal { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+  .auth-tabs { display: flex; gap: 10px; margin-bottom: 24px; border-bottom: 1px solid var(--borde); padding-bottom: 12px; }
+  .auth-tab { font-weight: 600; font-size: 1rem; color: var(--texto-suave); }
+  .auth-tab.activo { color: var(--verde); }
+  .auth-form { display: flex; flex-direction: column; gap: 16px; }
+  .auth-form label { display: flex; flex-direction: column; gap: 6px; font-size: .85rem; color: var(--texto-suave); }
+  .auth-form input {
+    height: 48px; padding: 0 16px; background: var(--placeholder); border: 2px solid var(--borde);
+    border-radius: 12px; color: #fff; font-family: inherit; font-size: .95rsm; outline: none;
+  }
+  .auth-form input:focus { border-color: var(--verde); }
+  .auth-btn {
+    background: var(--verde); color: #000; font-weight: 700; height: 48px; border-radius: 12px;
+    margin-top: 10px; font-size: 1rem; transition: opacity .2s;
+  }
+  .auth-btn:hover { opacity: .9; }
+
+  /* ---------- MENÚ / MODAL DE PERFIL ---------- */
+  .perfil-modal {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 60;
+    width: min(86vw, 360px); background: #000; border-left: 1px solid var(--borde);
+    display: flex; flex-direction: column; transform: translateX(100%); visibility: hidden;
+    transition: transform .3s cubic-bezier(.22,.8,.3,1), visibility .3s;
+    padding: 20px; overflow-y: auto;
+  }
+  body.perfil-abierto .perfil-modal { transform: none; visibility: visible; }
+  .perfil-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .perfil-info-box { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--borde); }
+  .perfil-foto-grande { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 2px solid var(--verde); }
+  .perfil-foto-grande img { width: 100%; height: 100%; object-fit: cover; }
+  .perfil-nombre { font-weight: 700; font-size: 1.2rem; }
+  .perfil-email { font-size: .85rem; color: var(--texto-suave); }
+  .cambiar-foto-btn { font-size: .8rem; color: var(--verde); text-decoration: underline; margin-top: 4px; }
+  
+  .perfil-opciones { display: flex; flex-direction: column; gap: 10px; }
+  .perfil-opcion-btn {
+    display: flex; align-items: center; justify-content: space-between; width: 100%;
+    padding: 14px 16px; background: var(--placeholder); border-radius: 12px; font-weight: 600;
+    font-size: .95rem; transition: background .15s;
+  }
+  .perfil-opcion-btn:hover { background: #1f1f1f; }
+  .cerrar-sesion-btn { color: #ff4d4d; margin-top: 20px; }
+
+  /* ---------- MODAL DE ACCIÓN SOBRE HISTORIA ---------- */
+  .modal-historia {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
+    width: min(90vw, 380px); background: #0a0a0a; border: 2px solid var(--borde);
+    border-radius: var(--radio); z-index: 70; padding: 24px; text-align: center;
+    opacity: 0; visibility: hidden; transition: all .25s ease;
+  }
+  body.modal-historia-abierto .modal-historia { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+  .modal-historia h3 { font-size: 1.2rem; margin-bottom: 16px; font-weight: 700; }
+  .modal-historia-acciones { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+  .accion-btn {
+    padding: 12px; border-radius: 10px; background: var(--placeholder); font-weight: 600; font-size: .95rem;
+    border: 1px solid var(--borde); transition: border-color .2s;
+  }
+  .accion-btn:hover { border-color: var(--verde); color: var(--verde); }
 
   /* ---------- PIE DE PÁGINA ---------- */
   .pie { background: #0a0a0a; margin-top: 70px; padding: 54px var(--margen) calc(40px + env(safe-area-inset-bottom, 0px)); }
-  body.buscando .pie, body.en-apartado .pie { display: none; }
+  body.buscando .pie, body.en-apartado .pie, body.en-favoritos .pie, body.en-guardados .pie { display: none; }
   .pie-in { max-width: 1100px; margin: 0 auto; }
-
   .pie-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
   .pie-linea { padding: 0 14px 16px; border-bottom: 2px solid #1c1c1c; }
   .pie .logo { margin: 0; padding: 0; font-size: clamp(2.3rem, 10vw, 3rem); }
   .redes { display: flex; align-items: center; gap: 22px; }
   .redes a { display: flex; color: #8d8d8d; transition: color .2s, transform .2s; }
-  .redes a:hover, .redes a:active { color: #fff; transform: translateY(-2px); }
   .redes svg { width: 30px; height: 30px; fill: currentColor; }
-
   .pie-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 44px; text-align: center; }
-  .pie-cols h4 {
-    font-weight: 600; font-size: .82rem; letter-spacing: .6px; text-transform: uppercase;
-    color: #a3a3a3; margin-bottom: 26px;
-  }
+  .pie-cols h4 { font-weight: 600; font-size: .82rem; letter-spacing: .6px; text-transform: uppercase; color: #a3a3a3; margin-bottom: 26px; }
   .pie-cols ul { list-style: none; }
   .pie-cols li + li { margin-top: 20px; }
-  .pie-cols a {
-    color: #7d7d7d; font-size: .88rem; line-height: 1.45; text-decoration: none;
-    transition: color .2s;
-  }
-  .pie-cols a:hover, .pie-cols a:active { color: #fff; }
-
+  .pie-cols a { color: #7d7d7d; font-size: .88rem; text-decoration: none; }
   .pie-legal { margin-top: 56px; padding-top: 34px; border-top: 2px solid #161616; text-align: center; }
   .pie-legal p { color: #5f5f5f; font-size: .8rem; line-height: 1.7; }
-  .pie-legal .copy { margin-bottom: 16px; }
-  .pie-legal .desc { max-width: 520px; margin: 0 auto 6px; }
   .pie-enlaces { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-top: 22px; }
-  .pie-enlaces a { color: #5f5f5f; font-size: .76rem; text-decoration: none; transition: color .2s; }
-  .pie-enlaces a:hover { color: #fff; }
-
-  @media (min-width: 700px) {
-    .pie { padding-top: 70px; }
-    .pie-cols { gap: 30px; }
-    .pie-cols a { font-size: .95rem; }
-  }
-
-.sesion-usuario {
-  display: none;
-  align-items: center;
-  gap: 8px;
-}
-.avatar-mini {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #c6ff00;
-  color: #000;
-  font-weight: 600;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-}
-.nombre-usuario-mini {
-  font-size: 0.9rem;
-  color: #fff;
-  display: none;
-}
-.cerrar-sesion-mini {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #1c1c1c;
-  color: #999;
-  font-size: 13px;
-  border: none;
-  cursor: pointer;
-}
-.cerrar-sesion-mini:hover {
-  background: #ff4d4d;
-  color: #fff;
-}
-@media (min-width: 600px) {
-  .nombre-usuario-mini { display: inline; }
-}
+  .pie-enlaces a { color: #5f5f5f; font-size: .76rem; text-decoration: none; }
 </style>
 </head>
 <body>
@@ -389,22 +394,17 @@
   <header>
     <button class="menu-btn" id="abrirMenu" aria-label="Menú"><span></span><span></span><span></span></button>
     <div class="logo">cube</div>
-    <div class="header-der">
+    <div class="header-der" id="headerDer">
       <button class="buscar-btn" id="abrirBuscar" aria-label="Buscar historias">
         <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
       </button>
-      <button class="unete-btn" id="btn-unete">Únete a Cube</button>
-      <div class="sesion-usuario" id="sesion-usuario">
-        <a href="cuenta.html" class="avatar-mini" id="avatar-mini"></a>
-        <span class="nombre-usuario-mini" id="nombre-usuario-mini"></span>
-        <button class="cerrar-sesion-mini" id="cerrar-sesion-mini" title="Cerrar sesión">✕</button>
-      </div>
+      <!-- Se renderiza dinámicamente: Botón Unete o Avatar de Perfil -->
     </div>
   </header>
 
-  <!-- HERO (varios banners) -->
+  <!-- HERO -->
   <section class="hero-wrap" aria-label="Destacados">
     <div class="hero-track" id="heroTrack"></div>
     <div class="dots" id="dots"></div>
@@ -443,7 +443,31 @@
   <div class="grilla" id="apartadoGrilla"></div>
 </section>
 
-<!-- MENÚ -->
+<!-- VISTA FAVORITOS -->
+<section id="vistaFavoritos" aria-label="Favoritos">
+  <div class="buscar-top">
+    <button class="volver-btn" id="cerrarFavoritos" aria-label="Volver">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h2>Mis Favoritos</h2>
+  </div>
+  <div class="grilla" id="grillaFavoritos"></div>
+  <p class="sin-resultados" id="sinFavoritos" hidden>No tienes historias en favoritos.</p>
+</section>
+
+<!-- VISTA GUARDADOS -->
+<section id="vistaGuardados" aria-label="Guardados">
+  <div class="buscar-top">
+    <button class="volver-btn" id="cerrarGuardados" aria-label="Volver">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h2>Guardados para más tarde</h2>
+  </div>
+  <div class="grilla" id="grillaGuardados"></div>
+  <p class="sin-resultados" id="sinGuardados" hidden>No tienes historias guardadas.</p>
+</section>
+
+<!-- MENÚ LATERAL -->
 <div class="menu-overlay" id="menuOverlay"></div>
 <nav class="menu" id="menu" aria-label="Menú" aria-hidden="true">
   <div class="menu-top">
@@ -472,6 +496,62 @@
   </div>
 </nav>
 
+<!-- MODAL AUTENTICACIÓN (Únete / Registrar / Iniciar) -->
+<div class="auth-modal" id="authModal">
+  <div class="auth-tabs">
+    <button class="auth-tab activo" id="tabRegistroBtn">Registrarse</button>
+    <button class="auth-tab" id="tabLoginBtn">Iniciar Sesión</button>
+  </div>
+  <!-- Formulario Registro -->
+  <form class="auth-form" id="formRegistro">
+    <label>Nombre de usuario <input type="text" id="regNombre" required></label>
+    <label>Correo electrónico <input type="email" id="regEmail" required></label>
+    <label>Contraseña <input type="password" id="regPassword" required></label>
+    <button type="submit" class="auth-btn">Crear Cuenta</button>
+  </form>
+  <!-- Formulario Login -->
+  <form class="auth-form" id="formLogin" style="display:none;">
+    <label>Correo electrónico <input type="email" id="logEmail" required></label>
+    <label>Contraseña <input type="password" id="logPassword" required></label>
+    <button type="submit" class="auth-btn">Ingresar</button>
+  </form>
+</div>
+
+<!-- MODAL PERFIL -->
+<div class="perfil-modal" id="perfilModal">
+  <div class="perfil-header">
+    <div class="logo">cube</div>
+    <button class="cerrar-menu" id="cerrarPerfilModal" aria-label="Cerrar perfil">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+  </div>
+  <div class="perfil-info-box">
+    <div class="perfil-foto-grande" id="perfilFotoContainer">
+      <img id="perfilFotoImg" src="" alt="Avatar">
+    </div>
+    <div class="perfil-nombre" id="perfilNombreTxt">Usuario</div>
+    <div class="perfil-email" id="perfilEmailTxt">correo@example.com</div>
+    <button class="cambiar-foto-btn" id="btnCambiarFoto">Cambiar foto de perfil</button>
+    <input type="file" id="inputCambiarFoto" accept="image/*" style="display:none;">
+  </div>
+  <div class="perfil-opciones">
+    <button class="perfil-opcion-btn" id="irFavoritos"><span>Favoritos</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2"><polyline points="9 6 15 12 9 18"/></svg></button>
+    <button class="perfil-opcion-btn" id="irGuardados"><span>Guardados</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2"><polyline points="9 6 15 12 9 18"/></svg></button>
+    <button class="perfil-opcion-btn cerrar-sesion-btn" id="btnCerrarSesion">Cerrar Sesión</button>
+  </div>
+</div>
+
+<!-- MODAL OPCIONES HISTORIA (Favoritos / Guardados) -->
+<div class="modal-historia" id="modalHistoria">
+  <h3 id="modalHistoriaTitulo">Historia</h3>
+  <p style="font-size: .85rem; color: var(--texto-suave);">Elige una opción para esta historia:</p>
+  <div class="modal-historia-acciones">
+    <button class="accion-btn" id="btnToggleFavorito">Añadir a Favoritos</button>
+    <button class="accion-btn" id="btnToggleGuardado">Añadir a Guardados</button>
+    <button class="accion-btn" style="background:transparent; border-color:var(--borde);" id="cerrarModalHistoria">Cancelar</button>
+  </div>
+</div>
+
 </div>
 
 <!-- PIE DE PÁGINA -->
@@ -480,41 +560,28 @@
     <div class="pie-top">
       <div class="pie-linea"><div class="logo">cube</div></div>
       <div class="pie-linea redes">
-        <a href="#" aria-label="Instagram de Cube">
+        <a href="#" aria-label="Instagram">
           <svg viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm4.5 3.2a4.8 4.8 0 1 1 0 9.6 4.8 4.8 0 0 1 0-9.6Zm0 2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6Zm5.1-3.5a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3Z"/></svg>
         </a>
-        <a href="#" aria-label="Discord de Cube">
+        <a href="#" aria-label="Discord">
           <svg viewBox="0 0 24 24"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.2.5a18.4 18.4 0 0 0-6.4 0L8.6 3a19.7 19.7 0 0 0-4.9 1.4C.6 9 -.3 13.5.1 18a19.9 19.9 0 0 0 6 3l1.3-2.1c-.7-.3-1.4-.6-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1L17.9 21a19.9 19.9 0 0 0 6-3c.5-5.2-.8-9.7-3.6-13.6ZM8.5 15.2c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Zm7 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Z"/></svg>
         </a>
       </div>
     </div>
-
     <div class="pie-cols">
       <nav aria-label="Ayuda">
         <h4>Ayuda</h4>
-        <ul>
-          <li><a href="#">Centro de ayuda</a></li>
-          <li><a href="#">Reportar problemas</a></li>
-          <li><a href="#">Contáctanos</a></li>
-        </ul>
+        <ul><li><a href="#">Centro de ayuda</a></li><li><a href="#">Reportar problemas</a></li><li><a href="#">Contáctanos</a></li></ul>
       </nav>
       <nav aria-label="Empresa">
         <h4>Empresa</h4>
-        <ul>
-          <li><a href="#">Acerca de nosotros</a></li>
-          <li><a href="#">Nuestra marca</a></li>
-          <li><a href="#">¿Qué es Cube?</a></li>
-        </ul>
+        <ul><li><a href="#">Acerca de nosotros</a></li><li><a href="#">Nuestra marca</a></li><li><a href="#">¿Qué es Cube?</a></li></ul>
       </nav>
       <nav aria-label="Socios">
         <h4>Socios</h4>
-        <ul>
-          <li><a href="#">Asóciate con nosotros</a></li>
-          <li><a href="#">Negocia con nosotros</a></li>
-        </ul>
+        <ul><li><a href="#">Asóciate con nosotros</a></li><li><a href="#">Negocia con nosotros</a></li></ul>
       </nav>
     </div>
-
     <div class="pie-legal">
       <p class="copy">Propiedad intelectual © <span id="anio">2026</span> Cube, Inc.</p>
       <p class="desc">Cube es una plataforma de streaming literario que prioriza el entretenimiento y consumo rápido.</p>
@@ -529,25 +596,53 @@
 </footer>
 
 <script>
-  // Dirección donde están las imágenes (jsDelivr sirve los archivos de tu repositorio de GitHub).
-  // Para usar otro repositorio, cambia solo esta línea.
   const IMG_BASE = "https://cdn.jsdelivr.net/gh/Parallax-Oficial/cube@main/";
 
+  // Avatar por defecto (SVG en Base64 / data uri simple)
+  const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c6ff00'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
+
+  // ---------- GESTIÓN DE USUARIO Y LOCALSTORAGE ----------
+  function obtenerUsuario() {
+    const u = localStorage.getItem('cube_usuario');
+    return u ? JSON.parse(u) : null;
+  }
+
+  function guardarUsuario(user) {
+    localStorage.setItem('cube_usuario', JSON.stringify(user));
+  }
+
+  function actualizarHeader() {
+    const headerDer = document.getElementById('headerDer');
+    const usuario = obtenerUsuario();
+    
+    // Mantener botón buscar
+    const buscarBtnHTML = `
+      <button class="buscar-btn" id="abrirBuscar" aria-label="Buscar historias">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>`;
+
+    if (usuario) {
+      headerDer.innerHTML = buscarBtnHTML + `
+        <button class="perfil-avatar-btn" id="abrirPerfilModal" aria-label="Perfil">
+          <img src="${usuario.foto || DEFAULT_AVATAR}" alt="Perfil">
+        </button>`;
+      document.getElementById('abrirPerfilModal').addEventListener('click', abrirPerfil);
+    } else {
+      headerDer.innerHTML = buscarBtnHTML + `
+        <button class="unete-btn" id="abrirUnete">Únete a Cube</button>`;
+      document.getElementById('abrirUnete').addEventListener('click', abrirAuth);
+    }
+    document.getElementById('abrirBuscar').addEventListener('click', abrirBuscar);
+  }
 
   // ---------- HERO ----------
   const heroes = [
-    { img: "bigfoot.webp", alt: "BIGFOOT",
-      genero: "Acción • 2026",
-      sinopsis: "La huida de un monstruo gigante traerá consigo una sorpresa inesperada." },
-    { img: "eternamente-vivo-hero.webp", alt: "Eternamente Vivo con Valak Seraphel",
-      genero: "Sobrenatural • 2026",
-      sinopsis: "En una realidad paralela, un demonio le ofrece a Martino “lindos recuerdos”." },
-    { img: "golem-hero.webp", alt: "Golem: El Protector de Judíos",
-      genero: "Thriller • 2026",
-      sinopsis: "La última noche de su madre judía será la primera de su leyenda." },
-    { img: "familia-rani-hero.webp", alt: "La Familia Rani",
-      genero: "Thriller • 2025",
-      sinopsis: "Un viaje a la mente más espectacular y grotesca de su autor." }
+    { img: "bigfoot.webp", alt: "BIGFOOT", genero: "Acción • 2026", sinopsis: "La huida de un monstruo gigante traerá consigo una sorpresa inesperada." },
+    { img: "eternamente-vivo-hero.webp", alt: "Eternamente Vivo con Valak Seraphel", genero: "Sobrenatural • 2026", sinopsis: "En una realidad paralela, un demonio le ofrece a Martino “lindos recuerdos”." },
+    { img: "golem-hero.webp", alt: "Golem: El Protector de Judíos", genero: "Thriller • 2026", sinopsis: "La última noche de su madre judía será la primera de su leyenda." },
+    { img: "familia-rani-hero.webp", alt: "La Familia Rani", genero: "Thriller • 2025", sinopsis: "Un viaje a la mente más espectacular y grotesca de su autor." }
   ];
 
   const track = document.getElementById('heroTrack');
@@ -566,7 +661,6 @@
       </article>`);
     const d = document.createElement('button');
     d.className = 'dot' + (i === 0 ? ' activo' : '');
-    d.setAttribute('aria-label', 'Ir al banner ' + (i + 1));
     d.onclick = () => { irA(i); iniciarAuto(); };
     dotsBox.appendChild(d);
   });
@@ -576,10 +670,8 @@
     [...dotsBox.children].forEach((d, n) => d.classList.toggle('activo', n === i));
   }, { passive: true });
 
-  // ---------- Cambio automático ----------
-  const SEGUNDOS_AUTO = 5;   // cambia aquí cada cuántos segundos pasa solo (4 a 6 recomendado)
+  const SEGUNDOS_AUTO = 5;
   let timerAuto = null;
-
   function irA(i) { track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }); }
   function actual() { return Math.round(track.scrollLeft / track.clientWidth); }
   function detenerAuto() { clearInterval(timerAuto); timerAuto = null; }
@@ -587,19 +679,13 @@
     detenerAuto();
     timerAuto = setInterval(() => irA((actual() + 1) % heroes.length), SEGUNDOS_AUTO * 1000);
   }
-
-  // Si la persona toca o desliza, se pausa y se reinicia la cuenta al soltar
   track.addEventListener('touchstart', detenerAuto, { passive: true });
   track.addEventListener('touchend', iniciarAuto, { passive: true });
-  track.addEventListener('touchcancel', iniciarAuto, { passive: true });
   track.addEventListener('mouseenter', detenerAuto);
   track.addEventListener('mouseleave', iniciarAuto);
-  document.addEventListener('visibilitychange', () => document.hidden ? detenerAuto() : iniciarAuto());
-
   iniciarAuto();
 
-  // Cada sección: título + lista de portadas (nombre del archivo en /img y texto alternativo).
-  // Las que no tienen imagen todavía se muestran como portada vacía.
+  // ---------- SECCIONES Y CATÁLOGO ----------
   const secciones = [
     { titulo: "Te Recomendamos", portadas: [
       { img: "eternamente-vivo.webp",  alt: "Eternamente Vivo con Amadeus Shell" },
@@ -630,62 +716,37 @@
       { img: "el-ciguenon.webp", alt: "El Cigüeñon", pronto: true },
       { img: "atraco.webp", alt: "Atraco", pronto: true },
       { img: "frogman.webp", alt: "Frogman", pronto: true },
-      { img: "cuarentena.webp", alt: "Cuarentena", pronto: true },
-      { img: "cuarentena-revival.webp", alt: "Cuarentena Revival", pronto: true },
-      { img: "vigilia.webp", alt: "Vigilia", pronto: true },
-      { img: "cuarentena-2.webp", alt: "Cuarentena 2", pronto: true },
-      { img: "moby-dick-profundo.webp", alt: "Moby Dick Profundo", pronto: true },
-      { img: "cuarentena-iv.webp", alt: "Cuarentena IV", pronto: true },
-      { img: "apollo-18.webp", alt: "Apollo 18", pronto: true },
-      { img: "musaranas.webp", alt: "Musarañas: Relatos de C·C·H", pronto: true },
-      { img: "behemoth.webp", alt: "Behemoth", pronto: true },
-      { img: "hydra-the-lost-island.webp", alt: "Hydra: The Lost Island", pronto: true }
+      { img: "cuarentena.webp", alt: "Cuarentena", pronto: true }
     ]},
     { titulo: "Cuatro o Cinco Capítulos", portadas: [
       { img: "eternamente-vivo.webp", alt: "Eternamente Vivo con Amadeus Shell" },
       { img: "fenomeno-vulgar.webp", alt: "Fenómeno Vulgar" },
       { img: "eternamente-vivo-dante.webp", alt: "Eternamente Vivo con Dante el Grande" },
-      { img: "dont-hug-me-im-scared.webp", alt: "Don't Hug Me I'm Scared", pronto: true },
-      { img: "un-eternauta.webp", alt: "Un Eternauta", pronto: true },
-      { img: "la-dama-roja.webp", alt: "La Dama Roja", pronto: true },
-      { img: "las-entrevistas-2.webp", alt: "Las Entrevistas 2", pronto: true },
       { img: "la-familia-rani.webp", alt: "La Familia Rani" },
-      { img: "el-club-de-clubes.webp", alt: "El Club de Clubes", pronto: true },
-      { img: "cuando-el-mal-acecha.webp", alt: "Cuando el Mal Acecha", pronto: true },
-      { img: "triangle-room-2.webp", alt: "Triangle Room 2", pronto: true },
-      { img: "la-dama-dorada.webp", alt: "La Dama Dorada", pronto: true },
-      { img: "eternamente-vivo-valak.webp", alt: "Eternamente Vivo con Valak Seraphel" },
-      { img: "el-club-de-clubes-2.webp", alt: "El Club de Clubes II", pronto: true },
-      { img: "menem.webp", alt: "Menem" },
-      { img: "oso-negro.webp", alt: "Oso Negro", pronto: true },
-      { img: "cch-metal-crujiente.webp", alt: "C·C·H Metal Crujiente", pronto: true },
-      { img: "chernobyl-tapes.webp", alt: "The Chernobyl Tapes", pronto: true },
-      { img: "el-club-de-clubes-3.webp", alt: "El Club de Clubes 3", pronto: true },
-      { img: "los-sapos.webp", alt: "Los Sapos", pronto: true }
+      { img: "menem.webp", alt: "Menem" }
     ]},
     { titulo: "Recomendados de Mlive", portadas: [
       { img: "divina-comedia.webp", alt: "Divina Comedia" },
       { img: "las-entrevistas.webp", alt: "Las Entrevistas" },
       { img: "triangle-room.webp", alt: "Triangle Room" },
-      { img: "eternamente-vivo-biografia.webp", alt: "Eternamente Vivo: Biografía, la vida del autor" },
-      { img: "eternamente-vivo-murray.webp", alt: "Eternamente Vivo con Murray Franklin" }
+      { img: "eternamente-vivo-biografia.webp", alt: "Eternamente Vivo: Biografía, la vida del autor" }
     ]}
   ];
-  const PORTADAS_POR_SECCION = 5;
 
   const contenedor = document.getElementById('secciones');
   secciones.forEach(({ titulo, portadas }) => {
     const sec = document.createElement('section');
     sec.className = 'seccion';
-    const items = portadas
-      ? portadas.map(p => `<div class="portada">${p.pronto ? '<span class="badge">Próximamente</span>' : ''}<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('')
-      : '<div class="portada"></div>'.repeat(PORTADAS_POR_SECCION);
+    const items = portadas.map(p => 
+      `<div class="portada" data-img="${p.img}" data-alt="${p.alt}" data-pronto="${p.pronto || false}">` +
+      (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
+      `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`
+    ).join('');
     sec.innerHTML = `<h2>${titulo}</h2><div class="carrusel">${items}</div>`;
     contenedor.appendChild(sec);
   });
 
-  // ---------- BÚSQUEDA ----------
-  // Catálogo: todas las portadas de todas las secciones, sin repetir, ordenadas de la A a la Z.
+  // Catálogo global
   const catalogo = [];
   const vistas = new Set();
   secciones.forEach(sec => (sec.portadas || []).forEach(p => {
@@ -693,18 +754,99 @@
   }));
   catalogo.sort((a, b) => a.alt.localeCompare(b.alt, 'es', { sensitivity: 'base' }));
 
-  const normal  = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
-  const compacto = t => normal(t).replace(/[^a-z0-9]/g, '');   // así "cch" encuentra "C·C·H"
+  // ---------- GESTIÓN DE CLIC EN HISTORIAS (FAVORITOS / GUARDADOS) ----------
+  let historiaSeleccionada = null;
+  const modalHistoria = document.getElementById('modalHistoria');
+  const btnToggleFavorito = document.getElementById('btnToggleFavorito');
+  const btnToggleGuardado = document.getElementById('btnToggleGuardado');
+
+  function abrirModalHistoria(p) {
+    const usuario = obtenerUsuario();
+    if (!usuario) {
+      alert("Debes iniciar sesión o unirte a Cube para gestionar Favoritos y Guardados.");
+      abrirAuth();
+      return;
+    }
+    historiaSeleccionada = p;
+    document.getElementById('modalHistoriaTitulo').textContent = p.alt;
+    
+    // Comprobar estado actual
+    const esFav = (usuario.favoritos || []).some(item => item.img === p.img);
+    const esGuar = (usuario.guardados || []).some(item => item.img === p.img);
+    
+    btnToggleFavorito.textContent = esFav ? "Quitar de Favoritos" : "Añadir a Favoritos";
+    btnToggleGuardado.textContent = esGuar ? "Quitar de Guardados" : "Añadir a Guardados";
+
+    document.body.classList.add('modal-historia-abierto');
+  }
+
+  function cerrarModalHistoriaFunc() {
+    document.body.classList.remove('modal-historia-abierto');
+    historiaSeleccionada = null;
+  }
+
+  document.getElementById('cerrarModalHistoria').addEventListener('click', cerrarModalHistoriaFunc);
+  document.getElementById('menuOverlay').addEventListener('click', () => {
+    cerrarModalHistoriaFunc();
+    ocultarAuth();
+    ocultarPerfil();
+  });
+
+  btnToggleFavorito.addEventListener('click', () => {
+    if (!historiaSeleccionada) return;
+    let usuario = obtenerUsuario();
+    usuario.favoritos = usuario.favoritos || [];
+    const idx = usuario.favoritos.findIndex(item => item.img === historiaSeleccionada.img);
+    if (idx >= 0) {
+      usuario.favoritos.splice(idx, 1);
+    } else {
+      usuario.favoritos.push(historiaSeleccionada);
+    }
+    guardarUsuario(usuario);
+    cerrarModalHistoriaFunc();
+  });
+
+  btnToggleGuardado.addEventListener('click', () => {
+    if (!historiaSeleccionada) return;
+    let usuario = obtenerUsuario();
+    usuario.guardados = usuario.guardados || [];
+    const idx = usuario.guardados.findIndex(item => item.img === historiaSeleccionada.img);
+    if (idx >= 0) {
+      usuario.guardados.splice(idx, 1);
+    } else {
+      usuario.guardados.push(historiaSeleccionada);
+    }
+    guardarUsuario(usuario);
+    cerrarModalHistoriaFunc();
+  });
+
+  // Delegación de clics en portadas
+  document.addEventListener('click', e => {
+    const portada = e.target.closest('.portada');
+    if (portada && portada.dataset.img) {
+      abrirModalHistoria({
+        img: portada.dataset.img,
+        alt: portada.dataset.alt,
+        pronto: portada.dataset.pronto === 'true'
+      });
+    }
+  });
+
+  // ---------- BÚSQUEDA ----------
+  const normal = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  const compacto = t => normal(t).replace(/[^a-z0-9]/g, '');
 
   const grilla = document.getElementById('grilla');
   const campo = document.getElementById('campoBuscar');
   const tituloBuscar = document.getElementById('tituloBuscar');
   const sinResultados = document.getElementById('sinResultados');
 
-  // Se crean las portadas una sola vez y luego solo se muestran u ocultan
   const tarjetas = catalogo.map(p => {
     const el = document.createElement('div');
     el.className = 'portada';
+    el.dataset.img = p.img;
+    el.dataset.alt = p.alt;
+    el.dataset.pronto = p.pronto || false;
     el.innerHTML = (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
       `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy">`;
     grilla.appendChild(el);
@@ -723,13 +865,9 @@
     sinResultados.hidden = visibles > 0;
   }
   campo.addEventListener('input', filtrar);
-  campo.addEventListener('keydown', e => { if (e.key === 'Enter') campo.blur(); });
 
-  // ---------- Navegación entre pantallas (inicio / búsqueda / apartado / menú) ----------
-  // Cada pantalla se guarda en el historial para que el botón "atrás" del celular funcione.
   let scrollGuardado = 0;
   const body = document.body;
-  const estadoActual = () => (history.state && history.state.v) || null;
 
   function abrirBuscar() {
     scrollGuardado = window.scrollY;
@@ -746,7 +884,7 @@
     iniciarAuto();
   }
 
-  // Menú
+  // ---------- MENÚ LATERAL ----------
   const menu = document.getElementById('menu');
   function abrirMenu() {
     scrollGuardado = window.scrollY;
@@ -759,14 +897,162 @@
     body.classList.remove('menu-abierto');
     menu.setAttribute('aria-hidden', 'true');
   }
-  function cerrarMenu() {
-    if (estadoActual() === 'menu') history.back(); else { ocultarMenu(); iniciarAuto(); }
+
+  // ---------- AUTENTICACIÓN (Únete / Registrar / Iniciar) ----------
+  function abrirAuth() {
+    detenerAuto();
+    body.classList.add('auth-abierto');
+    history.pushState({ v: 'auth' }, '');
+  }
+  function ocultarAuth() {
+    body.classList.remove('auth-abierto');
   }
 
-  // Apartado: lista de todas las historias de un grupo
+  document.getElementById('tabRegistroBtn').addEventListener('click', () => {
+    document.getElementById('tabRegistroBtn').classList.add('activo');
+    document.getElementById('tabLoginBtn').classList.remove('activo');
+    document.getElementById('formRegistro').style.display = 'flex';
+    document.getElementById('formLogin').style.display = 'none';
+  });
+
+  document.getElementById('tabLoginBtn').addEventListener('click', () => {
+    document.getElementById('tabLoginBtn').classList.add('activo');
+    document.getElementById('tabRegistroBtn').classList.remove('activo');
+    document.getElementById('formLogin').style.display = 'flex';
+    document.getElementById('formRegistro').style.display = 'none';
+  });
+
+  // Manejar Registro
+  document.getElementById('formRegistro').addEventListener('submit', e => {
+    e.preventDefault();
+    const nombre = document.getElementById('regNombre').value;
+    const email = document.getElementById('regEmail').value;
+    const nuevoUsuario = {
+      nombre,
+      email,
+      foto: DEFAULT_AVATAR,
+      favoritos: [],
+      guardados: []
+    };
+    guardarUsuario(nuevoUsuario);
+    ocultarAuth();
+    actualizarHeader();
+    iniciarAuto();
+  });
+
+  // Manejar Login
+  document.getElementById('formLogin').addEventListener('submit', e => {
+    e.preventDefault();
+    const email = document.getElementById('logEmail').value;
+    // Si ya existe o simulamos inicio de sesión exitoso
+    let usuario = obtenerUsuario();
+    if (!usuario || usuario.email !== email) {
+      usuario = {
+        nombre: email.split('@')[0],
+        email: email,
+        foto: DEFAULT_AVATAR,
+        favoritos: [],
+        guardados: []
+      };
+    }
+    guardarUsuario(usuario);
+    ocultarAuth();
+    actualizarHeader();
+    iniciarAuto();
+  });
+
+  // ---------- PERFIL MODAL ----------
+  function abrirPerfil() {
+    detenerAuto();
+    const usuario = obtenerUsuario();
+    if (!usuario) return;
+    document.getElementById('perfilNombreTxt').textContent = usuario.nombre;
+    document.getElementById('perfilEmailTxt').textContent = usuario.email;
+    document.getElementById('perfilFotoImg').src = usuario.foto || DEFAULT_AVATAR;
+
+    body.classList.add('perfil-abierto');
+    history.pushState({ v: 'perfil' }, '');
+  }
+  function ocultarPerfil() {
+    body.classList.remove('perfil-abierto');
+  }
+
+  document.getElementById('cerrarPerfilModal').addEventListener('click', () => history.back());
+  document.getElementById('btnCerrarSesion').addEventListener('click', () => {
+    localStorage.removeItem('cube_usuario');
+    ocultarPerfil();
+    actualizarHeader();
+    iniciarAuto();
+  });
+
+  // Cambiar foto de perfil
+  const btnCambiarFoto = document.getElementById('btnCambiarFoto');
+  const inputCambiarFoto = document.getElementById('inputCambiarFoto');
+  btnCambiarFoto.addEventListener('click', () => inputCambiarFoto.click());
+
+  inputCambiarFoto.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const base64Image = event.target.result;
+        let usuario = obtenerUsuario();
+        if (usuario) {
+          usuario.foto = base64Image;
+          guardarUsuario(usuario);
+          document.getElementById('perfilFotoImg').src = base64Image;
+          actualizarHeader();
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // ---------- VISTAS FAVORITOS Y GUARDADOS ----------
+  document.getElementById('irFavoritos').addEventListener('click', () => {
+    ocultarPerfil();
+    const usuario = obtenerUsuario();
+    const grillaFav = document.getElementById('grillaFavoritos');
+    const sinFav = document.getElementById('sinFavoritos');
+    
+    const favs = usuario ? (usuario.favoritos || []) : [];
+    grillaFav.innerHTML = favs.map(p => 
+      `<div class="portada" data-img="${p.img}" data-alt="${p.alt}" data-pronto="${p.pronto || false}">` +
+      (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
+      `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`
+    ).join('');
+    sinFav.hidden = favs.length > 0;
+
+    body.classList.add('en-favoritos');
+    history.pushState({ v: 'favoritos' }, '');
+  });
+
+  document.getElementById('cerrarFavoritos').addEventListener('click', () => history.back());
+
+  document.getElementById('irGuardados').addEventListener('click', () => {
+    ocultarPerfil();
+    const usuario = obtenerUsuario();
+    const grillaGuar = document.getElementById('grillaGuardados');
+    const sinGuar = document.getElementById('sinGuardados');
+    
+    const guars = usuario ? (usuario.guardados || []) : [];
+    grillaGuar.innerHTML = guars.map(p => 
+      `<div class="portada" data-img="${p.img}" data-alt="${p.alt}" data-pronto="${p.pronto || false}">` +
+      (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
+      `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`
+    ).join('');
+    sinGuar.hidden = guars.length > 0;
+
+    body.classList.add('en-guardados');
+    history.pushState({ v: 'guardados' }, '');
+  });
+
+  document.getElementById('cerrarGuardados').addEventListener('click', () => history.back());
+
+  // ---------- APARTADOS DE CATEGORÍAS/CAPÍTULOS ----------
   const unicas = lista => { const v = new Set(); return lista.filter(p => !v.has(p.img) && v.add(p.img)); };
   const deSeccion = t => unicas(secciones.find(s => s.titulo === t).portadas);
-  const porImg = imgs => imgs.map(i => catalogo.find(p => p.img === i));
+  const porImg = imgs => imgs.map(i => catalogo.find(p => p.img === i)).filter(Boolean);
 
   const apartados = {
     '0':   { titulo: '0 capítulos',   historias: () => deSeccion('Cero Capítulos') },
@@ -782,74 +1068,39 @@
     document.getElementById('apartadoTitulo').textContent = ap.titulo;
     document.getElementById('apartadoCant').textContent = lista.length + (lista.length === 1 ? ' historia' : ' historias');
     document.getElementById('apartadoGrilla').innerHTML = lista.map(p =>
-      '<div class="portada">' + (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
+      `<div class="portada" data-img="${p.img}" data-alt="${p.alt}" data-pronto="${p.pronto || false}">` +
+      (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
       `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('');
 
-    const veniaDelMenu = estadoActual() === 'menu';
-    if (!veniaDelMenu) scrollGuardado = window.scrollY;
     ocultarMenu();
     body.classList.add('en-apartado');
     window.scrollTo(0, 0);
-    // si venía del menú se reemplaza esa entrada del historial, así "atrás" vuelve directo al inicio
-    if (veniaDelMenu) history.replaceState({ v: 'apartado' }, '');
-    else history.pushState({ v: 'apartado' }, '');
-  }
-  function salirApartado() {
-    body.classList.remove('en-apartado');
-    window.scrollTo(0, scrollGuardado);
-    iniciarAuto();
+    history.pushState({ v: 'apartado' }, '');
   }
 
-  document.getElementById('abrirBuscar').addEventListener('click', abrirBuscar);
-  document.getElementById('cerrarBuscar').addEventListener('click', () => estadoActual() === 'buscar' ? history.back() : salirBuscar());
   document.getElementById('abrirMenu').addEventListener('click', abrirMenu);
-  document.getElementById('cerrarMenu').addEventListener('click', cerrarMenu);
-  document.getElementById('menuOverlay').addEventListener('click', cerrarMenu);
-  document.getElementById('cerrarApartado').addEventListener('click', () => estadoActual() === 'apartado' ? history.back() : salirApartado());
+  document.getElementById('cerrarMenu').addEventListener('click', () => history.back());
   document.querySelectorAll('.menu-item').forEach(b => b.addEventListener('click', () => abrirApartado(b.dataset.ap)));
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && body.classList.contains('menu-abierto')) cerrarMenu(); });
 
+  // Control de historial popstate general
   window.addEventListener('popstate', () => {
-    const v = estadoActual();
-    if (v !== 'menu' && body.classList.contains('menu-abierto')) { ocultarMenu(); if (!v) iniciarAuto(); }
-    if (v !== 'buscar' && body.classList.contains('buscando')) salirBuscar();
-    if (v !== 'apartado' && body.classList.contains('en-apartado')) salirApartado();
+    ocultarMenu();
+    ocultarAuth();
+    ocultarPerfil();
+    cerrarModalHistoriaFunc();
+    if (!body.classList.contains('buscando') && !body.classList.contains('en-apartado') && !body.classList.contains('en-favoritos') && !body.classList.contains('en-guardados')) {
+      iniciarAuto();
+    }
+    if (body.classList.contains('buscando') && history.state?.v !== 'buscar') body.classList.remove('buscando');
+    if (body.classList.contains('en-apartado') && history.state?.v !== 'apartado') body.classList.remove('en-apartado');
+    if (body.classList.contains('en-favoritos') && history.state?.v !== 'favoritos') body.classList.remove('en-favoritos');
+    if (body.classList.contains('en-guardados') && history.state?.v !== 'guardados') body.classList.remove('en-guardados');
   });
 
-  // ---------- Pie de página ----------
+  // Inicializar estado del header al cargar
+  actualizarHeader();
   document.getElementById('anio').textContent = new Date().getFullYear();
-  // Los enlaces del pie aún no llevan a ninguna página: se evita que salten al inicio
   document.querySelectorAll('.pie a[href="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
-</script>
-<script src="supabase.js"></script>
-<script>
-async function actualizarUsuario() {
-  const usuario = await window.cubeAuth.obtenerUsuarioActual();
-  const btnUnete = document.getElementById('btn-unete');
-  const sesionUsuario = document.getElementById('sesion-usuario');
-  const nombreUsuario = document.getElementById('nombre-usuario-mini');
-  const avatar = document.getElementById('avatar-mini');
-  
-  if (usuario) {
-    btnUnete.style.display = 'none';
-    sesionUsuario.style.display = 'flex';
-    const nombre = usuario.user_metadata?.username || usuario.email?.split('@')[0] || 'Usuario';
-    nombreUsuario.textContent = nombre;
-    avatar.textContent = nombre.charAt(0).toUpperCase();
-  } else {
-    btnUnete.style.display = 'block';
-    sesionUsuario.style.display = 'none';
-  }
-}
-
-document.addEventListener('click', async e => {
-  if (e.target.closest('#cerrar-sesion-mini')) {
-    await window.cubeAuth.cerrarSesion();
-    window.location.reload();
-  }
-});
-
-document.addEventListener('DOMContentLoaded', actualizarUsuario);
 </script>
 </body>
 </html>
