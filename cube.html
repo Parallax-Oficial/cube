@@ -231,6 +231,73 @@
   @media (min-width: 700px) {
     .grilla { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
   }
+
+  /* ---------- MENÚ LATERAL ---------- */
+  body.menu-abierto { overflow: hidden; }
+  .menu-overlay {
+    position: fixed; inset: 0; z-index: 50;
+    background: rgba(0,0,0,.65);
+    opacity: 0; visibility: hidden;
+    transition: opacity .25s ease, visibility .25s;
+  }
+  .menu {
+    position: fixed; top: 0; bottom: 0; left: 0; z-index: 60;
+    width: min(86vw, 360px);
+    background: #000;
+    border-right: 1px solid var(--borde);
+    display: flex; flex-direction: column;
+    transform: translateX(-100%); visibility: hidden;
+    transition: transform .3s cubic-bezier(.22,.8,.3,1), visibility .3s;
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  body.menu-abierto .menu-overlay { opacity: 1; visibility: visible; }
+  body.menu-abierto .menu { transform: none; visibility: visible; }
+
+  .menu-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 10px 22px; }
+  .menu .logo { margin: 0; padding: 0; }
+  .cerrar-menu { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; margin-right: -8px; }
+  .cerrar-menu svg { width: 24px; height: 24px; }
+
+  .menu-scroll { flex: 1; overflow-y: auto; padding: 8px 20px calc(30px + env(safe-area-inset-bottom, 0px)) 22px; }
+  .menu-titulo {
+    font-weight: 700; font-size: 1.1rem; letter-spacing: -.2px;
+    margin: 26px 0 14px;
+  }
+  .menu-lista { list-style: none; }
+  .menu-item {
+    width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 2px;
+    font-size: .92rem; font-weight: 400; text-align: left;
+    color: rgba(255,255,255,.7);
+    transition: color .15s, transform .15s;
+  }
+  .menu-item:active { color: #fff; transform: translateX(3px); }
+  .menu-item svg { width: 16px; height: 16px; opacity: .45; }
+
+  .menu-cats { list-style: none; }
+  .menu-cats li + li { margin-top: 4px; }
+  .cat {
+    display: block; width: 100%; text-align: left;
+    padding: 7px 2px;
+    font-weight: 600; font-size: 1.2rem; letter-spacing: -.3px;
+    text-transform: lowercase; line-height: 1.2;
+    transition: transform .15s, opacity .15s;
+  }
+  .cat:active { transform: translateX(4px); opacity: .8; }
+  .cat-tv          { color: #a56bff; }   /* morado */
+  .cat-doc         { color: #4fc3f7; }   /* celeste */
+  .cat-interactive { color: #1fd6a1; }   /* esmeralda */
+  .cat-underground { color: #c4343c; }   /* rojo apagado */
+  .cat-platinum    { color: #c3c8d1; }   /* plata */
+
+  /* ---------- APARTADO (lista de historias de un grupo) ---------- */
+  #apartado { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
+  body.en-apartado #apartado { display: block; }
+  body.en-apartado #home { display: none; }
+  .apartado-top { display: flex; align-items: center; gap: 10px; min-height: 56px; }
+  #apartado h1 { font-weight: 700; font-size: clamp(1.4rem, 6vw, 2rem); letter-spacing: -.3px; }
+  .apartado-cant { color: var(--texto-suave); font-size: .9rem; margin: 6px 0 22px 36px; }
 </style>
 </head>
 <body>
@@ -240,7 +307,7 @@
 
   <!-- HEADER -->
   <header>
-    <button class="menu-btn" aria-label="Menú"><span></span><span></span><span></span></button>
+    <button class="menu-btn" id="abrirMenu" aria-label="Menú"><span></span><span></span><span></span></button>
     <div class="logo">cube</div>
     <div class="header-der">
       <button class="buscar-btn" id="abrirBuscar" aria-label="Buscar historias">
@@ -278,6 +345,47 @@
   <div class="grilla" id="grilla"></div>
   <p class="sin-resultados" id="sinResultados" hidden>No encontramos historias con ese nombre.</p>
 </section>
+
+<!-- APARTADO -->
+<section id="apartado" aria-label="Historias">
+  <div class="apartado-top">
+    <button class="volver-btn" id="cerrarApartado" aria-label="Volver">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1 id="apartadoTitulo"></h1>
+  </div>
+  <p class="apartado-cant" id="apartadoCant"></p>
+  <div class="grilla" id="apartadoGrilla"></div>
+</section>
+
+<!-- MENÚ -->
+<div class="menu-overlay" id="menuOverlay"></div>
+<nav class="menu" id="menu" aria-label="Menú" aria-hidden="true">
+  <div class="menu-top">
+    <div class="logo">cube</div>
+    <button class="cerrar-menu" id="cerrarMenu" aria-label="Cerrar menú">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+  </div>
+  <div class="menu-scroll">
+    <h3 class="menu-titulo">Consume por Capítulos</h3>
+    <ul class="menu-lista">
+      <li><button class="menu-item" data-ap="0"><span>0 capítulos</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button></li>
+      <li><button class="menu-item" data-ap="3"><span>3 capítulos</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button></li>
+      <li><button class="menu-item" data-ap="4-5"><span>4-5 capítulos</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button></li>
+      <li><button class="menu-item" data-ap="5+"><span>+5 capítulos</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button></li>
+    </ul>
+
+    <h3 class="menu-titulo">Categorías</h3>
+    <ul class="menu-cats">
+      <li><button class="cat cat-tv">tv shows</button></li>
+      <li><button class="cat cat-doc">documentals</button></li>
+      <li><button class="cat cat-interactive">interactive</button></li>
+      <li><button class="cat cat-underground">underground</button></li>
+      <li><button class="cat cat-platinum">platinum</button></li>
+    </ul>
+  </div>
+</nav>
 
 </div>
 
@@ -478,29 +586,95 @@
   campo.addEventListener('input', filtrar);
   campo.addEventListener('keydown', e => { if (e.key === 'Enter') campo.blur(); });
 
+  // ---------- Navegación entre pantallas (inicio / búsqueda / apartado / menú) ----------
+  // Cada pantalla se guarda en el historial para que el botón "atrás" del celular funcione.
   let scrollGuardado = 0;
+  const body = document.body;
+  const estadoActual = () => (history.state && history.state.v) || null;
+
   function abrirBuscar() {
     scrollGuardado = window.scrollY;
     detenerAuto();
-    document.body.classList.add('buscando');
+    body.classList.add('buscando');
     window.scrollTo(0, 0);
-    history.pushState({ buscar: true }, '');
+    history.pushState({ v: 'buscar' }, '');
     campo.focus();
   }
-  function cerrarBuscar() {
-    if (history.state && history.state.buscar) { history.back(); return; }
-    salirBuscar();
-  }
   function salirBuscar() {
-    document.body.classList.remove('buscando');
+    body.classList.remove('buscando');
     campo.value = ''; filtrar();
     window.scrollTo(0, scrollGuardado);
     iniciarAuto();
   }
+
+  // Menú
+  const menu = document.getElementById('menu');
+  function abrirMenu() {
+    scrollGuardado = window.scrollY;
+    detenerAuto();
+    body.classList.add('menu-abierto');
+    menu.setAttribute('aria-hidden', 'false');
+    history.pushState({ v: 'menu' }, '');
+  }
+  function ocultarMenu() {
+    body.classList.remove('menu-abierto');
+    menu.setAttribute('aria-hidden', 'true');
+  }
+  function cerrarMenu() {
+    if (estadoActual() === 'menu') history.back(); else { ocultarMenu(); iniciarAuto(); }
+  }
+
+  // Apartado: lista de todas las historias de un grupo
+  const unicas = lista => { const v = new Set(); return lista.filter(p => !v.has(p.img) && v.add(p.img)); };
+  const deSeccion = t => unicas(secciones.find(s => s.titulo === t).portadas);
+  const porImg = imgs => imgs.map(i => catalogo.find(p => p.img === i));
+
+  const apartados = {
+    '0':   { titulo: '0 capítulos',   historias: () => deSeccion('Cero Capítulos') },
+    '3':   { titulo: '3 capítulos',   historias: () => deSeccion('Tres Capítulos') },
+    '4-5': { titulo: '4-5 capítulos', historias: () => deSeccion('Cuatro o Cinco Capítulos') },
+    '5+':  { titulo: '+5 capítulos',  historias: () => porImg([
+      'las-entrevistas.webp', 'eternamente-vivo-biografia.webp', 'eternamente-vivo-murray.webp',
+      'triangle-room.webp', 'divina-comedia.webp']) }
+  };
+
+  function abrirApartado(clave) {
+    const ap = apartados[clave], lista = ap.historias();
+    document.getElementById('apartadoTitulo').textContent = ap.titulo;
+    document.getElementById('apartadoCant').textContent = lista.length + (lista.length === 1 ? ' historia' : ' historias');
+    document.getElementById('apartadoGrilla').innerHTML = lista.map(p =>
+      '<div class="portada">' + (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
+      `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('');
+
+    const veniaDelMenu = estadoActual() === 'menu';
+    if (!veniaDelMenu) scrollGuardado = window.scrollY;
+    ocultarMenu();
+    body.classList.add('en-apartado');
+    window.scrollTo(0, 0);
+    // si venía del menú se reemplaza esa entrada del historial, así "atrás" vuelve directo al inicio
+    if (veniaDelMenu) history.replaceState({ v: 'apartado' }, '');
+    else history.pushState({ v: 'apartado' }, '');
+  }
+  function salirApartado() {
+    body.classList.remove('en-apartado');
+    window.scrollTo(0, scrollGuardado);
+    iniciarAuto();
+  }
+
   document.getElementById('abrirBuscar').addEventListener('click', abrirBuscar);
-  document.getElementById('cerrarBuscar').addEventListener('click', cerrarBuscar);
+  document.getElementById('cerrarBuscar').addEventListener('click', () => estadoActual() === 'buscar' ? history.back() : salirBuscar());
+  document.getElementById('abrirMenu').addEventListener('click', abrirMenu);
+  document.getElementById('cerrarMenu').addEventListener('click', cerrarMenu);
+  document.getElementById('menuOverlay').addEventListener('click', cerrarMenu);
+  document.getElementById('cerrarApartado').addEventListener('click', () => estadoActual() === 'apartado' ? history.back() : salirApartado());
+  document.querySelectorAll('.menu-item').forEach(b => b.addEventListener('click', () => abrirApartado(b.dataset.ap)));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && body.classList.contains('menu-abierto')) cerrarMenu(); });
+
   window.addEventListener('popstate', () => {
-    if (document.body.classList.contains('buscando')) salirBuscar();
+    const v = estadoActual();
+    if (v !== 'menu' && body.classList.contains('menu-abierto')) { ocultarMenu(); if (!v) iniciarAuto(); }
+    if (v !== 'buscar' && body.classList.contains('buscando')) salirBuscar();
+    if (v !== 'apartado' && body.classList.contains('en-apartado')) salirApartado();
   });
 </script>
 </body>
