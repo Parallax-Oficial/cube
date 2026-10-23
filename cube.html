@@ -197,7 +197,7 @@
     .portada { flex-basis: 30%; }
   }
 
-  /* ---------- BÚSQUEDA Y APARTADOS ---------- */
+  /* ---------- BÚSQUEDA Y VISTAS ---------- */
   #buscar, #apartado, #vistaFavoritos, #vistaGuardados { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
   body.buscando #buscar { display: block; }
   body.buscando #home { display: none; }
@@ -244,7 +244,7 @@
   #apartado h1 { font-weight: 700; font-size: clamp(1.4rem, 6vw, 2rem); }
   .apartado-cant { color: var(--texto-suave); font-size: .9rem; margin: 6px 0 22px 36px; }
 
-  /* ---------- MENÚ LATERAL & MODALES DE AUTENTICACIÓN / PERFIL ---------- */
+  /* ---------- MENÚ LATERAL Y MODALES ---------- */
   body.menu-abierto, body.auth-abierto, body.perfil-abierto, body.modal-historia-abierto { overflow: hidden; }
   
   .menu-overlay {
@@ -298,7 +298,7 @@
   .cat-underground { color: #c4343c; }
   .cat-platinum { color: #c3c8d1; }
 
-  /* ---------- MODAL DE AUTENTICACIÓN (Únete / Iniciar / Registrar) ---------- */
+  /* ---------- MODAL AUTENTICACIÓN ---------- */
   .auth-modal {
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
     width: min(90vw, 420px); background: #0a0a0a; border: 2px solid var(--borde);
@@ -313,7 +313,7 @@
   .auth-form label { display: flex; flex-direction: column; gap: 6px; font-size: .85rem; color: var(--texto-suave); }
   .auth-form input {
     height: 48px; padding: 0 16px; background: var(--placeholder); border: 2px solid var(--borde);
-    border-radius: 12px; color: #fff; font-family: inherit; font-size: .95rsm; outline: none;
+    border-radius: 12px; color: #fff; font-family: inherit; font-size: .95rem; outline: none;
   }
   .auth-form input:focus { border-color: var(--verde); }
   .auth-btn {
@@ -322,7 +322,7 @@
   }
   .auth-btn:hover { opacity: .9; }
 
-  /* ---------- MENÚ / MODAL DE PERFIL ---------- */
+  /* ---------- MODAL PERFIL ---------- */
   .perfil-modal {
     position: fixed; top: 0; right: 0; bottom: 0; z-index: 60;
     width: min(86vw, 360px); background: #000; border-left: 1px solid var(--borde);
@@ -348,7 +348,7 @@
   .perfil-opcion-btn:hover { background: #1f1f1f; }
   .cerrar-sesion-btn { color: #ff4d4d; margin-top: 20px; }
 
-  /* ---------- MODAL DE ACCIÓN SOBRE HISTORIA ---------- */
+  /* ---------- MODAL HISTORIA ---------- */
   .modal-historia {
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
     width: min(90vw, 380px); background: #0a0a0a; border: 2px solid var(--borde);
@@ -400,7 +400,7 @@
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
       </button>
-      <!-- Se renderiza dinámicamente: Botón Unete o Avatar de Perfil -->
+      <!-- Se inyecta dinámicamente: Botón Unete o Avatar -->
     </div>
   </header>
 
@@ -496,7 +496,7 @@
   </div>
 </nav>
 
-<!-- MODAL AUTENTICACIÓN (Únete / Registrar / Iniciar) -->
+<!-- MODAL AUTENTICACIÓN -->
 <div class="auth-modal" id="authModal">
   <div class="auth-tabs">
     <button class="auth-tab activo" id="tabRegistroBtn">Registrarse</button>
@@ -541,7 +541,7 @@
   </div>
 </div>
 
-<!-- MODAL OPCIONES HISTORIA (Favoritos / Guardados) -->
+<!-- MODAL ACCIÓN HISTORIA -->
 <div class="modal-historia" id="modalHistoria">
   <h3 id="modalHistoriaTitulo">Historia</h3>
   <p style="font-size: .85rem; color: var(--texto-suave);">Elige una opción para esta historia:</p>
@@ -597,25 +597,38 @@
 
 <script>
   const IMG_BASE = "https://cdn.jsdelivr.net/gh/Parallax-Oficial/cube@main/";
-
-  // Avatar por defecto (SVG en Base64 / data uri simple)
   const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c6ff00'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
 
-  // ---------- GESTIÓN DE USUARIO Y LOCALSTORAGE ----------
+  // ---------- GESTIÓN DE MÚLTIPLES USUARIOS CON LOCALSTORAGE ----------
+  function obtenerListaUsuarios() {
+    const lista = localStorage.getItem('cube_usuarios_registrados');
+    return lista ? JSON.parse(lista) : [];
+  }
+
+  function guardarListaUsuarios(lista) {
+    localStorage.setItem('cube_usuarios_registrados', JSON.stringify(lista));
+  }
+
   function obtenerUsuario() {
-    const u = localStorage.getItem('cube_usuario');
+    const u = localStorage.getItem('cube_sesion_activa');
     return u ? JSON.parse(u) : null;
   }
 
-  function guardarUsuario(user) {
-    localStorage.setItem('cube_usuario', JSON.stringify(user));
+  function guardarSesionActiva(user) {
+    localStorage.setItem('cube_sesion_activa', JSON.stringify(user));
+    // Sintonizar cambios también en la lista general de usuarios
+    let usuarios = obtenerListaUsuarios();
+    const idx = usuarios.findIndex(u => u.email === user.email);
+    if (idx >= 0) {
+      usuarios[idx] = user;
+      guardarListaUsuarios(usuarios);
+    }
   }
 
   function actualizarHeader() {
     const headerDer = document.getElementById('headerDer');
     const usuario = obtenerUsuario();
     
-    // Mantener botón buscar
     const buscarBtnHTML = `
       <button class="buscar-btn" id="abrirBuscar" aria-label="Buscar historias">
         <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
@@ -746,7 +759,6 @@
     contenedor.appendChild(sec);
   });
 
-  // Catálogo global
   const catalogo = [];
   const vistas = new Set();
   secciones.forEach(sec => (sec.portadas || []).forEach(p => {
@@ -754,7 +766,7 @@
   }));
   catalogo.sort((a, b) => a.alt.localeCompare(b.alt, 'es', { sensitivity: 'base' }));
 
-  // ---------- GESTIÓN DE CLIC EN HISTORIAS (FAVORITOS / GUARDADOS) ----------
+  // ---------- GESTIÓN DE FAVORITOS Y GUARDADOS ----------
   let historiaSeleccionada = null;
   const modalHistoria = document.getElementById('modalHistoria');
   const btnToggleFavorito = document.getElementById('btnToggleFavorito');
@@ -763,14 +775,13 @@
   function abrirModalHistoria(p) {
     const usuario = obtenerUsuario();
     if (!usuario) {
-      alert("Debes iniciar sesión o unirte a Cube para gestionar Favoritos y Guardados.");
+      alert("Debes iniciar sesión o registrarte para añadir historias a Favoritos o Guardados.");
       abrirAuth();
       return;
     }
     historiaSeleccionada = p;
     document.getElementById('modalHistoriaTitulo').textContent = p.alt;
     
-    // Comprobar estado actual
     const esFav = (usuario.favoritos || []).some(item => item.img === p.img);
     const esGuar = (usuario.guardados || []).some(item => item.img === p.img);
     
@@ -802,7 +813,7 @@
     } else {
       usuario.favoritos.push(historiaSeleccionada);
     }
-    guardarUsuario(usuario);
+    guardarSesionActiva(usuario);
     cerrarModalHistoriaFunc();
   });
 
@@ -816,11 +827,10 @@
     } else {
       usuario.guardados.push(historiaSeleccionada);
     }
-    guardarUsuario(usuario);
+    guardarSesionActiva(usuario);
     cerrarModalHistoriaFunc();
   });
 
-  // Delegación de clics en portadas
   document.addEventListener('click', e => {
     const portada = e.target.closest('.portada');
     if (portada && portada.dataset.img) {
@@ -898,7 +908,7 @@
     menu.setAttribute('aria-hidden', 'true');
   }
 
-  // ---------- AUTENTICACIÓN (Únete / Registrar / Iniciar) ----------
+  // ---------- AUTENTICACIÓN Y VALIDACIÓN ----------
   function abrirAuth() {
     detenerAuto();
     body.classList.add('auth-abierto');
@@ -922,43 +932,58 @@
     document.getElementById('formRegistro').style.display = 'none';
   });
 
-  // Manejar Registro
+  // Registro con validación de duplicados
   document.getElementById('formRegistro').addEventListener('submit', e => {
     e.preventDefault();
-    const nombre = document.getElementById('regNombre').value;
-    const email = document.getElementById('regEmail').value;
+    const nombre = document.getElementById('regNombre').value.trim();
+    const email = document.getElementById('regEmail').value.trim().toLowerCase();
+    const password = document.getElementById('regPassword').value;
+
+    let usuarios = obtenerListaUsuarios();
+    const existe = usuarios.find(u => u.email === email);
+    if (existe) {
+      alert("Este correo electrónico ya está registrado. Por favor, inicia sesión.");
+      return;
+    }
+
     const nuevoUsuario = {
       nombre,
       email,
+      password,
       foto: DEFAULT_AVATAR,
       favoritos: [],
       guardados: []
     };
-    guardarUsuario(nuevoUsuario);
+
+    usuarios.push(nuevoUsuario);
+    guardarListaUsuarios(usuarios);
+    guardarSesionActiva(nuevoUsuario);
+
     ocultarAuth();
     actualizarHeader();
     iniciarAuto();
+    document.getElementById('formRegistro').reset();
   });
 
-  // Manejar Login
+  // Login con validación de credenciales
   document.getElementById('formLogin').addEventListener('submit', e => {
     e.preventDefault();
-    const email = document.getElementById('logEmail').value;
-    // Si ya existe o simulamos inicio de sesión exitoso
-    let usuario = obtenerUsuario();
-    if (!usuario || usuario.email !== email) {
-      usuario = {
-        nombre: email.split('@')[0],
-        email: email,
-        foto: DEFAULT_AVATAR,
-        favoritos: [],
-        guardados: []
-      };
+    const email = document.getElementById('logEmail').value.trim().toLowerCase();
+    const password = document.getElementById('logPassword').value;
+
+    let usuarios = obtenerListaUsuarios();
+    const usuarioEncontrado = usuarios.find(u => u.email === email && u.password === password);
+
+    if (!usuarioEncontrado) {
+      alert("Correo o contraseña incorrectos, o la cuenta no existe.");
+      return;
     }
-    guardarUsuario(usuario);
+
+    guardarSesionActiva(usuarioEncontrado);
     ocultarAuth();
     actualizarHeader();
     iniciarAuto();
+    document.getElementById('formLogin').reset();
   });
 
   // ---------- PERFIL MODAL ----------
@@ -979,7 +1004,7 @@
 
   document.getElementById('cerrarPerfilModal').addEventListener('click', () => history.back());
   document.getElementById('btnCerrarSesion').addEventListener('click', () => {
-    localStorage.removeItem('cube_usuario');
+    localStorage.removeItem('cube_sesion_activa');
     ocultarPerfil();
     actualizarHeader();
     iniciarAuto();
@@ -999,7 +1024,7 @@
         let usuario = obtenerUsuario();
         if (usuario) {
           usuario.foto = base64Image;
-          guardarUsuario(usuario);
+          guardarSesionActiva(usuario);
           document.getElementById('perfilFotoImg').src = base64Image;
           actualizarHeader();
         }
@@ -1097,7 +1122,7 @@
     if (body.classList.contains('en-guardados') && history.state?.v !== 'guardados') body.classList.remove('en-guardados');
   });
 
-  // Inicializar estado del header al cargar
+  // Inicialización
   actualizarHeader();
   document.getElementById('anio').textContent = new Date().getFullYear();
   document.querySelectorAll('.pie a[href="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
