@@ -245,7 +245,7 @@
   #apartado h1 { font-weight: 700; font-size: clamp(1.4rem, 6vw, 2rem); }
   .apartado-cant { color: var(--texto-suave); font-size: .9rem; margin: 6px 0 22px 36px; }
 
-  /* ---------- DETALLE HISTORIA (ESTILO STREAMING PROFESIONAL) ---------- */
+  /* ---------- DETALLE HISTORIA (ESTILO MODERNO) ---------- */
   .detalle-hero {
     position: relative;
     width: 100%;
@@ -256,53 +256,59 @@
     overflow: hidden;
     margin-top: 10px;
   }
-  .detalle-hero::after {
-    content: "";
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,.9) 0%, rgba(0,0,0,0.2) 60%);
-    pointer-events: none;
-  }
   .detalle-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
   
-  .detalle-hero-content {
-    position: absolute; left: 6%; right: 6%; bottom: 6%;
-    z-index: 2;
-    display: flex; justify-content: space-between; align-items: flex-end;
+  /* Bloque de títulos y metadatos ubicado abajo de la portada y arriba de la sinopsis */
+  .detalle-info-seccion {
+    margin-top: 20px;
   }
-  .detalle-info-left { max-width: 70%; }
-  .detalle-titulo { font-size: clamp(1.4rem, 5.5vw, 2.4rem); font-weight: 800; line-height: 1.1; margin-bottom: 6px; letter-spacing: -.5px; }
-  .detalle-meta { font-size: clamp(.85rem, 3.2vw, 1.1rem); color: var(--texto-suave); }
+  .detalle-titulo {
+    font-size: clamp(1.5rem, 6vw, 2.2rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 6px;
+    letter-spacing: -.5px;
+  }
+  .detalle-meta {
+    font-size: clamp(.9rem, 3.5vw, 1.15rem);
+    color: var(--texto-suave);
+    margin-bottom: 16px;
+  }
 
-  /* Acciones flotantes en el banner (corazón y guardado) */
-  .detalle-acciones-flotantes {
-    display: flex; gap: 12px; align-items: center;
+  /* Contenedor botones Ver Ahora + Iconos al lado */
+  .detalle-acciones-principal {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
   }
-  .accion-icon-btn {
-    width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,0.6);
-    border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;
-    backdrop-filter: blur(4px); transition: background .2s, border-color .2s;
-  }
-  .accion-icon-btn svg { width: 22px; height: 22px; fill: #fff; stroke: #fff; }
-  .accion-icon-btn.activo svg { fill: var(--verde); stroke: var(--verde); }
-  .accion-icon-btn:hover { background: rgba(255,255,255,0.15); border-color: #fff; }
-
-  /* Gran Botón Ver Ahora */
   .ver-ahora-btn {
-    display: flex; align-items: center; justify-content: center; gap: 12px;
-    width: 100%; height: 58px; background: var(--verde); color: #000;
-    font-weight: 700; font-size: 1.1rem; border-radius: 999px; margin-top: 22px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    flex: 1; height: 52px; background: var(--verde); color: #000;
+    font-weight: 700; font-size: 1.05rem; border-radius: 999px;
     transition: opacity .2s;
   }
-  .ver-ahora-btn svg { width: 24px; height: 24px; fill: #000; }
+  .ver-ahora-btn svg { width: 22px; height: 22px; fill: #000; }
   .ver-ahora-btn:hover { opacity: .9; }
 
-  /* Sinopsis y Secciones Posteriores */
-  .detalle-sinopsis-box { margin-top: 26px; padding: 0 2vw; }
-  .detalle-sinopsis-box h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; color: var(--texto-suave); }
+  .accion-icon-btn {
+    width: 52px; height: 52px; flex: 0 0 auto; border-radius: 50%;
+    background: var(--placeholder); border: 2px solid var(--borde);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color .2s, background .2s;
+  }
+  .accion-icon-btn svg { width: 24px; height: 24px; fill: #fff; stroke: #fff; }
+  .accion-icon-btn.activo svg { fill: var(--verde); stroke: var(--verde); }
+  .accion-icon-btn:hover { border-color: #3a3a3a; background: #1f1f1f; }
+
+  /* Sinopsis */
+  .detalle-sinopsis-box { margin-top: 24px; }
+  .detalle-sinopsis-box h3 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; color: var(--texto-suave); text-transform: uppercase; letter-spacing: .5px; }
   .detalle-sinopsis-box p { font-size: .95rem; line-height: 1.5; color: rgba(255,255,255,0.75); font-style: italic; }
 
+  /* Quizás también te guste */
   .detalle-recomendados { margin-top: 40px; }
-  .detalle-recomendados h3 { font-weight: 700; font-size: clamp(1.1rem, 4.5vw, 1.5rem); margin-bottom: 16px; }
+  .detalle-recomendados h3 { font-weight: 700; font-size: clamp(1.1rem, 4.5vw, 1.4rem); margin-bottom: 16px; }
 
   /* ---------- MENÚ LATERAL Y MODALES ---------- */
   body.menu-abierto, body.auth-abierto, body.perfil-abierto { overflow: hidden; }
@@ -512,7 +518,7 @@
   <p class="sin-resultados" id="sinGuardados" hidden>No tienes historias guardadas.</p>
 </section>
 
-<!-- VISTA DETALLE DE HISTORIA (PROFESIONAL / TUBI STYLE) -->
+<!-- VISTA DETALLE DE HISTORIA -->
 <section id="detalleHistoria" aria-label="Detalle de la historia">
   <div class="apartado-top">
     <button class="volver-btn" id="cerrarDetalle" aria-label="Volver">
@@ -521,23 +527,30 @@
     <h2 id="detalleNavTitulo" style="font-size: 1.1rem; font-weight: 500; color: var(--texto-suave);">Detalle</h2>
   </div>
   
+  <!-- Portada Limpia Arriba -->
   <div class="detalle-hero">
     <img class="detalle-img" id="detalleImg" src="" alt="">
-    <div class="detalle-hero-content">
-      <div class="detalle-info-left">
-        <h1 class="detalle-titulo" id="detalleTitulo">Título</h1>
-        <p class="detalle-meta" id="detalleMeta">Género • 2026</p>
-      </div>
-      <div class="detalle-acciones-flotantes">
-        <!-- Favorito (Corazón) -->
-        <button class="accion-icon-btn" id="btnAccionFavorito" aria-label="Favorito">
-          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-        </button>
-        <!-- Guardar (Bookmark) -->
-        <button class="accion-icon-btn" id="btnAccionGuardado" aria-label="Guardar para más tarde">
-          <svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
-        </button>
-      </div>
+  </div>
+
+  <!-- Título, Año y Género (Fuera de la portada, arriba de la sinopsis) -->
+  <div class="detalle-info-seccion">
+    <h1 class="detalle-titulo" id="detalleTitulo">Título</h1>
+    <p class="detalle-meta" id="detalleMeta">Género • 2026</p>
+
+    <!-- Botón Ver Ahora con Iconos al lado -->
+    <div class="detalle-acciones-principal">
+      <button class="ver-ahora-btn" id="btnVerAhora">
+        <svg viewBox="0 0 24 24"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z"/></svg>
+        Ver ahora
+      </button>
+      <!-- Favorito (Corazón) -->
+      <button class="accion-icon-btn" id="btnAccionFavorito" aria-label="Favorito">
+        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      </button>
+      <!-- Guardar (Bookmark) -->
+      <button class="accion-icon-btn" id="btnAccionGuardado" aria-label="Guardar para más tarde">
+        <svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+      </button>
     </div>
   </div>
 
@@ -546,13 +559,9 @@
     <p id="detalleSinopsis">Próximamente la sinopsis oficial de esta historia estará disponible aquí...</p>
   </div>
 
-  <button class="ver-ahora-btn" id="btnVerAhora">
-    <svg viewBox="0 0 24 24"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z"/></svg>
-    Ver ahora
-  </button>
-
+  <!-- Quizás también te guste (Exactamente 5 portadas abajo) -->
   <div class="detalle-recomendados">
-    <h3>Puede Que También Te Guste</h3>
+    <h3>Quizás También Te Guste</h3>
     <div class="carrusel" id="detalleRecomendadosGrilla" style="padding: 0;"></div>
   </div>
 </section>
@@ -888,7 +897,7 @@
 
     actualizarBotonesDetalle(p);
 
-    // Criterio "Puede que también te guste": máximo 5 portadas compartiendo género o nombre similar
+    // Criterio "Quizás También Te Guste": máximo 5 portadas
     const recomendadosBox = document.getElementById('detalleRecomendadosGrilla');
     const sugeridos = catalogo
       .filter(item => item.img !== p.img && (item.genero === p.genero || item.alt.toLowerCase().split(' ')[0] === p.alt.toLowerCase().split(' ')[0]))
