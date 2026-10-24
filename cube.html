@@ -28,6 +28,7 @@
     font-family: 'Poppins', sans-serif;
     color: var(--texto);
     min-height: 100vh;
+    padding-bottom: 70px; /* Espacio para la barra inferior fija */
   }
 
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
@@ -38,17 +39,17 @@
   header {
     display: flex;
     align-items: center;
-    gap: clamp(8px, 3vw, 16px);
+    justify-content: space-between;
     padding: 12px var(--margen);
     min-height: 64px;
+    gap: 15px;
   }
 
-  .menu-btn {
-    flex: 0 0 auto;
-    width: 25px; height: 25px;
-    display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 4.5px;
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: clamp(15px, 3vw, 25px);
   }
-  .menu-btn span { display: block; flex: 0 0 auto; height: 2.2px; width: 100%; background: #fff; border-radius: 2px; }
 
   .logo {
     flex: 0 0 auto;
@@ -60,14 +61,51 @@
     color: var(--verde);
     display: flex; align-items: center;
     padding-bottom: 4px;
-    margin-left: 6px;
   }
 
-  .header-der { margin-left: auto; display: flex; align-items: center; gap: clamp(8px, 3vw, 14px); flex: 0 0 auto; }
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2.5vw, 20px);
+  }
 
-  .buscar-btn { flex: 0 0 auto; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
-  .buscar-btn svg { width: 24px; height: 24px; }
+  .nav-link {
+    font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+    font-weight: 500;
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-link:hover, .nav-link:active { color: #fff; }
 
+  /* Dropdown MORE */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #111;
+    min-width: 150px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    z-index: 50;
+    overflow: hidden;
+  }
+  .dropdown-content a {
+    color: #fff;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.9rem;
+  }
+  .dropdown-content a:hover { background-color: #222; }
+  .dropdown.activo .dropdown-content { display: block; }
+
+  .header-der { display: flex; align-items: center; gap: clamp(8px, 3vw, 14px); flex: 0 0 auto; }
   .unete-btn {
     flex: 0 0 auto;
     background: #fff; color: #000;
@@ -78,12 +116,49 @@
     line-height: 1.2;
   }
 
+  /* ---------- BARRA INFERIOR FIJA ---------- */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 65px;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--borde);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    z-index: 100;
+    padding: 0 10px;
+  }
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--texto-suave);
+    cursor: pointer;
+    width: 20%;
+    height: 100%;
+    transition: color 0.2s;
+  }
+  .bottom-nav-item svg { width: 24px; height: 24px; fill: currentColor; }
+  .bottom-nav-item.activo, .bottom-nav-item:hover { color: var(--verde); }
+  .bottom-nav-avatar {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--verde);
+  }
+
   /* ---------- HERO ---------- */
   .hero {
     position: relative;
     flex: 0 0 100%;
     scroll-snap-align: start;
-    scroll-snap-stop: always; /* no deja saltarse banners al deslizar */
+    scroll-snap-stop: always;
     aspect-ratio: 16 / 9;
     border-radius: var(--radio);
     border: 2px solid var(--borde);
@@ -116,13 +191,11 @@
   }
   .dot.activo { background: #fff; }
   .hero-info {
-    text-shadow: 0 1px 8px rgba(0,0,0,.75);
-  }
-  .hero-info {
     position: absolute; left: 7%; right: 22%; bottom: 8%;
     z-index: 2;
     font-weight: 400;
     color: var(--texto-suave);
+    text-shadow: 0 1px 8px rgba(0,0,0,.75);
   }
   .hero-genero { font-size: clamp(.8rem, 3.2vw, 1.1rem); margin-bottom: 2px; }
   .hero-sinopsis { font-size: clamp(.85rem, 3.6vw, 1.25rem); line-height: 1.25; }
@@ -169,6 +242,8 @@
     scroll-snap-align: start;
     overflow: hidden;
     position: relative;
+    /* Portadas no interactivas por ahora */
+    cursor: default;
   }
   .badge {
     position: absolute; top: 8px; left: 8px;
@@ -231,77 +306,9 @@
     .grilla { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
   }
 
-  /* ---------- MENÚ LATERAL ---------- */
-  body.menu-abierto, body.auth-abierto, body.perfil-abierto { overflow: hidden; }
-  body.auth-abierto .menu-overlay, body.perfil-abierto .menu-overlay { opacity: 1; visibility: visible; }
-  .menu-overlay {
-    position: fixed; inset: 0; z-index: 50;
-    background: rgba(0,0,0,.65);
-    opacity: 0; visibility: hidden;
-    transition: opacity .25s ease, visibility .25s;
-  }
-  .menu {
-    position: fixed; top: 0; bottom: 0; left: 0; z-index: 60;
-    width: min(86vw, 360px);
-    background: #000;
-    border-right: 1px solid var(--borde);
-    display: flex; flex-direction: column;
-    transform: translateX(-100%); visibility: hidden;
-    transition: transform .3s cubic-bezier(.22,.8,.3,1), visibility .3s;
-    padding-top: env(safe-area-inset-top, 0px);
-  }
-  body.menu-abierto .menu-overlay { opacity: 1; visibility: visible; }
-  body.menu-abierto .menu { transform: none; visibility: visible; }
-
-  .menu-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 10px 22px; }
-  .menu .logo { margin: 0; padding: 0; }
-  .cerrar-menu { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; margin-right: -8px; }
-  .cerrar-menu svg { width: 24px; height: 24px; }
-
-  .menu-scroll { flex: 1; overflow-y: auto; padding: 8px 20px calc(30px + env(safe-area-inset-bottom, 0px)) 22px; }
-  .menu-titulo {
-    font-weight: 700; font-size: 1.1rem; letter-spacing: -.2px;
-    margin: 26px 0 14px;
-  }
-  .menu-lista { list-style: none; }
-  .menu-item {
-    width: 100%;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 13px 2px;
-    font-size: .92rem; font-weight: 400; text-align: left;
-    color: rgba(255,255,255,.7);
-    transition: color .15s, transform .15s;
-  }
-  .menu-item:active { color: #fff; transform: translateX(3px); }
-  .menu-item svg { width: 16px; height: 16px; opacity: .45; }
-
-  .menu-cats { list-style: none; }
-  .menu-cats li + li { margin-top: 4px; }
-  .cat {
-    display: block; width: 100%; text-align: left;
-    padding: 7px 2px;
-    font-weight: 600; font-size: 1.2rem; letter-spacing: -.3px;
-    text-transform: lowercase; line-height: 1.2;
-    transition: transform .15s, opacity .15s;
-  }
-  .cat:active { transform: translateX(4px); opacity: .8; }
-  .cat-tv          { color: #a56bff; }   /* morado */
-  .cat-doc         { color: #4fc3f7; }   /* celeste */
-  .cat-interactive { color: #1fd6a1; }   /* esmeralda */
-  .cat-underground { color: #c4343c; }   /* rojo apagado */
-  .cat-platinum    { color: #c3c8d1; }   /* plata */
-
-  /* ---------- APARTADO (lista de historias de un grupo) ---------- */
-  #apartado, #lista { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
-  body.en-apartado #apartado { display: block; }
-  body.en-apartado #home { display: none; }
-  .apartado-top { display: flex; align-items: center; gap: 10px; min-height: 56px; }
-  #apartado h1, #lista h1 { font-weight: 700; font-size: clamp(1.4rem, 6vw, 2rem); letter-spacing: -.3px; }
-  .apartado-cant { color: var(--texto-suave); font-size: .9rem; margin: 6px 0 22px 36px; }
-
   /* ---------- PIE DE PÁGINA ---------- */
   .pie { background: #0a0a0a; margin-top: 70px; padding: 54px var(--margen) calc(40px + env(safe-area-inset-bottom, 0px)); }
-  body.buscando .pie, body.en-apartado .pie, body.en-lista .pie, body.en-detalle .pie { display: none; }
+  body.buscando .pie, body.en-lista .pie { display: none; }
   .pie-in { max-width: 1100px; margin: 0 auto; }
 
   .pie-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
@@ -333,22 +340,16 @@
   .pie-enlaces a { color: #5f5f5f; font-size: .76rem; text-decoration: none; transition: color .2s; }
   .pie-enlaces a:hover { color: #fff; }
 
-  @media (min-width: 700px) {
-    .pie { padding-top: 70px; }
-    .pie-cols { gap: 30px; }
-    .pie-cols a { font-size: .95rem; }
+  /* ---------- CUENTA / MODAL ---------- */
+  body.auth-abierto, body.perfil-abierto { overflow: hidden; }
+  body.auth-abierto .menu-overlay, body.perfil-abierto .menu-overlay { opacity: 1; visibility: visible; }
+  .menu-overlay {
+    position: fixed; inset: 0; z-index: 150;
+    background: rgba(0,0,0,.65);
+    opacity: 0; visibility: hidden;
+    transition: opacity .25s ease, visibility .25s;
   }
-
-  /* ---------- LISTAS Y CUENTA ---------- */
-  body.en-lista #lista { display: block; }
-  body.en-lista #home, body.en-detalle #home { display: none; }
-  .portada { cursor: pointer; }
-  .suscribe-btn { flex: 0 0 auto; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
-  .suscribe-btn svg { width: 24px; height: 24px; }
-  .perfil-avatar-btn { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 2px solid var(--verde); background: #222; }
-  .perfil-avatar-btn img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-  .auth-modal { position: fixed; top: 50%; left: 50%; z-index: 70; width: min(90vw, 420px); padding: 30px; background: #0a0a0a; border: 2px solid var(--borde); border-radius: var(--radio); transform: translate(-50%, -50%) scale(.95); opacity: 0; visibility: hidden; transition: all .25s ease; }
+  .auth-modal { position: fixed; top: 50%; left: 50%; z-index: 160; width: min(90vw, 420px); padding: 30px; background: #0a0a0a; border: 2px solid var(--borde); border-radius: var(--radio); transform: translate(-50%, -50%) scale(.95); opacity: 0; visibility: hidden; transition: all .25s ease; }
   body.auth-abierto .auth-modal { opacity: 1; visibility: visible; transform: translate(-50%, -50%); }
   .auth-x { position: absolute; top: 10px; right: 14px; font-size: 1.7rem; line-height: 1; color: var(--texto-suave); }
   .auth-tabs { display: flex; gap: 18px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--borde); }
@@ -360,7 +361,7 @@
   .auth-form input:focus { border-color: var(--verde); }
   .auth-btn { height: 48px; margin-top: 10px; background: var(--verde); color: #000; font-weight: 700; font-size: 1rem; border-radius: 12px; }
 
-  .perfil-modal { position: fixed; top: 0; right: 0; bottom: 0; z-index: 60; width: min(86vw, 360px); padding: 20px; background: #000; border-left: 1px solid var(--borde); display: flex; flex-direction: column; overflow-y: auto; transform: translateX(100%); visibility: hidden; transition: transform .3s cubic-bezier(.22,.8,.3,1), visibility .3s; }
+  .perfil-modal { position: fixed; top: 0; right: 0; bottom: 0; z-index: 160; width: min(86vw, 360px); padding: 20px; background: #000; border-left: 1px solid var(--borde); display: flex; flex-direction: column; overflow-y: auto; transform: translateX(100%); visibility: hidden; transition: transform .3s cubic-bezier(.22,.8,.3,1), visibility .3s; }
   body.perfil-abierto .perfil-modal { transform: none; visibility: visible; }
   .perfil-modal .logo { margin: 0; padding: 0; }
   .perfil-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
@@ -374,36 +375,9 @@
   .perfil-opcion svg { width: 16px; height: 16px; opacity: .5; }
   .perfil-opcion.salir { margin-top: 20px; color: #ff4d4d; justify-content: center; }
 
-  /* ---------- DETALLE DE HISTORIA ---------- */
-  #detalle { display: none; max-width: 760px; margin: 0 auto; padding-bottom: 50px; }
-  body.en-detalle #detalle { display: block; }
-  .d-hero { position: relative; aspect-ratio: var(--ar, .85); max-height: 82vh; overflow: hidden; background: #0a0a0a; }
-  .d-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .d-hero::after { content: ""; position: absolute; inset: 0; pointer-events: none;
-    background: linear-gradient(to bottom, rgba(0,0,0,.6) 0%, rgba(0,0,0,0) 24%, rgba(0,0,0,0) 50%, rgba(0,0,0,.75) 82%, #000 100%); }
-  .d-volver { position: absolute; z-index: 2; top: calc(12px + env(safe-area-inset-top, 0px)); left: var(--margen); width: 42px; height: 42px; border-radius: 50%; background: rgba(0,0,0,.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; }
-  .d-volver svg { width: 24px; height: 24px; }
-  .d-cuerpo { position: relative; z-index: 1; margin-top: -54px; padding: 0 var(--margen); }
-  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .d-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; color: var(--texto-suave); font-size: .95rem; }
-  .d-pronto { background: rgba(255,255,255,.1); color: var(--verde); font-size: .72rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
-  .d-sinopsis { margin-top: 14px; font-size: 1.05rem; line-height: 1.55; color: rgba(255,255,255,.92); }
-  .d-acciones { display: flex; align-items: center; gap: 12px; margin-top: 22px; }
-  .ver-ahora { flex: 1; height: 54px; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--verde); color: #000; font-weight: 700; font-size: 1.05rem; border-radius: 999px; }
-  .ver-ahora svg { width: 22px; height: 22px; fill: #000; }
-  .ver-ahora:disabled { opacity: .45; cursor: default; }
-  .accion-btn { flex: 0 0 auto; width: 54px; height: 54px; border-radius: 50%; background: var(--placeholder); border: 2px solid var(--borde); display: flex; align-items: center; justify-content: center; }
-  .accion-btn svg { width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 2; }
-  .accion-btn.activo svg { fill: var(--verde); stroke: var(--verde); }
-  .d-tabs { display: flex; gap: 26px; margin: 34px 0 20px; border-bottom: 2px solid var(--borde); }
-  .d-tab { position: relative; padding: 0 0 12px; font-weight: 600; font-size: 1rem; color: var(--texto-suave); }
-  .d-tab.activo { color: #fff; }
-  .d-tab.activo::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; background: #fff; }
-  .d-rec { padding: 0; }
-  .d-det { display: grid; grid-template-columns: auto 1fr; gap: 0 28px; }
-  .d-det[hidden] { display: none; }
-  .d-det dt, .d-det dd { padding: 14px 0; border-bottom: 1px solid var(--borde); }
-  .d-det dt { color: var(--texto-suave); }
+  body.en-lista #lista { display: block; }
+  body.en-lista #home { display: none; }
+  #lista { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
 </style>
 </head>
 <body>
@@ -411,14 +385,28 @@
 
 <div id="home">
 
-  <!-- HEADER -->
+  <!-- HEADER REESTRUCTURADO -->
   <header>
-    <button class="menu-btn" id="abrirMenu" aria-label="Menú"><span></span><span></span><span></span></button>
-    <div class="logo">cube</div>
+    <div class="header-left">
+      <div class="logo">cube</div>
+      <nav class="header-nav">
+        <a href="#" class="nav-link">TV shows</a>
+        <a href="#" class="nav-link">Platinum</a>
+        <a href="#" class="nav-link">Interactive</a>
+        <div class="dropdown" id="moreDropdown">
+          <a href="#" class="nav-link" id="moreBtn">More ▾</a>
+          <div class="dropdown-content">
+            <a href="#" class="dropdown-link" data-cat="interactive">Interactive</a>
+            <a href="#" class="dropdown-link" data-cat="documentals">Documentals</a>
+            <a href="#" class="dropdown-link" data-cat="underground">Underground</a>
+          </div>
+        </div>
+      </nav>
+    </div>
     <div class="header-der" id="headerDer"></div>
   </header>
 
-  <!-- HERO (varios banners) -->
+  <!-- HERO -->
   <section class="hero-wrap" aria-label="Destacados">
     <div class="hero-track" id="heroTrack"></div>
     <div class="dots" id="dots"></div>
@@ -445,48 +433,17 @@
   <p class="sin-resultados" id="sinResultados" hidden>No encontramos historias con ese nombre.</p>
 </section>
 
-<!-- APARTADO -->
-<section id="apartado" aria-label="Historias">
-  <div class="apartado-top">
-    <button class="volver-btn" id="cerrarApartado" aria-label="Volver">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <h1 id="apartadoTitulo"></h1>
-  </div>
-  <p class="apartado-cant" id="apartadoCant"></p>
-  <div class="grilla" id="apartadoGrilla"></div>
-</section>
-
-
 <!-- LISTA (favoritos / guardados) -->
 <section id="lista" aria-label="Lista">
-  <div class="apartado-top"><button class="volver-btn" id="cerrarLista" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><h1 id="listaTitulo"></h1></div>
+  <div class="buscar-top">
+    <button class="volver-btn" id="cerrarLista" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <h1 id="listaTitulo" style="font-size: 1.3rem; font-weight:700;"></h1>
+  </div>
   <div class="grilla" id="listaGrilla" style="margin-top:22px"></div>
   <p class="sin-resultados" id="listaVacia" hidden></p>
 </section>
 
-<!-- DETALLE DE HISTORIA -->
-<section id="detalle" aria-label="Detalle de la historia">
-  <div class="d-hero" id="dHero">
-    <img id="dImg" alt="">
-    <button class="d-volver" id="cerrarDetalle" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-  </div>
-  <div class="d-cuerpo">
-    <h1 class="sr-only" id="dTitulo"></h1>
-    <div class="d-meta" id="dMeta"></div>
-    <p class="d-sinopsis" id="dSinopsis"></p>
-    <div class="d-acciones">
-      <button class="ver-ahora" id="btnVer"><svg viewBox="0 0 24 24"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z"/></svg><span>Ver ahora</span></button>
-      <button class="accion-btn" id="btnFav" aria-label="Favorito"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
-      <button class="accion-btn" id="btnGuardar" aria-label="Guardar para más tarde"><svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg></button>
-    </div>
-    <div class="d-tabs"><button class="d-tab activo" data-t="rec">Quizás también te gusten</button><button class="d-tab" data-t="det">Detalles</button></div>
-    <div class="carrusel d-rec" id="dRec"></div>
-    <dl class="d-det" id="dDet" hidden></dl>
-  </div>
-</section>
-
-<!-- CUENTA -->
+<!-- CUENTA / MODALES -->
 <div class="auth-modal" id="authModal" role="dialog" aria-label="Unirse a Cube">
   <button class="auth-x" id="cerrarAuth" aria-label="Cerrar">&times;</button>
   <div class="auth-tabs"><button class="auth-tab activo" id="tabRegistro">Registrarse</button><button class="auth-tab" id="tabLogin">Iniciar sesión</button></div>
@@ -503,7 +460,7 @@
   </form>
 </div>
 <aside class="perfil-modal" id="perfilModal" aria-label="Perfil">
-  <div class="perfil-header"><div class="logo">cube</div><button class="cerrar-menu" id="cerrarPerfil" aria-label="Cerrar perfil"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></button></div>
+  <div class="perfil-header"><div class="logo">cube</div><button class="volver-btn" id="cerrarPerfil" aria-label="Cerrar perfil"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></button></div>
   <div class="perfil-info">
     <img class="perfil-foto" id="perfilFoto" alt="Avatar">
     <b id="perfilNombre"></b><small id="perfilEmail"></small>
@@ -516,37 +473,29 @@
     <button class="perfil-opcion salir" id="btnSalir">Cerrar sesión</button>
   </div>
 </aside>
-
-<!-- MENÚ -->
 <div class="menu-overlay" id="menuOverlay"></div>
-<nav class="menu" id="menu" aria-label="Menú" aria-hidden="true">
-  <div class="menu-top">
-    <div class="logo">cube</div>
-    <button class="cerrar-menu" id="cerrarMenu" aria-label="Cerrar menú">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
-    </button>
-  </div>
-  <div class="menu-scroll">
-    <h3 class="menu-titulo">Consume por Capítulos</h3>
-    <ul class="menu-lista">
-      <li><button class="menu-item" data-ap="0"><span>0 capítulos</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button></li>
-      <li><button class="menu-item" data-ap="3"><span>3 capítulos</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button></li>
-      <li><button class="menu-item" data-ap="4-5"><span>4-5 capítulos</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button></li>
-      <li><button class="menu-item" data-ap="5+"><span>+5 capítulos</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button></li>
-    </ul>
-
-    <h3 class="menu-titulo">Categorías</h3>
-    <ul class="menu-cats">
-      <li><button class="cat cat-tv">tv shows</button></li>
-      <li><button class="cat cat-doc">documentals</button></li>
-      <li><button class="cat cat-interactive">interactive</button></li>
-      <li><button class="cat cat-underground">underground</button></li>
-      <li><button class="cat cat-platinum">platinum</button></li>
-    </ul>
-  </div>
-</nav>
 
 </div>
+
+<!-- BARRA INFERIOR FIJA (REFERENCIA 2) -->
+<nav class="bottom-nav" aria-label="Navegación inferior">
+  <button class="bottom-nav-item activo" id="navHome" aria-label="Home">
+    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+  </button>
+  <button class="bottom-nav-item" id="navRanking" aria-label="Ranking">
+    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.96.76 1.58V19z"/></svg>
+  </button>
+  <button class="bottom-nav-item" id="navBuscar" aria-label="Buscar">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/></svg>
+  </button>
+  <button class="bottom-nav-item" id="navPerfil" aria-label="Perfil">
+    <!-- Se actualiza dinámicamente según sesión -->
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+  </button>
+  <button class="bottom-nav-item" id="navOrbe" aria-label="Orbe">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4"/></svg>
+  </button>
+</nav>
 
 <!-- PIE DE PÁGINA -->
 <footer class="pie">
@@ -603,25 +552,14 @@
 </footer>
 
 <script>
-  // Dirección donde están las imágenes (jsDelivr sirve los archivos de tu repositorio de GitHub).
-  // Para usar otro repositorio, cambia solo esta línea.
   const IMG_BASE = "https://cdn.jsdelivr.net/gh/Parallax-Oficial/cube@main/";
-
 
   // ---------- HERO ----------
   const heroes = [
-    { img: "bigfoot.webp", alt: "BIGFOOT",
-      genero: "Acción • 2026",
-      sinopsis: "La huida de un monstruo gigante traerá consigo una sorpresa inesperada." },
-    { img: "eternamente-vivo-hero.webp", alt: "Eternamente Vivo con Valak Seraphel",
-      genero: "Sobrenatural • 2026",
-      sinopsis: "En una realidad paralela, un demonio le ofrece a Martino “lindos recuerdos”." },
-    { img: "golem-hero.webp", alt: "Golem: El Protector de Judíos",
-      genero: "Thriller • 2026",
-      sinopsis: "La última noche de su madre judía será la primera de su leyenda." },
-    { img: "familia-rani-hero.webp", alt: "La Familia Rani",
-      genero: "Thriller • 2025",
-      sinopsis: "Un viaje a la mente más espectacular y grotesca de su autor." }
+    { img: "bigfoot.webp", alt: "BIGFOOT", genero: "Acción • 2026", sinopsis: "La huida de un monstruo gigante traerá consigo una sorpresa inesperada." },
+    { img: "eternamente-vivo-hero.webp", alt: "Eternamente Vivo con Valak Seraphel", genero: "Sobrenatural • 2026", sinopsis: "En una realidad paralela, un demonio le ofrece a Martino “lindos recuerdos”." },
+    { img: "golem-hero.webp", alt: "Golem: El Protector de Judíos", genero: "Thriller • 2026", sinopsis: "La última noche de su madre judía será la primera de su leyenda." },
+    { img: "familia-rani-hero.webp", alt: "La Familia Rani", genero: "Thriller • 2025", sinopsis: "Un viaje a la mente más espectacular y grotesca de su autor." }
   ];
 
   const track = document.getElementById('heroTrack');
@@ -650,10 +588,8 @@
     [...dotsBox.children].forEach((d, n) => d.classList.toggle('activo', n === i));
   }, { passive: true });
 
-  // ---------- Cambio automático ----------
-  const SEGUNDOS_AUTO = 5;   // cambia aquí cada cuántos segundos pasa solo (4 a 6 recomendado)
+  const SEGUNDOS_AUTO = 5;
   let timerAuto = null;
-
   function irA(i) { track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }); }
   function actual() { return Math.round(track.scrollLeft / track.clientWidth); }
   function detenerAuto() { clearInterval(timerAuto); timerAuto = null; }
@@ -662,18 +598,15 @@
     timerAuto = setInterval(() => irA((actual() + 1) % heroes.length), SEGUNDOS_AUTO * 1000);
   }
 
-  // Si la persona toca o desliza, se pausa y se reinicia la cuenta al soltar
   track.addEventListener('touchstart', detenerAuto, { passive: true });
   track.addEventListener('touchend', iniciarAuto, { passive: true });
   track.addEventListener('touchcancel', iniciarAuto, { passive: true });
   track.addEventListener('mouseenter', detenerAuto);
   track.addEventListener('mouseleave', iniciarAuto);
   document.addEventListener('visibilitychange', () => document.hidden ? detenerAuto() : iniciarAuto());
-
   iniciarAuto();
 
-  // Cada sección: título + lista de portadas (nombre del archivo en /img y texto alternativo).
-  // Las que no tienen imagen todavía se muestran como portada vacía.
+  // ---------- SECCIONES ----------
   const secciones = [
     { titulo: "Te Recomendamos", portadas: [
       { img: "eternamente-vivo.webp",  alt: "Eternamente Vivo con Amadeus Shell" },
@@ -736,30 +669,19 @@
       { img: "chernobyl-tapes.webp", alt: "The Chernobyl Tapes", pronto: true },
       { img: "el-club-de-clubes-3.webp", alt: "El Club de Clubes 3", pronto: true },
       { img: "los-sapos.webp", alt: "Los Sapos", pronto: true }
-    ]},
-    { titulo: "Recomendados de Mlive", portadas: [
-      { img: "divina-comedia.webp", alt: "Divina Comedia" },
-      { img: "las-entrevistas.webp", alt: "Las Entrevistas" },
-      { img: "triangle-room.webp", alt: "Triangle Room" },
-      { img: "eternamente-vivo-biografia.webp", alt: "Eternamente Vivo: Biografía, la vida del autor" },
-      { img: "eternamente-vivo-murray.webp", alt: "Eternamente Vivo con Murray Franklin" }
     ]}
   ];
-  const PORTADAS_POR_SECCION = 5;
 
   const contenedor = document.getElementById('secciones');
   secciones.forEach(({ titulo, portadas }) => {
     const sec = document.createElement('section');
     sec.className = 'seccion';
-    const items = portadas
-      ? portadas.map(p => `<div class="portada">${p.pronto ? '<span class="badge">Próximamente</span>' : ''}<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('')
-      : '<div class="portada"></div>'.repeat(PORTADAS_POR_SECCION);
+    const items = portadas.map(p => `<div class="portada">${p.pronto ? '<span class="badge">Próximamente</span>' : ''}<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('');
     sec.innerHTML = `<h2>${titulo}</h2><div class="carrusel">${items}</div>`;
     contenedor.appendChild(sec);
   });
 
   // ---------- BÚSQUEDA ----------
-  // Catálogo: todas las portadas de todas las secciones, sin repetir, ordenadas de la A a la Z.
   const catalogo = [];
   const vistas = new Set();
   secciones.forEach(sec => (sec.portadas || []).forEach(p => {
@@ -768,14 +690,13 @@
   catalogo.sort((a, b) => a.alt.localeCompare(b.alt, 'es', { sensitivity: 'base' }));
 
   const normal  = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
-  const compacto = t => normal(t).replace(/[^a-z0-9]/g, '');   // así "cch" encuentra "C·C·H"
+  const compacto = t => normal(t).replace(/[^a-z0-9]/g, '');
 
   const grilla = document.getElementById('grilla');
   const campo = document.getElementById('campoBuscar');
   const tituloBuscar = document.getElementById('tituloBuscar');
   const sinResultados = document.getElementById('sinResultados');
 
-  // Se crean las portadas una sola vez y luego solo se muestran u ocultan
   const tarjetas = catalogo.map(p => {
     const el = document.createElement('div');
     el.className = 'portada';
@@ -799,47 +720,18 @@
   campo.addEventListener('input', filtrar);
   campo.addEventListener('keydown', e => { if (e.key === 'Enter') campo.blur(); });
 
-  // ---------- Datos de cada historia (género, año, sinopsis, imagen del apartado) ----------
-  const $ = id => document.getElementById(id);
-  const GENERO = {}, ANIO = {}, SINOPSIS = {
-    'golem': 'La última noche de su madre judía será la primera de su leyenda.',
-    'la-familia-rani': 'Un viaje a la mente más espectacular y grotesca de su autor.',
-    'eternamente-vivo-valak': 'En una realidad paralela, un demonio le ofrece a Martino “lindos recuerdos”.',
-    'bigfoot-2': 'La huida de un monstruo gigante traerá consigo una sorpresa inesperada.'
+  // ---------- Dropdown MORE ----------
+  const moreBtn = document.getElementById('moreBtn');
+  const moreDropdown = document.getElementById('moreDropdown');
+  moreBtn.onclick = (e) => {
+    e.preventDefault();
+    moreDropdown.classList.toggle('activo');
   };
-  const grupo = (obj, fn) => Object.entries(obj).forEach(([v, l]) => l.split(' ').forEach(k => fn(k, v)));
-  grupo({
-    'Terror': 'metalosis-maligna retorcidos retorcidos-2 ratman frogman mama-dogs vigilia cuando-el-mal-acecha cch-metal-crujiente',
-    'Suspenso': 'gorgeous-vortex el-telefono cuarentena cuarentena-revival cuarentena-2 cuarentena-iv moby-dick-profundo',
-    'Thriller': 'las-entrevistas las-entrevistas-2 without-warning golem la-familia-rani el-club-de-clubes el-club-de-clubes-2 el-club-de-clubes-3 oso-negro los-sapos',
-    'Acción': 'muevete-al-minuto strike ultimate bigfoot-2 atraco behemoth hydra-the-lost-island',
-    'Sobrenatural': 'eternamente-vivo eternamente-vivo-dante eternamente-vivo-valak eternamente-vivo-murray',
-    'Ciencia ficción': 'un-eternauta la-dama-roja la-dama-dorada apollo-18 musaranas',
-    'Psicológico': 'obedece triangle-room triangle-room-2', 'Documental': 'menem chernobyl-tapes',
-    'Comedia': 'el-ciguenon dont-hug-me-im-scared', 'Drama': 'nada', 'Romance': 'valentine',
-    'Underground': 'fenomeno-vulgar', 'Clásico': 'divina-comedia', 'Biografía': 'eternamente-vivo-biografia'
-  }, (k, g) => GENERO[k] = g);
-  grupo({ '2025': 'eternamente-vivo las-entrevistas metalosis-maligna la-familia-rani' }, (k, a) => ANIO[k] = a);
-
-  // Imagen grande de cada apartado: archivo "detalle-<nombre>.webp" + punto de enfoque para que quede bien ajustada.
-  // Si una historia no está aquí, usa su portada. Para agregar una: 'nombre-de-la-portada': '50% 30%'
-  const DET = {
-    'las-entrevistas': '50% 30%', 'viral': '50% 40%', 'cuarentena': '70% 40%', 'retorcidos-2': '50% 25%',
-    'la-dama-dorada': '50% 30%', 'cuarentena-iv': '50% 15%', 'triangle-room-2': '50% 40%', 'cuarentena-revival': '30% 20%',
-    'cuando-el-mal-acecha': '50% 30%', 'gorgeous-vortex': '50% 50%', 'moby-dick-profundo': '50% 75%',
-    'el-club-de-clubes-2': '50% 30%', 'eternamente-vivo-murray': '50% 30%', 'cuarentena-2': '45% 50%',
-    'eternamente-vivo-dante': '55% 30%', 'el-ciguenon': '50% 20%', 'metalosis-maligna': '45% 40%'
+  window.onclick = (e) => {
+    if (!moreDropdown.contains(e.target)) moreDropdown.classList.remove('activo');
   };
-  secciones.forEach(s => (s.portadas || []).forEach(p => {
-    p.slug = p.img.replace('.webp', '');
-    p.genero = GENERO[p.slug] || 'Drama';
-    p.anio = ANIO[p.slug] || (p.pronto ? '2027' : '2026');
-    p.sinopsis = SINOPSIS[p.slug] || '';
-  }));
-  const tarjeta = p => '<div class="portada">' + (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
-    `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`;
 
-  // ---------- Cuentas (demo local: se guardan solo en este navegador) ----------
+  // ---------- Cuentas / Sesión ----------
   const AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c6ff00'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
   const usuarios = () => JSON.parse(localStorage.getItem('cube_usuarios_registrados') || '[]');
   const usuario = () => JSON.parse(localStorage.getItem('cube_sesion_activa') || 'null');
@@ -851,194 +743,116 @@
   }
   function actualizarHeader() {
     const u = usuario();
-    $('headerDer').innerHTML =
-      '<button class="suscribe-btn" id="btnSuscribir" aria-label="Suscripción"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14v2H5v-2z"/></svg></button>' +
-      '<button class="buscar-btn" id="abrirBuscar" aria-label="Buscar historias"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>' +
-      (u ? `<button class="perfil-avatar-btn" id="abrirPerfil" aria-label="Perfil"><img src="${u.foto || AVATAR}" alt="Perfil"></button>`
-         : '<button class="unete-btn" id="abrirUnete">Únete a Cube</button>');
-    $('abrirBuscar').onclick = () => { abrir('buscar'); campo.focus(); };
-    $('btnSuscribir').onclick = () => alert('Módulo de Suscripción próximamente.');
-    if (u) $('abrirPerfil').onclick = abrirPerfil; else $('abrirUnete').onclick = () => abrir('auth');
+    document.getElementById('headerDer').innerHTML = u ? '' : '<button class="unete-btn" id="abrirUnete">Únete a Cube</button>';
+    if (!u && document.getElementById('abrirUnete')) {
+      document.getElementById('abrirUnete').onclick = () => abrirModal('auth');
+    }
+    
+    // Actualizar icono de perfil en la barra inferior
+    const navPerfilBtn = document.getElementById('navPerfil');
+    if (u) {
+      navPerfilBtn.innerHTML = `<img class="bottom-nav-avatar" src="${u.foto || AVATAR}" alt="Perfil">`;
+    } else {
+      navPerfilBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
+    }
   }
 
-  // ---------- Navegación (cada pantalla entra al historial: el botón "atrás" del celular funciona) ----------
-  const CLASE = { menu: 'menu-abierto', auth: 'auth-abierto', perfil: 'perfil-abierto', buscar: 'buscando',
-                  apartado: 'en-apartado', favoritos: 'en-lista', guardados: 'en-lista', detalle: 'en-detalle' };
-  const SOBRE = ['menu', 'auth', 'perfil'];            // paneles que se muestran encima de la pantalla actual
-  const body = document.body;
-  let scrollGuardado = 0;
-  const estado = () => (history.state && history.state.v) || null;
-  const mostrar = v => new Set(Object.values(CLASE)).forEach(c => body.classList.toggle(c, c === CLASE[v]));
+  // Modales y navegación inferior
+  function abrirModal(tipo) {
+    if (tipo === 'auth') document.body.classList.add('auth-abierto');
+    if (tipo === 'perfil') {
+      const u = usuario();
+      if (!u) return abrirModal('auth');
+      document.getElementById('perfilNombre').textContent = u.nombre;
+      document.getElementById('perfilEmail').textContent = u.email;
+      document.getElementById('perfilFoto').src = u.foto || AVATAR;
+      document.body.classList.add('perfil-abierto');
+    }
+  }
+  function cerrarModales() {
+    document.body.classList.remove('auth-abierto', 'perfil-abierto', 'buscando', 'en-lista');
+    window.scrollTo(0, 0);
+    iniciarAuto();
+  }
 
-  function abrir(v, extra) {
-    const cur = estado();
-    if (!cur) scrollGuardado = window.scrollY;
+  // Interacción de la Barra Inferior
+  document.getElementById('navHome').onclick = () => cerrarModales();
+  document.getElementById('navRanking').onclick = () => alert('Sección de Ranking próximamente.');
+  document.getElementById('navBuscar').onclick = () => {
     detenerAuto();
-    const reemplaza = (cur === 'menu' || cur === 'perfil') && v !== 'auth';
-    history[reemplaza ? 'replaceState' : 'pushState'](Object.assign({ v }, extra), '');
-    if (SOBRE.includes(v)) body.classList.add(CLASE[v]); else { mostrar(v); window.scrollTo(0, 0); }
-    $('menu').setAttribute('aria-hidden', String(v !== 'menu'));
-  }
-  window.addEventListener('popstate', () => {
-    const v = estado();
-    mostrar(v);
-    $('menu').setAttribute('aria-hidden', 'true');
-    if (!v) { campo.value = ''; filtrar(); window.scrollTo(0, scrollGuardado); iniciarAuto(); }
-    else if (v === 'detalle') renderDetalle(catalogo.find(p => p.img === history.state.img));
-    else if (v === 'favoritos' || v === 'guardados') renderLista(v);
-  });
-  const atras = () => history.back();
-
-  // Menú y apartados por capítulos
-  const unicas = l => { const v = new Set(); return l.filter(p => !v.has(p.img) && v.add(p.img)); };
-  const deSeccion = t => unicas(secciones.find(s => s.titulo === t).portadas);
-  const apartados = {
-    '0':   { titulo: '0 capítulos',   historias: () => deSeccion('Cero Capítulos') },
-    '3':   { titulo: '3 capítulos',   historias: () => deSeccion('Tres Capítulos') },
-    '4-5': { titulo: '4-5 capítulos', historias: () => deSeccion('Cuatro o Cinco Capítulos') },
-    '5+':  { titulo: '+5 capítulos',  historias: () => ['las-entrevistas', 'eternamente-vivo-biografia', 'eternamente-vivo-murray',
-      'triangle-room', 'divina-comedia'].map(k => catalogo.find(p => p.slug === k)).filter(Boolean) }
+    document.body.classList.add('buscando');
+    document.getElementById('campoBuscar').focus();
   };
-  function abrirApartado(clave) {
-    const ap = apartados[clave], l = ap.historias();
-    $('apartadoTitulo').textContent = ap.titulo;
-    $('apartadoCant').textContent = l.length + (l.length === 1 ? ' historia' : ' historias');
-    $('apartadoGrilla').innerHTML = l.map(tarjeta).join('');
-    abrir('apartado');
-  }
+  document.getElementById('navPerfil').onclick = () => {
+    const u = usuario();
+    if (u) abrirModal('perfil'); else abrirModal('auth');
+  };
+  document.getElementById('navOrbe').onclick = () => alert('Orbe activada.');
 
-  // Favoritos y guardados
+  // Renderizar listas favoritas / guardados
   function renderLista(tipo) {
     const u = usuario(), l = ((u && u[tipo]) || []).map(f => catalogo.find(p => p.img === f.img)).filter(Boolean);
-    $('listaTitulo').textContent = tipo === 'favoritos' ? 'Mis favoritos' : 'Guardados para más tarde';
-    $('listaGrilla').innerHTML = l.map(tarjeta).join('');
-    $('listaVacia').textContent = tipo === 'favoritos' ? 'No tienes historias en favoritos.' : 'No tienes historias guardadas.';
-    $('listaVacia').hidden = l.length > 0;
+    document.getElementById('listaTitulo').textContent = tipo === 'favoritos' ? 'Mis favoritos' : 'Guardados para más tarde';
+    document.getElementById('listaGrilla').innerHTML = l.map(p => `<div class="portada"><img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('');
+    document.getElementById('listaVacia').textContent = tipo === 'favoritos' ? 'No tienes historias en favoritos.' : 'No tienes historias guardadas.';
+    document.getElementById('listaVacia').hidden = l.length > 0;
+    document.body.classList.add('en-lista');
   }
 
-  // Detalle de la historia
-  let historia = null;
-  const hash = s => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
-  const saga = p => p.slug.replace(/-(2|3|iv|revival|dante|valak|murray|biografia)$/, '');
-  // "Quizás también te gusten": siempre 5. Primero la misma saga y el mismo género; el resto se completa con otras historias.
-  function similares(p) {
-    return catalogo.filter(x => x.img !== p.img)
-      .map(x => ({ x, n: (saga(x) === saga(p) ? 3 : 0) + (x.genero === p.genero ? 2 : 0) + (hash(x.slug + p.slug) % 100) / 100 }))
-      .sort((a, b) => b.n - a.n).slice(0, 5).map(o => o.x);
-  }
-  function marcarBotones(p) {
-    const u = usuario();
-    $('btnFav').classList.toggle('activo', !!u && (u.favoritos || []).some(x => x.img === p.img));
-    $('btnGuardar').classList.toggle('activo', !!u && (u.guardados || []).some(x => x.img === p.img));
-  }
-  function renderDetalle(p) {
-    if (!p) return;
-    historia = p;
-    const img = $('dImg'), foco = DET[p.slug];
-    const ajusta = () => { const r = img.naturalWidth / img.naturalHeight; $('dHero').style.setProperty('--ar', r < 1 ? .85 : Math.min(r, 1.45)); };
-    img.onload = ajusta;
-    img.alt = p.alt;
-    img.style.objectPosition = foco || '50% 30%';
-    img.src = IMG_BASE + (foco ? `detalle-${p.slug}.webp` : p.img);
-    if (img.complete && img.naturalWidth) ajusta();
-    $('dTitulo').textContent = p.alt;
-    $('dMeta').innerHTML = `<span>${p.genero} · ${p.anio}</span>` + (p.pronto ? '<span class="d-pronto">Próximamente</span>' : '');
-    $('dSinopsis').textContent = p.sinopsis || `Próximamente la sinopsis oficial de ${p.alt} estará disponible aquí.`;
-    $('btnVer').disabled = !!p.pronto;
-    $('btnVer').querySelector('span').textContent = p.pronto ? 'Próximamente' : 'Ver ahora';
-    marcarBotones(p);
-    $('dRec').innerHTML = similares(p).map(tarjeta).join('');
-    $('dRec').scrollLeft = 0;
-    const grupoCap = Object.values(apartados).find(a => a.historias().some(x => x.img === p.img));
-    $('dDet').innerHTML = `<dt>Título</dt><dd>${p.alt}</dd><dt>Género</dt><dd>${p.genero}</dd><dt>Año</dt><dd>${p.anio}</dd>` +
-      (grupoCap ? `<dt>Consumo</dt><dd>${grupoCap.titulo}</dd>` : '') + `<dt>Estado</dt><dd>${p.pronto ? 'Próximamente' : 'Disponible'}</dd>`;
-    document.querySelectorAll('.d-tab').forEach(t => t.classList.toggle('activo', t.dataset.t === 'rec'));
-    $('dRec').hidden = false; $('dDet').hidden = true;
-  }
-  document.querySelectorAll('.d-tab').forEach(t => t.onclick = () => {
-    document.querySelectorAll('.d-tab').forEach(x => x.classList.toggle('activo', x === t));
-    $('dRec').hidden = t.dataset.t !== 'rec'; $('dDet').hidden = t.dataset.t !== 'det';
-  });
-  function alternar(tipo) {
-    const u = usuario();
-    if (!u) {
-      alert(tipo === 'favoritos' ? 'Debes iniciar sesión o registrarte para añadir a Favoritos.' : 'Debes iniciar sesión o registrarte para guardar historias.');
-      return abrir('auth');
-    }
-    const l = u[tipo] = u[tipo] || [], i = l.findIndex(x => x.img === historia.img);
-    if (i >= 0) l.splice(i, 1); else l.push({ img: historia.img, alt: historia.alt });
-    guardarUsuario(u); marcarBotones(historia);
-  }
-  $('btnFav').onclick = () => alternar('favoritos');
-  $('btnGuardar').onclick = () => alternar('guardados');
-  $('btnVer').onclick = () => alert(`Reproduciendo "${historia.alt}"...`);
+  document.getElementById('irFavoritos').onclick = () => { cerrarModales(); renderLista('favoritos'); };
+  document.getElementById('irGuardados').onclick = () => { cerrarModales(); renderLista('guardados'); };
+  document.getElementById('btnSalir').onclick = () => { localStorage.removeItem('cube_sesion_activa'); cerrarModales(); actualizarHeader(); };
 
-  // Cualquier portada abre su apartado
-  document.addEventListener('click', e => {
-    const c = e.target.closest('.portada'), im = c && c.querySelector('img');
-    const p = im && catalogo.find(x => x.img === im.getAttribute('src').split('/').pop());
-    if (p) { renderDetalle(p); abrir('detalle', { img: p.img }); }
-  });
-
-  // Registro, inicio de sesión y perfil
+  // Autenticación Forms
   const pestana = reg => {
-    $('tabRegistro').classList.toggle('activo', reg); $('tabLogin').classList.toggle('activo', !reg);
-    $('formRegistro').style.display = reg ? 'flex' : 'none'; $('formLogin').style.display = reg ? 'none' : 'flex';
+    document.getElementById('tabRegistro').classList.toggle('activo', reg);
+    document.getElementById('tabLogin').classList.toggle('activo', !reg);
+    document.getElementById('formRegistro').style.display = reg ? 'flex' : 'none';
+    document.getElementById('formLogin').style.display = reg ? 'none' : 'flex';
   };
-  $('tabRegistro').onclick = () => pestana(true);
-  $('tabLogin').onclick = () => pestana(false);
-  const entrar = u => { guardarUsuario(u); atras(); actualizarHeader(); if (historia) marcarBotones(historia); };
-  $('formRegistro').addEventListener('submit', e => {
+  document.getElementById('tabRegistro').onclick = () => pestana(true);
+  document.getElementById('tabLogin').onclick = () => pestana(false);
+
+  document.getElementById('formRegistro').addEventListener('submit', e => {
     e.preventDefault();
-    const email = $('regEmail').value.trim().toLowerCase();
-    if (usuarios().some(u => u.email === email)) return alert('Este correo electrónico ya está registrado. Por favor, inicia sesión.');
-    entrar({ nombre: $('regNombre').value.trim(), email, password: $('regPass').value, foto: AVATAR, favoritos: [], guardados: [] });
-    e.target.reset();
+    const email = document.getElementById('regEmail').value.trim().toLowerCase();
+    if (usuarios().some(u => u.email === email)) return alert('Este correo ya está registrado.');
+    guardarUsuario({ nombre: document.getElementById('regNombre').value.trim(), email, password: document.getElementById('regPass').value, foto: AVATAR, favoritos: [], guardados: [] });
+    cerrarModales(); actualizarHeader();
   });
-  $('formLogin').addEventListener('submit', e => {
+  document.getElementById('formLogin').addEventListener('submit', e => {
     e.preventDefault();
-    const u = usuarios().find(x => x.email === $('logEmail').value.trim().toLowerCase() && x.password === $('logPass').value);
-    if (!u) return alert('Correo o contraseña incorrectos, o la cuenta no existe.');
-    entrar(u); e.target.reset();
+    const u = usuarios().find(x => x.email === document.getElementById('logEmail').value.trim().toLowerCase() && x.password === document.getElementById('logPass').value);
+    if (!u) return alert('Correo o contraseña incorrectos.');
+    guardarUsuario(u); cerrarModales(); actualizarHeader();
   });
-  function abrirPerfil() {
-    const u = usuario(); if (!u) return;
-    $('perfilNombre').textContent = u.nombre; $('perfilEmail').textContent = u.email; $('perfilFoto').src = u.foto || AVATAR;
-    abrir('perfil');
-  }
-  $('btnSalir').onclick = () => { localStorage.removeItem('cube_sesion_activa'); atras(); actualizarHeader(); };
-  $('irFavoritos').onclick = () => { renderLista('favoritos'); abrir('favoritos'); };
-  $('irGuardados').onclick = () => { renderLista('guardados'); abrir('guardados'); };
-  $('btnFoto').onclick = () => $('inputFoto').click();
-  $('inputFoto').onchange = e => {
+
+  document.getElementById('cerrarAuth').onclick = () => document.body.classList.remove('auth-abierto');
+  document.getElementById('cerrarPerfil').onclick = () => document.body.classList.remove('perfil-abierto');
+  document.getElementById('cerrarBuscar').onclick = () => cerrarModales();
+  document.getElementById('cerrarLista').onclick = () => cerrarModales();
+  document.getElementById('menuOverlay').onclick = () => cerrarModales();
+
+  document.getElementById('btnFoto').onclick = () => document.getElementById('inputFoto').click();
+  document.getElementById('inputFoto').onchange = e => {
     const f = e.target.files[0]; if (!f) return;
     const rd = new FileReader();
     rd.onload = ev => {
       const im = new Image();
-      im.onload = () => {   // se reduce la foto para que quepa en el almacenamiento del navegador
+      im.onload = () => {
         const c = document.createElement('canvas'), k = Math.min(1, 256 / Math.max(im.width, im.height));
         c.width = im.width * k; c.height = im.height * k;
         c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
         const u = usuario(); u.foto = c.toDataURL('image/jpeg', .85);
-        guardarUsuario(u); $('perfilFoto').src = u.foto; actualizarHeader();
+        guardarUsuario(u); document.getElementById('perfilFoto').src = u.foto; actualizarHeader();
       };
       im.src = ev.target.result;
     };
     rd.readAsDataURL(f);
   };
 
-  // Botones de volver, menú y paneles
-  ['cerrarBuscar', 'cerrarApartado', 'cerrarLista', 'cerrarDetalle', 'cerrarMenu', 'cerrarAuth', 'cerrarPerfil'].forEach(id => $(id).onclick = atras);
-  $('menuOverlay').onclick = () => { if (SOBRE.includes(estado())) atras(); };
-  $('abrirMenu').onclick = () => abrir('menu');
-  document.querySelectorAll('.menu-item').forEach(b => b.onclick = () => abrirApartado(b.dataset.ap));
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && SOBRE.includes(estado())) atras(); });
   actualizarHeader();
-
-  // ---------- Pie de página ----------
   document.getElementById('anio').textContent = new Date().getFullYear();
-  // Los enlaces del pie aún no llevan a ninguna página: se evita que salten al inicio
-  document.querySelectorAll('.pie a[href="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
 </script>
 </body>
 </html>
