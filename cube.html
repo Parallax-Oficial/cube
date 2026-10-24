@@ -195,12 +195,14 @@
     .portada { flex-basis: 30%; }
   }
 
-  /* ---------- BÚSQUEDA ---------- */
-  #buscar { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
+  /* ---------- VISTAS Y APARTADOS ---------- */
+  #buscar, #apartado { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
   body.buscando #buscar { display: block; }
   body.buscando #home { display: none; }
+  body.en-apartado #apartado { display: block; }
+  body.en-apartado #home { display: none; }
 
-  .buscar-top { display: flex; align-items: center; gap: 10px; }
+  .buscar-top, .apartado-top { display: flex; align-items: center; gap: 10px; }
   .volver-btn { flex: 0 0 auto; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; margin-left: -6px; }
   .volver-btn svg { width: 26px; height: 26px; }
   .buscador {
@@ -233,6 +235,9 @@
     .grilla { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
   }
 
+  #apartado h1 { font-weight: 700; font-size: clamp(1.4rem, 6vw, 2rem); }
+  .apartado-cant { color: var(--texto-suave); font-size: .9rem; margin: 6px 0 22px 36px; }
+
   /* ---------- MENÚ LATERAL Y MODALES ---------- */
   body.menu-abierto, body.auth-abierto, body.perfil-abierto { overflow: hidden; }
   
@@ -262,6 +267,18 @@
 
   .menu-scroll { flex: 1; overflow-y: auto; padding: 8px 20px calc(30px + env(safe-area-inset-bottom, 0px)) 22px; }
   .menu-titulo { font-weight: 700; font-size: 1.1rem; margin: 26px 0 14px; }
+  .menu-lista { list-style: none; }
+  .menu-item {
+    width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 2px;
+    font-size: .92rem; text-align: left;
+    color: rgba(255,255,255,.7);
+    transition: color .15s, transform .15s;
+  }
+  .menu-item:active { color: #fff; transform: translateX(3px); }
+  .menu-item svg { width: 16px; height: 16px; opacity: .45; }
+
   .menu-cats { list-style: none; }
   .menu-cats li + li { margin-top: 4px; }
   .cat {
@@ -320,7 +337,7 @@
 
   /* ---------- PIE DE PÁGINA ---------- */
   .pie { background: #0a0a0a; margin-top: 70px; padding: 54px var(--margen) calc(40px + env(safe-area-inset-bottom, 0px)); }
-  body.buscando .pie { display: none; }
+  body.buscando .pie, body.en-apartado .pie { display: none; }
   .pie-in { max-width: 1100px; margin: 0 auto; }
   .pie-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
   .pie-linea { padding: 0 14px 16px; border-bottom: 2px solid #1c1c1c; }
@@ -387,6 +404,18 @@
   <p class="sin-resultados" id="sinResultados" hidden>No encontramos historias con ese nombre.</p>
 </section>
 
+<!-- APARTADO CATEGORÍAS -->
+<section id="apartado" aria-label="Historias">
+  <div class="apartado-top">
+    <button class="volver-btn" id="cerrarApartado" aria-label="Volver">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1 id="apartadoTitulo"></h1>
+  </div>
+  <p class="apartado-cant" id="apartadoCant"></p>
+  <div class="grilla" id="apartadoGrilla"></div>
+</section>
+
 <!-- MENÚ LATERAL -->
 <div class="menu-overlay" id="menuOverlay"></div>
 <nav class="menu" id="menu" aria-label="Menú" aria-hidden="true">
@@ -397,6 +426,14 @@
     </button>
   </div>
   <div class="menu-scroll">
+    <h3 class="menu-titulo">Consume por Capítulos</h3>
+    <ul class="menu-lista">
+      <li><button class="menu-item" data-ap="0"><span>0 capítulos</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button></li>
+      <li><button class="menu-item" data-ap="3"><span>3 capítulos</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button></li>
+      <li><button class="menu-item" data-ap="4-5"><span>4-5 capítulos</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button></li>
+      <li><button class="menu-item" data-ap="5+"><span>+5 capítulos</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button></li>
+    </ul>
+
     <h3 class="menu-titulo">Categorías</h3>
     <ul class="menu-cats">
       <li><button class="cat cat-tv">tv shows</button></li>
@@ -600,7 +637,7 @@
   track.addEventListener('mouseleave', iniciarAuto);
   iniciarAuto();
 
-  // ---------- SECCIONES Y CATÁLOGO COMPLETO ----------
+  // ---------- SECCIONES Y CATÁLOGO CON TODAS LAS PORTADAS ----------
   const secciones = [
     { titulo: "Te Recomendamos", portadas: [
       { img: "eternamente-vivo.webp",  alt: "Eternamente Vivo con Amadeus Shell", genero: "Sobrenatural", anio: "2025" },
@@ -622,32 +659,55 @@
       { img: "valentine.webp",         alt: "Valentine", genero: "Romance", anio: "2026" }
     ]},
     { titulo: "Tres Capítulos", portadas: [
-      { img: "mama-dogs.webp", alt: "Mama Dogs", genero: "Terror", anio: "2026" },
-      { img: "el-telefono.webp", alt: "El Teléfono", genero: "Suspenso", anio: "2026" },
-      { img: "bigfoot-2.webp", alt: "Bigfoot", genero: "Acción", anio: "2026" },
-      { img: "ratman.webp", alt: "Ratman", genero: "Terror", anio: "2026" },
-      { img: "without-warning.webp", alt: "Without Warning", genero: "Thriller", anio: "2026" },
-      { img: "golem.webp", alt: "Golem", genero: "Fantasía", anio: "2026" },
-      { img: "el-ciguenon.webp", alt: "El Cigüeñon", genero: "Comedia", pronto: true, anio: "2027" },
+      { img: "apollo-18.webp", alt: "Apollo 18", genero: "Sci-Fi • Terror", anio: "2026" },
       { img: "atraco.webp", alt: "Atraco", genero: "Acción", pronto: true, anio: "2027" },
+      { img: "behemoth.webp", alt: "Behemoth", genero: "Thriller", anio: "2026" },
+      { img: "hydra-the-lost-island.webp", alt: "Hydra", genero: "Aventura • Terror", anio: "2026" },
+      { img: "musaranas.webp", alt: "Musarañas", genero: "Terror", anio: "2026" },
+      { img: "el-ciguenon.webp", alt: "El Cigüeñon", genero: "Comedia", pronto: true, anio: "2027" },
       { img: "frogman.webp", alt: "Frogman", genero: "Terror", pronto: true, anio: "2027" },
+      { img: "moby-dick-profundo.webp", alt: "Moby Dick", genero: "Aventura", anio: "2026" },
+      { img: "vigilia.webp", alt: "Vigilia", genero: "Suspenso", anio: "2026" }
+    ]},
+    { titulo: "Cuatro o Cinco Capítulos", portadas: [
+      { img: "cch-metal-crujiente.webp", alt: "Metal Crujiente", genero: "Terror", anio: "2026" },
+      { img: "chernobyl-tapes.webp", alt: "Chernobyl Tapes", genero: "Terror", anio: "2026" },
+      { img: "cuando-el-mal-acecha.webp", alt: "Cuando el Mal Acecha", genero: "Terror", anio: "2026" },
       { img: "cuarentena.webp", alt: "Cuarentena", genero: "Suspenso", pronto: true, anio: "2027" },
       { img: "cuarentena-revival.webp", alt: "Cuarentena Revival", genero: "Suspenso", pronto: true, anio: "2027" },
       { img: "cuarentena-2.webp", alt: "Cuarentena 2", genero: "Suspenso", pronto: true, anio: "2027" },
-      { img: "cuarentena-iv.webp", alt: "Cuarentena IV", genero: "Suspenso", pronto: true, anio: "2027" }
-    ]},
-    { titulo: "Cuatro o Cinco Capítulos", portadas: [
-      { img: "eternamente-vivo.webp", alt: "Eternamente Vivo con Amadeus Shell", genero: "Sobrenatural", anio: "2025" },
-      { img: "fenomeno-vulgar.webp", alt: "Fenómeno Vulgar", genero: "Underground", anio: "2026" },
+      { img: "cuarentena-iv.webp", alt: "Cuarentena IV", genero: "Suspenso", pronto: true, anio: "2027" },
+      { img: "dont-hug-me-im-scared.webp", alt: "Don't Hug Me I'm Scared", genero: "Surrealista", anio: "2026" },
+      { img: "el-club-de-clubes.webp", alt: "El Club de Clubes", genero: "Drama", anio: "2026" },
+      { img: "el-club-de-clubes-2.webp", alt: "El Club de Clubes 2", genero: "Drama", anio: "2026" },
+      { img: "el-club-de-clubes-3.webp", alt: "El Club de Clubes 3", genero: "Drama", anio: "2026" },
+      { img: "el-telefono.webp", alt: "El Teléfono", genero: "Suspenso", anio: "2026" },
       { img: "eternamente-vivo-dante.webp", alt: "Eternamente Vivo con Dante el Grande", genero: "Sobrenatural", anio: "2026" },
+      { img: "eternamente-vivo-murray.webp", alt: "Eternamente Vivo con Murray", genero: "Sobrenatural", anio: "2026" },
+      { img: "eternamente-vivo-valak.webp", alt: "Eternamente Vivo con Valak", genero: "Sobrenatural", anio: "2026" },
+      { img: "fenomeno-vulgar.webp", alt: "Fenómeno Vulgar", genero: "Underground", anio: "2026" },
+      { img: "golem.webp", alt: "Golem", genero: "Fantasía", anio: "2026" },
+      { img: "la-dama-dorada.webp", alt: "La Dama Dorada", genero: "Misterio", anio: "2026" },
+      { img: "la-dama-roja.webp", alt: "La Dama Roja", genero: "Misterio", anio: "2026" },
       { img: "la-familia-rani.webp", alt: "La Familia Rani", genero: "Thriller", anio: "2025" },
-      { img: "menem.webp", alt: "Menem", genero: "Documental", anio: "2026" }
+      { img: "las-entrevistas-2.webp", alt: "Las Entrevistas 2", genero: "Thriller", anio: "2026" },
+      { img: "los-sapos.webp", alt: "Los Sapos", genero: "Terror", anio: "2026" },
+      { img: "mama-dogs.webp", alt: "Mama Dogs", genero: "Terror", anio: "2026" },
+      { img: "menem.webp", alt: "Menem", genero: "Documental", anio: "2026" },
+      { img: "oso-negro.webp", alt: "Oso Negro", genero: "Thriller", anio: "2026" },
+      { img: "ratman.webp", alt: "Ratman", genero: "Terror", anio: "2026" },
+      { img: "triangle-room.webp", alt: "Triangle Room", genero: "Psicológico", anio: "2026" },
+      { img: "triangle-room-2.webp", alt: "Triangle Room 2", genero: "Psicológico", anio: "2026" },
+      { img: "un-eternauta.webp", alt: "Un Eternauta", genero: "Sci-Fi", anio: "2026" },
+      { img: "without-warning.webp", alt: "Without Warning", genero: "Thriller", anio: "2026" },
+      { img: "bigfoot.webp", alt: "Bigfoot", genero: "Acción", anio: "2026" },
+      { img: "bigfoot-2.webp", alt: "Bigfoot 2", genero: "Acción", anio: "2026" }
     ]},
     { titulo: "Recomendados de Mlive", portadas: [
       { img: "divina-comedia.webp", alt: "Divina Comedia", genero: "Clásico", anio: "2026" },
       { img: "las-entrevistas.webp", alt: "Las Entrevistas", genero: "Thriller", anio: "2025" },
       { img: "triangle-room.webp", alt: "Triangle Room", genero: "Psicológico", anio: "2026" },
-      { img: "eternamente-vivo-biografia.webp", alt: "Eternamente Vivo: Biografía, la vida del autor", genero: "Biografía", anio: "2026" }
+      { img: "eternamente-vivo-biografia.webp", alt: "Eternamente Vivo: Biografía", genero: "Biografía", anio: "2026" }
     ]}
   ];
 
@@ -739,6 +799,38 @@
     body.classList.remove('menu-abierto');
     menu.setAttribute('aria-hidden', 'true');
   }
+
+  // ---------- APARTADOS DE CAPÍTULOS ----------
+  const unicas = lista => { const v = new Set(); return lista.filter(p => !v.has(p.img) && v.add(p.img)); };
+  const deSeccion = t => unicas(secciones.find(s => s.titulo === t).portadas);
+  const porImg = imgs => imgs.map(i => catalogo.find(p => p.img === i)).filter(Boolean);
+
+  const apartados = {
+    '0':   { titulo: '0 capítulos',   historias: () => deSeccion('Cero Capítulos') },
+    '3':   { titulo: '3 capítulos',   historias: () => deSeccion('Tres Capítulos') },
+    '4-5': { titulo: '4-5 capítulos', historias: () => deSeccion('Cuatro o Cinco Capítulos') },
+    '5+':  { titulo: '+5 capítulos',  historias: () => porImg([
+      'las-entrevistas.webp', 'eternamente-vivo-biografia.webp', 'eternamente-vivo-murray.webp',
+      'triangle-room.webp', 'divina-comedia.webp']) }
+  };
+
+  function abrirApartado(clave) {
+    const ap = apartados[clave], lista = ap.historias();
+    document.getElementById('apartadoTitulo').textContent = ap.titulo;
+    document.getElementById('apartadoCant').textContent = lista.length + (lista.length === 1 ? ' historia' : ' historias');
+    document.getElementById('apartadoGrilla').innerHTML = lista.map(p =>
+      `<div class="portada">` +
+      (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
+      `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('');
+
+    ocultarMenu();
+    body.classList.add('en-apartado');
+    window.scrollTo(0, 0);
+    history.pushState({ v: 'apartado' }, '');
+  }
+
+  document.getElementById('abrirMenu').addEventListener('click', abrirMenu);
+  document.querySelectorAll('.menu-item').forEach(b => b.addEventListener('click', () => abrirApartado(b.dataset.ap)));
 
   // ---------- AUTENTICACIÓN ----------
   function abrirAuth() {
@@ -860,7 +952,9 @@
     }
   });
 
-  document.getElementById('abrirMenu').addEventListener('click', abrirMenu);
+  // Botones para volver atrás corregidos con history.back()
+  document.getElementById('cerrarBuscar').addEventListener('click', () => history.back());
+  document.getElementById('cerrarApartado').addEventListener('click', () => history.back());
   document.getElementById('cerrarMenu').addEventListener('click', () => history.back());
 
   // Control de historial popstate general
@@ -868,10 +962,11 @@
     ocultarMenu();
     ocultarAuth();
     ocultarPerfil();
-    if (!body.classList.contains('buscando')) {
+    if (!body.classList.contains('buscando') && !body.classList.contains('en-apartado')) {
       iniciarAuto();
     }
     if (body.classList.contains('buscando') && history.state?.v !== 'buscar') body.classList.remove('buscando');
+    if (body.classList.contains('en-apartado') && history.state?.v !== 'apartado') body.classList.remove('en-apartado');
   });
 
   // Inicialización
