@@ -28,8 +28,9 @@
     font-family: 'Poppins', sans-serif;
     color: var(--texto);
     min-height: 100vh;
-    padding-bottom: 90px;
+    padding-bottom: 0;
   }
+  body.buscando, body.en-lista { padding-bottom: 90px; }
 
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 
@@ -39,10 +40,10 @@
   header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: 12px var(--margen);
     min-height: 64px;
-    gap: 20px;
+    gap: 18px;
   }
 
   .logo {
@@ -60,15 +61,16 @@
   .header-nav {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 28px; /* Espacio predeterminado constante entre elementos */
-    flex: 1;
+    justify-content: flex-start;
+    gap: 18px;
+    flex: 0 0 auto;
   }
 
   .nav-link {
-    font-size: clamp(0.8rem, 2.5vw, 0.95rem);
-    font-weight: 500;
-    color: rgba(255,255,255,0.75);
+    font-size: clamp(0.95rem, 3.6vw, 1.1rem);
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
     text-decoration: none;
     transition: color 0.2s;
   }
@@ -109,7 +111,7 @@
     transform: translateX(-50%);
     width: min(92%, 460px);
     height: 64px;
-    background: rgba(18, 18, 18, 0.9);
+    background: rgba(18, 18, 18, 0.72);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -390,8 +392,7 @@
   body.en-seccion #home > .hero-wrap, body.en-seccion #secciones { display: none; }
   body.en-seccion #moreDropdown { display: none; }
   body.en-seccion .header-nav { justify-content: flex-start; }
-  body.en-seccion .bottom-nav.oculto { opacity: 1; visibility: visible; transform: translateX(-50%); }
-  #secDrop .nav-link { font-size: clamp(1rem, 3.4vw, 1.15rem); font-weight: 600; color: #fff; }
+  #cerrarBuscar { display: none; }
   #secDrop .dropdown-content { left: 0; right: auto; }
   .tv-scroll { margin-top: 34px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   .tv-scroll::-webkit-scrollbar { display: none; }
@@ -923,14 +924,36 @@
 <script>
 (function () {
   /* ================== DATOS (edita aquí) ================== */
-  // dia: 0=domingo, 1=lunes ... 6=sábado | inicio: hora (21 = 21:00) | dur: horas disponible
+  // TV shows — dia: 0=domingo, 1=lunes ... 6=sábado | inicio: hora (21 = 21:00) | dur: horas disponible
   const PROGRAMAS = [
-    { id: 'dont-hug', titulo: "Don't Hug Me I'm Scared", dia: 1, inicio: 21, dur: 3, img: 'dont-hug-me-im-scared.webp', hero: 'dont-hug-me-im-scared-hero.webp', genero: 'Terror • 2026', sinopsis: '' },
-    { id: 'las-entrevistas', titulo: 'Las Entrevistas', dia: 2, inicio: 21, dur: 3, img: 'las-entrevistas.webp', hero: 'las-entrevistas-hero.webp', genero: 'Thriller • 2026', sinopsis: '' },
-    { id: 'extrame-talent', titulo: 'Extrame Talent', dia: 3, inicio: 21, dur: 3, img: 'extrame-talent.webp', hero: 'extrame-talent-hero.webp', genero: 'Talentos • 2026', sinopsis: '' },
-    { id: 'newsweek', titulo: 'Newsweek', dia: 5, inicio: 21, dur: 3, img: 'newsweek.webp', hero: 'newsweek-hero.webp', genero: 'Noticias • 2026', sinopsis: '' },
-    { id: 'toba-live', titulo: 'Toba Live', dia: 0, inicio: 21, dur: 3, img: 'toba-live.webp', hero: 'toba-live-hero.webp', genero: 'En vivo • 2026', sinopsis: '' }
+    { id: 'dont-hug', titulo: "Don't Hug Me I'm Scared", dia: 1, inicio: 21, dur: 3, hero: 'dont-hug-me-im-scared-hero.webp', genero: 'Terror • 2026', sinopsis: '' },
+    { id: 'las-entrevistas', titulo: 'Las Entrevistas', dia: 2, inicio: 21, dur: 3, hero: 'las-entrevistas-hero.webp', genero: 'Thriller • 2026', sinopsis: '' },
+    { id: 'extrame-talent', titulo: 'Extrame Talent', dia: 3, inicio: 21, dur: 3, hero: 'extrame-talent-hero.webp', genero: 'Talentos • 2026', sinopsis: '' },
+    { id: 'newsweek', titulo: 'Newsweek', dia: 5, inicio: 21, dur: 3, hero: 'newsweek-hero.webp', genero: 'Noticias • 2026', sinopsis: '' },
+    { id: 'toba-live', titulo: 'Toba Live', dia: 0, inicio: 21, dur: 3, hero: 'toba-live-hero.webp', genero: 'En vivo • 2026', sinopsis: '' }
   ];
+
+  // Documentals
+  const C = {
+    imputables: { id: 'imputables', img: 'imputables.webp', alt: 'Imputables', pronto: true },
+    epstein:    { id: 'epstein', img: 'the-epstein-files.webp', alt: 'The Epstein Files', pronto: true },
+    universe:   { id: 'universe', img: 'universe.webp', alt: 'Universe', pronto: true },
+    damaRoja:   { id: 'dama-roja', img: 'la-dama-roja.webp', alt: 'La Dama Roja', pronto: true },
+    damaDorada: { id: 'dama-dorada', img: 'la-dama-dorada.webp', alt: 'La Dama Dorada', pronto: true }
+  };
+  const DOCS = {
+    heroes: [
+      { ...C.imputables, genero: 'Caso real • 2027', texto: 'Un caso real en Argentina que expone una duda incómoda sobre la violencia juvenil.' },
+      { ...C.universe,   genero: 'Absurdo • 2028',   texto: 'Tu rutina puede romperse. Conoce las reglas para cruzar a otra realidad.' },
+      { ...C.damaRoja,   genero: 'Lore • 2027',      texto: 'Sumérgete en el universo extendido de Cube y descubre sus secretos más profundos.' }
+    ],
+    filas: [
+      { titulo: 'Recomendadas', portadas: [C.imputables, C.epstein, C.damaRoja] },
+      { titulo: 'Tres Capítulos', portadas: [C.imputables, C.universe] },
+      { titulo: 'Cuatro o Cinco Capítulos', portadas: [C.damaRoja, C.damaDorada, C.epstein] }
+    ]
+  };
+
   const SECCIONES = [
     { id: 'tv', n: 'TV shows' }, { id: 'platinum', n: 'Platinum' }, { id: 'interactive', n: 'Interactive' },
     { id: 'documentals', n: 'Documentals' }, { id: 'underground', n: 'Underground' }
@@ -953,9 +976,9 @@
   const wrap = document.getElementById('svHeroWrap'), trackSv = document.getElementById('svTrack'), dots = document.getElementById('svDots'), cuerpo = document.getElementById('svCuerpo');
   const PLAY_ = '<svg viewBox="0 0 24 24"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z" fill="#000"/></svg>';
   const BELL = '<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
-  let actualSec = 'home', ultimaClave = '', primeraVez = true;
+  let actualSec = 'home', ultimaClave = '', primeraVez = true, pausaHero = false;
 
-  /* ================== LÓGICA DE HORARIOS ================== */
+  /* ================== LÓGICA DE HORARIOS (TV shows) ================== */
   const hh = h => String(h % 24).padStart(2, '0') + ':00';
   function estado(p, ahora) {
     const h = ahora.getHours() + ahora.getMinutes() / 60;
@@ -974,17 +997,23 @@
   }
 
   /* ================== HEROES ================== */
+  function heroItems() {
+    if (actualSec === 'tv') {
+      return vivos().map(p => ({ id: p.id, img: p.hero, alt: p.titulo, genero: p.genero,
+        texto: `<b style="color:#fff">${p.titulo}</b><br>${p.sinopsis ? p.sinopsis + ' ' : ''}Disponible hasta las ${hh(p.inicio + p.dur)}` }));
+    }
+    if (actualSec === 'documentals') return DOCS.heroes;
+    return [];
+  }
   function renderHeroes(forzar) {
-    if (actualSec !== 'tv') { wrap.style.display = 'none'; return; }
-    const v = vivos(), clave = v.map(p => p.id).join();
+    const v = heroItems(), clave = actualSec + ':' + v.map(p => p.id).join();
     if (clave === ultimaClave && !forzar) return;
     ultimaClave = clave;
     wrap.style.display = v.length ? '' : 'none';
-    trackSv.innerHTML = v.map(p => `<article class="hero" aria-label="${p.titulo}">
-      <img class="hero-img" src="${IMG_BASE}${p.hero}" alt="${p.titulo}" onerror="this.style.display='none'">
-      <div class="hero-info"><p class="hero-genero">${p.genero}</p>
-      <p class="hero-sinopsis"><b style="color:#fff">${p.titulo}</b><br>${p.sinopsis || ''} Disponible hasta las ${hh(p.inicio + p.dur)}</p></div>
-      <button class="play-btn" aria-label="Leer ${p.titulo}" data-leer="${p.id}">${PLAY_}</button></article>`).join('');
+    trackSv.innerHTML = v.map(p => `<article class="hero" aria-label="${p.alt}">
+      <img class="hero-img" src="${IMG_BASE}${p.img}" alt="${p.alt}" onerror="this.style.display='none'">
+      <div class="hero-info"><p class="hero-genero">${p.genero}</p><p class="hero-sinopsis">${p.texto}</p></div>
+      <button class="play-btn" aria-label="Leer ${p.alt}" data-leer="${p.id}"${p.pronto ? ' data-pronto="1"' : ''}>${PLAY_}</button></article>`).join('');
     dots.innerHTML = v.length > 1 ? v.map((p, i) => `<button class="dot${i === 0 ? ' activo' : ''}" aria-label="Ir al hero ${i + 1}"></button>`).join('') : '';
     [...dots.children].forEach((d, i) => d.onclick = () => trackSv.scrollTo({ left: i * trackSv.clientWidth, behavior: 'smooth' }));
     trackSv.scrollLeft = 0;
@@ -996,11 +1025,21 @@
   trackSv.addEventListener('click', e => {
     const b = e.target.closest('[data-leer]');
     if (!b) return;
-    if (typeof abrirHistoria === 'function') abrirHistoria(b.dataset.leer);
+    if (b.dataset.pronto) alert('Próximamente.');
+    else if (typeof abrirHistoria === 'function') abrirHistoria(b.dataset.leer);
     else alert('Lectura próximamente.');
   });
+  ['touchstart', 'mouseenter'].forEach(ev => trackSv.addEventListener(ev, () => pausaHero = true, { passive: true }));
+  ['touchend', 'touchcancel', 'mouseleave'].forEach(ev => trackSv.addEventListener(ev, () => pausaHero = false, { passive: true }));
+  setInterval(() => { // avance automático como en el home
+    if (pausaHero || document.hidden || (actualSec !== 'tv' && actualSec !== 'documentals')) return;
+    const n = trackSv.children.length;
+    if (n < 2) return;
+    const i = Math.round(trackSv.scrollLeft / trackSv.clientWidth);
+    trackSv.scrollTo({ left: ((i + 1) % n) * trackSv.clientWidth, behavior: 'smooth' });
+  }, 5000);
 
-  /* ================== GRILLA ================== */
+  /* ================== GRILLA (TV shows) ================== */
   function filaHTML(dia, ahora) {
     const progs = PROGRAMAS.filter(p => p.dia === dia.d).sort((a, b) => a.inicio - b.inicio);
     const vacio = (a, b) => b > a ? `<div class="tv-blq vacio" style="left:${a * HW}px;width:${(b - a) * HW - 6}px"><span>Sin programación</span></div>` : '';
@@ -1050,6 +1089,11 @@
   });
 
   /* ================== NAVEGACIÓN ================== */
+  function filasHTML(filas) {
+    return filas.map(f => `<section class="seccion"><h2>${f.titulo}</h2><div class="carrusel">${
+      f.portadas.map(p => `<div class="portada">${p.pronto ? '<span class="badge">Próximamente</span>' : ''}<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('')
+    }</div></section>`).join('');
+  }
   function enlazarHome() {
     nav.querySelectorAll('a').forEach((a, i) => a.onclick = e => { e.preventDefault(); mostrar(i === 0 ? 'tv' : 'platinum'); });
   }
@@ -1066,10 +1110,12 @@
       document.getElementById('secBtn').onclick = e => { e.preventDefault(); document.getElementById('secDrop').classList.toggle('activo'); };
       nav.querySelectorAll('[data-sec]').forEach(a => a.onclick = e => { e.preventDefault(); mostrar(a.dataset.sec); });
       if (id === 'tv') { cuerpo.innerHTML = '<div class="tv-scroll" id="tvScroll"></div>'; primeraVez = true; renderGrilla(); }
+      else if (id === 'documentals') cuerpo.innerHTML = filasHTML(DOCS.filas);
       else cuerpo.innerHTML = `<p class="tv-vacio">Aún no hay contenido en ${s.n}.<br>Pronto verás aquí su programación.</p>`;
       renderHeroes(true);
     }
     window.scrollTo(0, 0);
+    setTimeout(() => window.dispatchEvent(new Event('scroll')), 60); // recalcula la barra inferior
   }
   enlazarHome();
   document.querySelectorAll('#moreDropdown .dropdown-link').forEach((a, i) => a.onclick = e => {
@@ -1083,7 +1129,7 @@
   });
   document.getElementById('navHome').addEventListener('click', () => mostrar('home'));
 
-  // Actualiza solo: heroes aparecen/desaparecen y la grilla se refresca
+  // TV shows: heroes aparecen/desaparecen y la grilla se refresca sola
   setInterval(() => { if (actualSec === 'tv') { renderGrilla(); renderHeroes(); } }, 30000);
 })();
 </script>
