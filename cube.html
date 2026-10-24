@@ -383,6 +383,43 @@
   body.en-lista #lista { display: block; }
   body.en-lista #home { display: none; }
   #lista { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
+
+  /* ---------- SECCIONES (TV shows, Platinum, etc.) ---------- */
+  #seccionView { display: none; }
+  body.en-seccion #seccionView { display: block; }
+  body.en-seccion #home > .hero-wrap, body.en-seccion #secciones { display: none; }
+  body.en-seccion #moreDropdown { display: none; }
+  body.en-seccion .header-nav { justify-content: flex-start; }
+  body.en-seccion .bottom-nav.oculto { opacity: 1; visibility: visible; transform: translateX(-50%); }
+  #secDrop .nav-link { font-size: clamp(1rem, 3.4vw, 1.15rem); font-weight: 600; color: #fff; }
+  #secDrop .dropdown-content { left: 0; right: auto; }
+  .tv-scroll { margin-top: 34px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .tv-scroll::-webkit-scrollbar { display: none; }
+  .tv-inner { position: relative; }
+  .tv-row { display: flex; height: 104px; border-bottom: 2px solid var(--borde); }
+  .tv-row.hoy { border-bottom-color: var(--verde); }
+  .tv-row.tv-horas { height: 44px; border-bottom: none; }
+  .tv-dia { position: sticky; left: 0; z-index: 3; flex: 0 0 96px; width: 96px; background: #000; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .95rem; color: #fff; padding: 0 6px; text-align: center; }
+  .tv-row.hoy .tv-dia { color: var(--verde); }
+  .tv-horas .tv-dia { justify-content: flex-start; padding-left: var(--margen); font-size: 1.25rem; }
+  .tv-line { position: relative; flex: 0 0 1728px; }
+  .tv-hora { position: absolute; top: 10px; font-size: .85rem; color: var(--texto-suave); font-weight: 500; }
+  .tv-blq { position: absolute; top: 10px; bottom: 10px; padding: 10px 12px; border-radius: 12px; background: var(--placeholder); border: 1px solid var(--borde); text-align: left; display: flex; flex-direction: column; justify-content: center; gap: 4px; overflow: hidden; color: #fff; }
+  .tv-blq small { font-size: .7rem; color: var(--texto-suave); font-weight: 600; letter-spacing: .3px; }
+  .tv-blq b { font-size: .95rem; font-weight: 700; line-height: 1.2; }
+  .tv-blq em { font-style: normal; font-size: .68rem; color: var(--verde); font-weight: 600; }
+  .tv-blq.live { border: 2px solid var(--verde); background: #0d1100; }
+  .tv-blq.vacio { background: transparent; border: 1px dashed #1c1c1c; color: #5f5f5f; font-size: .75rem; align-items: center; justify-content: center; pointer-events: none; }
+  .tv-ahora { position: absolute; top: 44px; bottom: 0; width: 2px; background: var(--verde); z-index: 2; pointer-events: none; opacity: .8; }
+  .tv-vacio { color: var(--texto-suave); padding: 40px var(--margen); text-align: center; line-height: 1.6; }
+  .tv-sheet { position: fixed; left: 50%; bottom: 96px; transform: translate(-50%, 20px); width: min(92%, 460px); z-index: 120; background: #0a0a0a; border: 2px solid var(--borde); border-radius: var(--radio); padding: 18px 20px; opacity: 0; visibility: hidden; transition: all .25s ease; }
+  .tv-sheet.abierto { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+  .tv-sheet b { display: block; font-size: 1.05rem; margin-bottom: 4px; padding-right: 28px; }
+  .tv-sheet p { color: var(--texto-suave); font-size: .88rem; margin-bottom: 14px; }
+  .tv-sheet .sh-x { position: absolute; top: 8px; right: 12px; font-size: 1.6rem; color: var(--texto-suave); }
+  .tv-sheet .sh-bell { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 999px; background: var(--verde); color: #000; font-weight: 700; font-size: .9rem; }
+  .tv-sheet .sh-bell svg { width: 20px; height: 20px; }
+  .tv-sheet .sh-msg { display: block; margin-top: 10px; color: var(--texto-suave); font-size: .78rem; }
 </style>
 </head>
 <body>
@@ -869,7 +906,8 @@
   const bottomNav = document.getElementById('bottomNav');
   window.addEventListener('scroll', () => {
     const scrollPos = window.scrollY + window.innerHeight;
-    const footerTop = document.querySelector('pie') ? document.querySelector('pie').offsetTop : document.body.scrollHeight - 600;
+    const pieEl = document.querySelector('.pie');
+    const footerTop = pieEl ? pieEl.offsetTop : document.body.scrollHeight - 600;
     if (scrollPos >= footerTop + 50) {
       bottomNav.classList.add('oculto');
     } else {
@@ -879,6 +917,175 @@
 
   actualizarHeader();
   document.getElementById('anio').textContent = new Date().getFullYear();
+</script>
+
+<!-- ================= SECCIONES: TV shows, Platinum, Interactive, Documentals, Underground ================= -->
+<script>
+(function () {
+  /* ================== DATOS (edita aquí) ================== */
+  // dia: 0=domingo, 1=lunes ... 6=sábado | inicio: hora (21 = 21:00) | dur: horas disponible
+  const PROGRAMAS = [
+    { id: 'dont-hug', titulo: "Don't Hug Me I'm Scared", dia: 1, inicio: 21, dur: 3, img: 'dont-hug-me-im-scared.webp', hero: 'dont-hug-me-im-scared-hero.webp', genero: 'Terror • 2026', sinopsis: '' },
+    { id: 'las-entrevistas', titulo: 'Las Entrevistas', dia: 2, inicio: 21, dur: 3, img: 'las-entrevistas.webp', hero: 'las-entrevistas-hero.webp', genero: 'Thriller • 2026', sinopsis: '' },
+    { id: 'extrame-talent', titulo: 'Extrame Talent', dia: 3, inicio: 21, dur: 3, img: 'extrame-talent.webp', hero: 'extrame-talent-hero.webp', genero: 'Talentos • 2026', sinopsis: '' },
+    { id: 'newsweek', titulo: 'Newsweek', dia: 5, inicio: 21, dur: 3, img: 'newsweek.webp', hero: 'newsweek-hero.webp', genero: 'Noticias • 2026', sinopsis: '' },
+    { id: 'toba-live', titulo: 'Toba Live', dia: 0, inicio: 21, dur: 3, img: 'toba-live.webp', hero: 'toba-live-hero.webp', genero: 'En vivo • 2026', sinopsis: '' }
+  ];
+  const SECCIONES = [
+    { id: 'tv', n: 'TV shows' }, { id: 'platinum', n: 'Platinum' }, { id: 'interactive', n: 'Interactive' },
+    { id: 'documentals', n: 'Documentals' }, { id: 'underground', n: 'Underground' }
+  ];
+  const DIAS = [{ n: 'Lunes', d: 1 }, { n: 'Martes', d: 2 }, { n: 'Miércoles', d: 3 }, { n: 'Jueves', d: 4 }, { n: 'Viernes', d: 5 }, { n: 'Sábado', d: 6 }, { n: 'Domingo', d: 0 }];
+  const NOM_DIA = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  const HW = 72, COL = 96; // ancho por hora / ancho columna de días
+
+  /* ================== ESTRUCTURA ================== */
+  const body = document.body, home = document.getElementById('home');
+  const nav = document.querySelector('.header-nav');
+  const navOriginal = nav.innerHTML;
+  const vista = document.createElement('div');
+  vista.id = 'seccionView';
+  vista.innerHTML = '<section class="hero-wrap" id="svHeroWrap"><div class="hero-track" id="svTrack"></div><div class="dots" id="svDots"></div></section><div id="svCuerpo"></div>';
+  home.appendChild(vista);
+  const sheet = document.createElement('div');
+  sheet.className = 'tv-sheet';
+  document.body.appendChild(sheet);
+  const wrap = document.getElementById('svHeroWrap'), trackSv = document.getElementById('svTrack'), dots = document.getElementById('svDots'), cuerpo = document.getElementById('svCuerpo');
+  const PLAY_ = '<svg viewBox="0 0 24 24"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z" fill="#000"/></svg>';
+  const BELL = '<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
+  let actualSec = 'home', ultimaClave = '', primeraVez = true;
+
+  /* ================== LÓGICA DE HORARIOS ================== */
+  const hh = h => String(h % 24).padStart(2, '0') + ':00';
+  function estado(p, ahora) {
+    const h = ahora.getHours() + ahora.getMinutes() / 60;
+    if (ahora.getDay() === p.dia) {
+      if (h >= p.inicio && h < p.inicio + p.dur) return 'live';
+      if (h >= p.inicio + p.dur) return 'ended';
+    }
+    return 'later';
+  }
+  const vivos = () => PROGRAMAS.filter(p => estado(p, new Date()) === 'live');
+  function proxima(p) {
+    const e = estado(p, new Date());
+    if (e === 'ended') return `Ya terminó hoy. Vuelve el ${NOM_DIA[p.dia]} a las ${hh(p.inicio)}.`;
+    if (new Date().getDay() === p.dia) return `Disponible hoy a las ${hh(p.inicio)} (${p.dur} h).`;
+    return `Disponible el ${NOM_DIA[p.dia]} a las ${hh(p.inicio)} (${p.dur} h).`;
+  }
+
+  /* ================== HEROES ================== */
+  function renderHeroes(forzar) {
+    if (actualSec !== 'tv') { wrap.style.display = 'none'; return; }
+    const v = vivos(), clave = v.map(p => p.id).join();
+    if (clave === ultimaClave && !forzar) return;
+    ultimaClave = clave;
+    wrap.style.display = v.length ? '' : 'none';
+    trackSv.innerHTML = v.map(p => `<article class="hero" aria-label="${p.titulo}">
+      <img class="hero-img" src="${IMG_BASE}${p.hero}" alt="${p.titulo}" onerror="this.style.display='none'">
+      <div class="hero-info"><p class="hero-genero">${p.genero}</p>
+      <p class="hero-sinopsis"><b style="color:#fff">${p.titulo}</b><br>${p.sinopsis || ''} Disponible hasta las ${hh(p.inicio + p.dur)}</p></div>
+      <button class="play-btn" aria-label="Leer ${p.titulo}" data-leer="${p.id}">${PLAY_}</button></article>`).join('');
+    dots.innerHTML = v.length > 1 ? v.map((p, i) => `<button class="dot${i === 0 ? ' activo' : ''}" aria-label="Ir al hero ${i + 1}"></button>`).join('') : '';
+    [...dots.children].forEach((d, i) => d.onclick = () => trackSv.scrollTo({ left: i * trackSv.clientWidth, behavior: 'smooth' }));
+    trackSv.scrollLeft = 0;
+  }
+  trackSv.addEventListener('scroll', () => {
+    const i = Math.round(trackSv.scrollLeft / trackSv.clientWidth);
+    [...dots.children].forEach((d, n) => d.classList.toggle('activo', n === i));
+  }, { passive: true });
+  trackSv.addEventListener('click', e => {
+    const b = e.target.closest('[data-leer]');
+    if (!b) return;
+    if (typeof abrirHistoria === 'function') abrirHistoria(b.dataset.leer);
+    else alert('Lectura próximamente.');
+  });
+
+  /* ================== GRILLA ================== */
+  function filaHTML(dia, ahora) {
+    const progs = PROGRAMAS.filter(p => p.dia === dia.d).sort((a, b) => a.inicio - b.inicio);
+    const vacio = (a, b) => b > a ? `<div class="tv-blq vacio" style="left:${a * HW}px;width:${(b - a) * HW - 6}px"><span>Sin programación</span></div>` : '';
+    let bl = '', cur = 0;
+    progs.forEach(p => {
+      const live = estado(p, ahora) === 'live';
+      bl += vacio(cur, p.inicio);
+      bl += `<button class="tv-blq${live ? ' live' : ''}" data-id="${p.id}" style="left:${p.inicio * HW}px;width:${p.dur * HW - 6}px"><small>${hh(p.inicio)} - ${hh(p.inicio + p.dur)}</small><b>${p.titulo}</b>${live ? '<em>Disponible ahora</em>' : ''}</button>`;
+      cur = p.inicio + p.dur;
+    });
+    bl += vacio(cur, 24);
+    return `<div class="tv-row${dia.d === ahora.getDay() ? ' hoy' : ''}"><div class="tv-dia">${dia.n}</div><div class="tv-line">${bl}</div></div>`;
+  }
+  function renderGrilla() {
+    const sc = document.getElementById('tvScroll');
+    if (!sc) return;
+    const ahora = new Date(), x = sc.scrollLeft;
+    const horas = Array.from({ length: 24 }, (_, i) => `<span class="tv-hora" style="left:${i * HW}px">${hh(i)}</span>`).join('');
+    const fecha = String(ahora.getDate()).padStart(2, '0') + '/' + String(ahora.getMonth() + 1).padStart(2, '0');
+    const pos = COL + (ahora.getHours() + ahora.getMinutes() / 60) * HW;
+    sc.innerHTML = `<div class="tv-inner" style="width:${COL + 24 * HW}px">
+      <div class="tv-row tv-horas"><div class="tv-dia">${fecha}</div><div class="tv-line">${horas}</div></div>
+      ${DIAS.map(d => filaHTML(d, ahora)).join('')}
+      <div class="tv-ahora" style="left:${pos}px"></div></div>`;
+    sc.scrollLeft = primeraVez ? Math.max(0, ahora.getHours() * HW - 40) : x;
+    primeraVez = false;
+  }
+  cuerpo.addEventListener('click', e => {
+    const b = e.target.closest('[data-id]');
+    if (!b) return;
+    const p = PROGRAMAS.find(x => x.id === b.dataset.id);
+    if (estado(p, new Date()) === 'live') {
+      cerrarSheet();
+      renderHeroes();
+      const i = vivos().findIndex(x => x.id === p.id);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      trackSv.scrollTo({ left: i * trackSv.clientWidth, behavior: 'smooth' });
+    } else {
+      sheet.innerHTML = `<button class="sh-x" aria-label="Cerrar">&times;</button><b>${p.titulo}</b><p>${proxima(p)}</p><button class="sh-bell">${BELL} Notificarme</button><small class="sh-msg"></small>`;
+      sheet.classList.add('abierto');
+    }
+  });
+  function cerrarSheet() { sheet.classList.remove('abierto'); }
+  sheet.addEventListener('click', e => {
+    if (e.target.closest('.sh-x')) cerrarSheet();
+    if (e.target.closest('.sh-bell')) sheet.querySelector('.sh-msg').textContent = 'Las notificaciones estarán disponibles muy pronto.';
+  });
+
+  /* ================== NAVEGACIÓN ================== */
+  function enlazarHome() {
+    nav.querySelectorAll('a').forEach((a, i) => a.onclick = e => { e.preventDefault(); mostrar(i === 0 ? 'tv' : 'platinum'); });
+  }
+  function mostrar(id) {
+    actualSec = id; cerrarSheet(); ultimaClave = '';
+    if (id === 'home') {
+      body.classList.remove('en-seccion');
+      nav.innerHTML = navOriginal; enlazarHome();
+    } else {
+      body.classList.add('en-seccion');
+      const s = SECCIONES.find(x => x.id === id);
+      nav.innerHTML = `<div class="dropdown" id="secDrop"><a href="#" class="nav-link" id="secBtn">${s.n} ▾</a>
+        <div class="dropdown-content">${SECCIONES.filter(x => x.id !== id).map(x => `<a href="#" data-sec="${x.id}">${x.n}</a>`).join('')}</div></div>`;
+      document.getElementById('secBtn').onclick = e => { e.preventDefault(); document.getElementById('secDrop').classList.toggle('activo'); };
+      nav.querySelectorAll('[data-sec]').forEach(a => a.onclick = e => { e.preventDefault(); mostrar(a.dataset.sec); });
+      if (id === 'tv') { cuerpo.innerHTML = '<div class="tv-scroll" id="tvScroll"></div>'; primeraVez = true; renderGrilla(); }
+      else cuerpo.innerHTML = `<p class="tv-vacio">Aún no hay contenido en ${s.n}.<br>Pronto verás aquí su programación.</p>`;
+      renderHeroes(true);
+    }
+    window.scrollTo(0, 0);
+  }
+  enlazarHome();
+  document.querySelectorAll('#moreDropdown .dropdown-link').forEach((a, i) => a.onclick = e => {
+    e.preventDefault();
+    document.getElementById('moreDropdown').classList.remove('activo');
+    mostrar(['interactive', 'documentals', 'underground'][i]);
+  });
+  document.addEventListener('click', e => {
+    const d = document.getElementById('secDrop');
+    if (d && !d.contains(e.target)) d.classList.remove('activo');
+  });
+  document.getElementById('navHome').addEventListener('click', () => mostrar('home'));
+
+  // Actualiza solo: heroes aparecen/desaparecen y la grilla se refresca
+  setInterval(() => { if (actualSec === 'tv') { renderGrilla(); renderHeroes(); } }, 30000);
+})();
 </script>
 </body>
 </html>
