@@ -30,7 +30,7 @@
     min-height: 100vh;
     padding-bottom: 0;
   }
-  body.buscando, body.en-lista { padding-bottom: 90px; }
+  body.buscando, body.en-lista, body.en-notif { padding-bottom: 90px; }
 
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 
@@ -317,7 +317,7 @@
     margin-top: 70px;
     padding: 64px var(--margen) calc(60px + env(safe-area-inset-bottom, 0px));
   }
-  body.buscando .pie, body.en-lista .pie { display: none; }
+  body.buscando .pie, body.en-lista .pie, body.en-notif .pie { display: none; }
   .pie-in { max-width: 1100px; margin: 0 auto; }
 
   .pie-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
@@ -385,7 +385,7 @@
   .perfil-opcion.salir { margin-top: 20px; color: #ff4d4d; justify-content: center; }
 
   body.en-lista #lista { display: block; }
-  body.en-lista #home { display: none; }
+  body.en-lista #home, body.en-notif #home { display: none; }
   #lista { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
 
   /* ---------- SECCIONES (TV shows, Platinum, etc.) ---------- */
@@ -423,6 +423,24 @@
   .tv-sheet .sh-bell { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 999px; background: var(--verde); color: #000; font-weight: 700; font-size: .9rem; }
   .tv-sheet .sh-bell svg { width: 20px; height: 20px; }
   .tv-sheet .sh-msg { display: block; margin-top: 10px; color: var(--texto-suave); font-size: .78rem; }
+  /* ---------- NOTIFICACIONES ---------- */
+  #notifs { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
+  body.en-notif #notifs { display: block; }
+  .notif-lista { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
+  .notif { position: relative; display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--placeholder); border: 1px solid var(--borde); border-radius: var(--radio); }
+  .notif.nueva { border-color: #34440a; }
+  .notif.nueva::after { content: ""; position: absolute; top: 14px; right: 14px; width: 8px; height: 8px; border-radius: 50%; background: var(--verde); }
+  .notif-ico { flex: 0 0 44px; height: 44px; border-radius: 12px; background: #000; color: var(--verde); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.45rem; padding-bottom: 4px; }
+  .notif-cuerpo { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding-right: 14px; }
+  .notif-cuerpo b { font-size: .98rem; font-weight: 700; }
+  .notif-cuerpo span { font-size: .88rem; color: var(--texto-suave); }
+  .notif-cuerpo small { font-size: .72rem; color: #6f6f6f; margin-top: 2px; }
+  .nav-perfil-wrap { position: relative; display: inline-flex; }
+  .notif-dot { position: absolute; top: -3px; left: -3px; width: 11px; height: 11px; border-radius: 50%; background: #ff3b30; border: 2px solid #141414; }
+  .perfil-cuenta { display: inline-block; min-width: 20px; margin-left: 8px; padding: 1px 6px; border-radius: 999px; background: #ff3b30; color: #fff; font-size: .72rem; font-weight: 700; text-align: center; }
+  .perfil-cuenta[hidden] { display: none; }
+  .tv-sheet .sh-bell.on { background: transparent; color: var(--verde); border: 2px solid var(--verde); }
+  .tv-sheet .sh-bell.on svg { stroke: var(--verde); }
 </style>
 </head>
 <body>
@@ -484,6 +502,16 @@
   <p class="sin-resultados" id="listaVacia" hidden></p>
 </section>
 
+<!-- NOTIFICACIONES -->
+<section id="notifs" aria-label="Notificaciones">
+  <div class="buscar-top">
+    <button class="volver-btn" id="cerrarNotifs" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <h1 style="font-size: 1.3rem; font-weight:700;">Notificaciones</h1>
+  </div>
+  <div class="notif-lista" id="notifLista"></div>
+  <p class="sin-resultados" id="notifVacia" hidden>No tienes notificaciones.</p>
+</section>
+
 <!-- CUENTA / MODALES -->
 <div class="auth-modal" id="authModal" role="dialog" aria-label="Unirse a Cube">
   <button class="auth-x" id="cerrarAuth" aria-label="Cerrar">&times;</button>
@@ -510,7 +538,7 @@
   </div>
   <div class="perfil-opciones">
     <button class="perfil-opcion" id="irFavoritos"><span>Favoritos</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
-    <button class="perfil-opcion" id="irGuardados"><span>Guardados (ver más tarde)</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
+    <button class="perfil-opcion" id="irNotificaciones"><span>Notificaciones<b class="perfil-cuenta" id="notifCuenta" hidden>0</b></span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
     <button class="perfil-opcion salir" id="btnSalir">Cerrar sesión</button>
   </div>
 </aside>
@@ -786,10 +814,12 @@
     const u = usuario();
     const navPerfilBtn = document.getElementById('navPerfil');
     if (u) {
-      navPerfilBtn.innerHTML = `<img class="bottom-nav-avatar" src="${u.foto || AVATAR}" alt="Perfil">`;
+      const punto = (typeof hayNotifNuevas === 'function' && hayNotifNuevas()) ? '<span class="notif-dot"></span>' : '';
+      navPerfilBtn.innerHTML = `<span class="nav-perfil-wrap"><img class="bottom-nav-avatar" src="${u.foto || AVATAR}" alt="Perfil">${punto}</span>`;
     } else {
       navPerfilBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
     }
+    if (typeof actualizarContadorNotif === 'function') actualizarContadorNotif();
   }
 
   function activarItemNav(idBtn) {
@@ -809,7 +839,7 @@
     }
   }
   function cerrarModales() {
-    document.body.classList.remove('auth-abierto', 'perfil-abierto', 'buscando', 'en-lista');
+    document.body.classList.remove('auth-abierto', 'perfil-abierto', 'buscando', 'en-lista', 'en-notif');
     activarItemNav('navHome');
     window.scrollTo(0, 0);
     iniciarAuto();
@@ -852,7 +882,6 @@
   }
 
   document.getElementById('irFavoritos').onclick = () => { renderLista('favoritos'); };
-  document.getElementById('irGuardados').onclick = () => { renderLista('guardados'); };
   document.getElementById('btnSalir').onclick = () => { localStorage.removeItem('cube_sesion_activa'); document.body.classList.remove('perfil-abierto'); actualizarHeader(); };
 
   // Autenticación Forms
@@ -909,7 +938,7 @@
   // ---------- Control de Desvanecimiento de la barra inferior al llegar al pie de página ----------
   const bottomNav = document.getElementById('bottomNav');
   window.addEventListener('scroll', () => {
-    if (document.body.classList.contains('buscando') || document.body.classList.contains('en-lista')) {
+    if (['buscando', 'en-lista', 'en-notif'].some(c => document.body.classList.contains(c))) {
       bottomNav.classList.remove('oculto'); // en búsqueda y listas no hay pie de página
       return;
     }
@@ -931,13 +960,14 @@
 <script>
 (function () {
   /* ================== DATOS (edita aquí) ================== */
-  // TV shows — dia: 0=domingo, 1=lunes ... 6=sábado | inicio: hora (21 = 21:00) | dur: horas disponible
+  // TV shows — desde: fecha del primer episodio | episodios (opcional): lista por semana, ej. [1, 2, 4, 5]; si no se pone, cuenta 1, 2, 3...
+  // dia: 0=domingo, 1=lunes ... 6=sábado | inicio: hora (21 = 21:00) | dur: horas disponible
   const PROGRAMAS = [
-    { id: 'dont-hug', titulo: "Don't Hug Me I'm Scared", dia: 1, inicio: 21, dur: 3, hero: 'hero-dont-hug-me-im-scared.webp', tituloHero: "Don't Hug Me I'm Scared", genero: 'Terror • 2026', sinopsis: '' },
-    { id: 'las-entrevistas', titulo: 'Las Entrevistas', dia: 2, inicio: 21, dur: 3, hero: 'hero-las-entrevistas-2.webp', tituloHero: 'Las Entrevistas 2', genero: 'Thriller • 2026', sinopsis: '' },
-    { id: 'extrame-talent', titulo: 'Extrame Talent', dia: 3, inicio: 21, dur: 3, hero: 'extrame-talent-hero.webp', genero: 'Talentos • 2026', sinopsis: '' },
-    { id: 'newsweek', titulo: 'Newsweek', dia: 5, inicio: 21, dur: 3, hero: 'hero-newsweek.webp', tituloHero: 'Newsweek', genero: 'Noticias • 2026', sinopsis: '' },
-    { id: 'toba-live', titulo: 'Toba Live', dia: 0, inicio: 21, dur: 3, hero: 'hero-toba-live.webp', tituloHero: 'Toba Live', fondoClaro: true, genero: 'En vivo • 2026', sinopsis: '' }
+    { id: 'dont-hug', desde: '2026-10-26', titulo: "Don't Hug Me I'm Scared", dia: 1, inicio: 21, dur: 3, hero: 'hero-dont-hug-me-im-scared.webp', tituloHero: "Don't Hug Me I'm Scared", genero: 'Terror • 2026', sinopsis: '' },
+    { id: 'las-entrevistas', desde: '2026-10-27', titulo: 'Las Entrevistas', dia: 2, inicio: 21, dur: 3, hero: 'hero-las-entrevistas-2.webp', tituloHero: 'Las Entrevistas 2', genero: 'Thriller • 2026', sinopsis: '' },
+    { id: 'extrame-talent', desde: '2026-10-28', titulo: 'Extrame Talent', dia: 3, inicio: 21, dur: 3, hero: 'extrame-talent-hero.webp', genero: 'Talentos • 2026', sinopsis: '' },
+    { id: 'newsweek', desde: '2026-10-30', titulo: 'Newsweek', dia: 5, inicio: 21, dur: 3, hero: 'hero-newsweek.webp', tituloHero: 'Newsweek', genero: 'Noticias • 2026', sinopsis: '' },
+    { id: 'toba-live', desde: '2026-11-01', titulo: 'Toba Live', dia: 0, inicio: 21, dur: 3, hero: 'hero-toba-live.webp', tituloHero: 'Toba Live', fondoClaro: true, genero: 'En vivo • 2026', sinopsis: '' }
   ];
 
   // Documentals
@@ -952,7 +982,7 @@
     heroes: [
       { ...C.imputables, img: 'hero-imputables.webp', titulo: 'Imputables', genero: 'Caso real • 2027', texto: 'Un caso real en Argentina que expone una duda incómoda sobre la violencia juvenil.' },
       { ...C.universe,   img: 'hero-universe.webp', titulo: 'Universe', genero: 'Absurdo • 2028',   texto: 'Tu rutina puede romperse. Conoce las reglas para cruzar a otra realidad.' },
-      { ...C.damaRoja,   genero: 'Lore • 2027',      texto: 'Sumérgete en el universo extendido de Cube y descubre sus secretos más profundos.' }
+      { ...C.damaDorada, img: 'hero-la-dama-dorada.webp', titulo: 'La Dama Dorada', genero: 'Lore • 2027',      texto: 'Sumérgete en el universo extendido de Cube y descubre sus secretos más profundos.' }
     ],
     filas: [
       { titulo: 'Recomendadas', portadas: [C.imputables, C.epstein, C.damaRoja] },
@@ -1112,14 +1142,20 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
       trackSv.scrollTo({ left: i * trackSv.clientWidth, behavior: 'smooth' });
     } else {
-      sheet.innerHTML = `<button class="sh-x" aria-label="Cerrar">&times;</button><b>${p.titulo}</b><p>${proxima(p)}</p><button class="sh-bell">${BELL} Notificarme</button><small class="sh-msg"></small>`;
+      pintarSheet(p);
       sheet.classList.add('abierto');
     }
   });
   function cerrarSheet() { sheet.classList.remove('abierto'); }
   sheet.addEventListener('click', e => {
     if (e.target.closest('.sh-x')) cerrarSheet();
-    if (e.target.closest('.sh-bell')) sheet.querySelector('.sh-msg').textContent = 'Las notificaciones estarán disponibles muy pronto.';
+    const b = e.target.closest('.sh-bell');
+    if (!b) return;
+    const p = PROGRAMAS.find(x => x.id === b.dataset.prog);
+    if (!usuario()) { pintarSheet(p, 'Inicia sesión para activar las notificaciones.'); abrirModal('auth'); return; }
+    const est = leer(); est.subs = est.subs || {};
+    if (est.subs[p.id]) { delete est.subs[p.id]; guardar(est); pintarSheet(p, 'Notificación desactivada.'); }
+    else { est.subs[p.id] = Date.now(); guardar(est); pintarSheet(p, 'Listo: te avisaremos cuando llegue cada episodio.'); }
   });
 
   /* ================== NAVEGACIÓN ================== */
@@ -1163,6 +1199,81 @@
     if (d && !d.contains(e.target)) d.classList.remove('activo');
   });
   document.getElementById('navHome').addEventListener('click', () => mostrar('home'));
+
+  /* ================== NOTIFICACIONES ================== */
+  const DIAS_NOTIF = 7; // cuántos días atrás se muestran las notificaciones
+  // Estrenos: una notificación por obra, aparece cuando llega su fecha
+  const ESTRENOS = [
+    // { titulo: 'Nombre de la obra', fecha: '2026-11-01T12:00' },
+    { titulo: 'Eternamente Vivo 5', fecha: '2026-10-25T12:00' } // EJEMPLO: bórralo o cámbialo
+  ];
+  const kEst = () => { const u = usuario(); return u ? 'cube_notif_' + u.email : null; };
+  function leer() {
+    const k = kEst(); if (!k) return {};
+    try { return JSON.parse(localStorage.getItem(k) || '{}'); } catch (e) { return {}; }
+  }
+  function guardar(o) { const k = kEst(); if (k) localStorage.setItem(k, JSON.stringify(o)); }
+  function pintarSheet(p, msg) {
+    const on = !!(usuario() && (leer().subs || {})[p.id]);
+    sheet.innerHTML = `<button class="sh-x" aria-label="Cerrar">&times;</button><b>${p.titulo}</b><p>${proxima(p)}</p><button class="sh-bell${on ? ' on' : ''}" data-prog="${p.id}">${BELL} ${on ? 'Notificación activada' : 'Notificarme'}</button><small class="sh-msg">${msg || ''}</small>`;
+  }
+  function generar() {
+    if (!usuario()) return [];
+    const est = leer(), ahora = Date.now(), ini = ahora - DIAS_NOTIF * 864e5, out = [];
+    ESTRENOS.forEach(e => {
+      const ts = Date.parse(e.fecha);
+      if (ts <= ahora && ts >= ini) out.push({ ts, titulo: e.titulo, texto: 'ya llegó a Cube' });
+    });
+    Object.entries(est.subs || {}).forEach(([id, suscritoTs]) => {
+      const p = PROGRAMAS.find(x => x.id === id);
+      if (!p || !p.desde) return;
+      const [y, m, d] = p.desde.split('-').map(Number);
+      const primera = new Date(y, m - 1, d, p.inicio).getTime();
+      for (let k = 0; k <= DIAS_NOTIF; k++) {
+        const f = new Date(); f.setDate(f.getDate() - k); f.setHours(p.inicio, 0, 0, 0);
+        const ts = f.getTime();
+        if (f.getDay() !== p.dia || ts > ahora || ts < ini || ts < primera || ts < suscritoTs) continue;
+        const n = Math.round((ts - primera) / (7 * 864e5));
+        const x = p.episodios ? p.episodios[n] : n + 1;
+        if (x === undefined) continue;
+        const ep = typeof x === 'number' ? `Ep. ${x}` : x;
+        out.push({ ts, titulo: `${p.titulo} ${ep}`, texto: `Ya llegó el ${ep} a Cube` });
+      }
+    });
+    return out.sort((a, b) => b.ts - a.ts);
+  }
+  const pendientes = () => { const v = leer().visto || 0; return generar().filter(n => n.ts > v); };
+  window.hayNotifNuevas = () => pendientes().length > 0;
+  window.actualizarContadorNotif = () => {
+    const c = document.getElementById('notifCuenta'); if (!c) return;
+    const n = pendientes().length; c.textContent = n; c.hidden = n === 0;
+  };
+  function hace(ts) {
+    const m = Math.floor((Date.now() - ts) / 6e4);
+    if (m < 1) return 'ahora';
+    if (m < 60) return `hace ${m} min`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `hace ${h} h`;
+    const d = Math.floor(h / 24);
+    return d === 1 ? 'ayer' : `hace ${d} días`;
+  }
+  function abrirNotificaciones() {
+    const est = leer(), prev = est.visto || 0, lista = generar();
+    document.getElementById('notifLista').innerHTML = lista.map(n =>
+      `<article class="notif${n.ts > prev ? ' nueva' : ''}"><div class="notif-ico">c</div><div class="notif-cuerpo"><b>${n.titulo}</b><span>${n.texto}</span><small>${hace(n.ts)}</small></div></article>`).join('');
+    document.getElementById('notifVacia').hidden = lista.length > 0;
+    body.classList.remove('perfil-abierto', 'buscando', 'en-lista');
+    body.classList.add('en-notif');
+    est.visto = Date.now(); guardar(est); // al verlas, el punto rojo desaparece
+    actualizarHeader();
+    window.scrollTo(0, 0);
+    setTimeout(() => window.dispatchEvent(new Event('scroll')), 60);
+  }
+  document.getElementById('irNotificaciones').onclick = abrirNotificaciones;
+  document.getElementById('cerrarNotifs').onclick = () => cerrarModales();
+  document.getElementById('navBuscar').addEventListener('click', () => body.classList.remove('en-notif', 'en-lista'));
+  setInterval(actualizarHeader, 60000); // revisa si llegó algo nuevo
+  actualizarHeader();
 
   // TV shows: heroes aparecen/desaparecen y la grilla se refresca sola
   setInterval(() => { if (actualSec === 'tv') { renderGrilla(); renderHeroes(); } }, 30000);
