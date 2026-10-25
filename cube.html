@@ -175,6 +175,7 @@
     background: linear-gradient(to top, rgba(0,0,0,.85) 0%, rgba(0,0,0,0) 55%);
     pointer-events: none;
   }
+  .hero-claro::after { background: linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.72) 40%, rgba(0,0,0,0) 85%); }
   .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
   .hero-wrap { margin: 6px var(--margen) 0; }
   .hero-track {
@@ -201,6 +202,7 @@
     color: var(--texto-suave);
     text-shadow: 0 1px 8px rgba(0,0,0,.75);
   }
+  .hero-titulo { font-weight: 700; color: #fff; font-size: clamp(1.05rem, 4.6vw, 1.6rem); line-height: 1.1; margin-bottom: 4px; }
   .hero-genero { font-size: clamp(.8rem, 3.2vw, 1.1rem); margin-bottom: 2px; }
   .hero-sinopsis { font-size: clamp(.85rem, 3.6vw, 1.25rem); line-height: 1.25; }
 
@@ -594,10 +596,10 @@
 
   // ---------- HERO ----------
   const heroes = [
-    { img: "bigfoot.webp", alt: "BIGFOOT", genero: "Acción • 2026", sinopsis: "La huida de un monstruo gigante traerá consigo una sorpresa inesperada." },
-    { img: "eternamente-vivo-hero.webp", alt: "Eternamente Vivo con Valak Seraphel", genero: "Sobrenatural • 2026", sinopsis: "En una realidad paralela, un demonio le ofrece a Martino “lindos recuerdos”." },
-    { img: "golem-hero.webp", alt: "Golem: El Protector de Judíos", genero: "Thriller • 2026", sinopsis: "La última noche de su madre judía será la primera de su leyenda." },
-    { img: "familia-rani-hero.webp", alt: "La Familia Rani", genero: "Thriller • 2025", sinopsis: "Un viaje a la mente más espectacular y grotesca de su autor." }
+    { img: "hero-bigfoot.webp", alt: "Bigfoot", titulo: "Bigfoot", genero: "Acción • 2026", sinopsis: "La huida de un monstruo gigante traerá consigo una sorpresa inesperada." },
+    { img: "hero-eternamente-vivo.webp", alt: "Eternamente Vivo 5", titulo: "Eternamente Vivo 5", genero: "Sobrenatural • 2026", sinopsis: "En una realidad paralela, un demonio le ofrece a Martino “lindos recuerdos”." },
+    { img: "hero-golem.webp", alt: "Golem", titulo: "Golem", genero: "Thriller • 2026", sinopsis: "La última noche de su madre judía será la primera de su leyenda." },
+    { img: "hero-la-familia-rani.webp", alt: "La Familia Rani", titulo: "La Familia Rani", genero: "Thriller • 2025", sinopsis: "Un viaje a la mente más espectacular y grotesca de su autor." }
   ];
 
   const track = document.getElementById('heroTrack');
@@ -609,6 +611,7 @@
       `<article class="hero" aria-label="${h.alt}">
         <img class="hero-img" src="${IMG_BASE}${h.img}" alt="${h.alt}">
         <div class="hero-info">
+          ${h.titulo ? `<p class="hero-titulo">${h.titulo}</p>` : ''}
           <p class="hero-genero">${h.genero}</p>
           <p class="hero-sinopsis">${h.sinopsis}</p>
         </div>
@@ -930,11 +933,11 @@
   /* ================== DATOS (edita aquí) ================== */
   // TV shows — dia: 0=domingo, 1=lunes ... 6=sábado | inicio: hora (21 = 21:00) | dur: horas disponible
   const PROGRAMAS = [
-    { id: 'dont-hug', titulo: "Don't Hug Me I'm Scared", dia: 1, inicio: 21, dur: 3, hero: 'dont-hug-me-im-scared.webp', genero: 'Terror • 2026', sinopsis: '' },
-    { id: 'las-entrevistas', titulo: 'Las Entrevistas', dia: 2, inicio: 21, dur: 3, hero: 'las-entrevistas-2.webp', genero: 'Thriller • 2026', sinopsis: '' },
+    { id: 'dont-hug', titulo: "Don't Hug Me I'm Scared", dia: 1, inicio: 21, dur: 3, hero: 'hero-dont-hug-me-im-scared.webp', tituloHero: "Don't Hug Me I'm Scared", genero: 'Terror • 2026', sinopsis: '' },
+    { id: 'las-entrevistas', titulo: 'Las Entrevistas', dia: 2, inicio: 21, dur: 3, hero: 'hero-las-entrevistas-2.webp', tituloHero: 'Las Entrevistas 2', genero: 'Thriller • 2026', sinopsis: '' },
     { id: 'extrame-talent', titulo: 'Extrame Talent', dia: 3, inicio: 21, dur: 3, hero: 'extrame-talent-hero.webp', genero: 'Talentos • 2026', sinopsis: '' },
-    { id: 'newsweek', titulo: 'Newsweek', dia: 5, inicio: 21, dur: 3, hero: 'newsweek.webp', genero: 'Noticias • 2026', sinopsis: '' },
-    { id: 'toba-live', titulo: 'Toba Live', dia: 0, inicio: 21, dur: 3, hero: 'toba-live.webp', genero: 'En vivo • 2026', sinopsis: '' }
+    { id: 'newsweek', titulo: 'Newsweek', dia: 5, inicio: 21, dur: 3, hero: 'hero-newsweek.webp', tituloHero: 'Newsweek', genero: 'Noticias • 2026', sinopsis: '' },
+    { id: 'toba-live', titulo: 'Toba Live', dia: 0, inicio: 21, dur: 3, hero: 'hero-toba-live.webp', tituloHero: 'Toba Live', fondoClaro: true, genero: 'En vivo • 2026', sinopsis: '' }
   ];
 
   // Documentals
@@ -947,8 +950,8 @@
   };
   const DOCS = {
     heroes: [
-      { ...C.imputables, genero: 'Caso real • 2027', texto: 'Un caso real en Argentina que expone una duda incómoda sobre la violencia juvenil.' },
-      { ...C.universe,   genero: 'Absurdo • 2028',   texto: 'Tu rutina puede romperse. Conoce las reglas para cruzar a otra realidad.' },
+      { ...C.imputables, img: 'hero-imputables.webp', titulo: 'Imputables', genero: 'Caso real • 2027', texto: 'Un caso real en Argentina que expone una duda incómoda sobre la violencia juvenil.' },
+      { ...C.universe,   img: 'hero-universe.webp', titulo: 'Universe', genero: 'Absurdo • 2028',   texto: 'Tu rutina puede romperse. Conoce las reglas para cruzar a otra realidad.' },
       { ...C.damaRoja,   genero: 'Lore • 2027',      texto: 'Sumérgete en el universo extendido de Cube y descubre sus secretos más profundos.' }
     ],
     filas: [
@@ -972,10 +975,10 @@
   };
   const PLAT = {
     heroes: [
-      { ...P.viral,     genero: 'Terror • 2026',        texto: 'Unas cintas VHS siembran un virus que nadie puede explicar… y ya empezó a propagarse.' },
-      { ...P.factions,  genero: 'Found footage • 2027', texto: 'Cada metraje hallado muestra otra cara del universo de Cube.' },
-      { ...P.backrooms, genero: 'Sobrenatural • 2027',  texto: 'Un bromista cae a otra dimensión y se topa con sus propios antepasados.' },
-      { ...P.programa,  genero: 'Crimen • 2026',        texto: 'Cada fotografía revela la cruda verdad detrás de los actos de Jeffrey Epstein.' }
+      { ...P.viral,     img: 'hero-viral.webp', titulo: 'Viral', genero: 'Terror • 2026',        texto: 'Unas cintas VHS siembran un virus que nadie puede explicar… y ya empezó a propagarse.' },
+      { ...P.factions,  img: 'hero-the-factions-tapes.webp', titulo: 'The Faction’s Tapes', genero: 'Found footage • 2027', texto: 'Cada metraje hallado muestra otra cara del universo de Cube.' },
+      { ...P.backrooms, img: 'hero-backrooms.webp', titulo: 'Backrooms', genero: 'Sobrenatural • 2027',  texto: 'Un bromista cae a otra dimensión y se topa con sus propios antepasados.' },
+      { ...P.hoyo,      img: 'hero-el-hoyo.webp', titulo: 'El Hoyo: Un nuevo mensaje', genero: 'Thriller • 2026', texto: 'Jalzar desciende al Hoyo con una sola meta: dominar el sistema y coronarse su rey.' }
     ],
     filas: [
       { titulo: 'Recomendadas', portadas: [P.hoyo, P.programa, P.viral, P.backrooms, P.narcos] },
@@ -1029,8 +1032,8 @@
   /* ================== HEROES ================== */
   function heroItems() {
     if (actualSec === 'tv') {
-      return vivos().map(p => ({ id: p.id, img: p.hero, alt: p.titulo, genero: p.genero,
-        texto: `<b style="color:#fff">${p.titulo}</b><br>${p.sinopsis ? p.sinopsis + ' ' : ''}Disponible hasta las ${hh(p.inicio + p.dur)}` }));
+      return vivos().map(p => ({ id: p.id, img: p.hero, alt: p.titulo, genero: p.genero, titulo: p.tituloHero, claro: p.fondoClaro,
+        texto: `${p.tituloHero ? '' : `<b style="color:#fff">${p.titulo}</b><br>`}${p.sinopsis ? p.sinopsis + ' ' : ''}Disponible hasta las ${hh(p.inicio + p.dur)}` }));
     }
     if (actualSec === 'documentals') return DOCS.heroes;
     if (actualSec === 'platinum') return PLAT.heroes;
@@ -1041,9 +1044,9 @@
     if (clave === ultimaClave && !forzar) return;
     ultimaClave = clave;
     wrap.style.display = v.length ? '' : 'none';
-    trackSv.innerHTML = v.map(p => `<article class="hero" aria-label="${p.alt}">
+    trackSv.innerHTML = v.map(p => `<article class="hero${p.claro ? ' hero-claro' : ''}" aria-label="${p.alt}">
       <img class="hero-img" src="${IMG_BASE}${p.img}" alt="${p.alt}" onerror="this.style.display='none'">
-      <div class="hero-info"><p class="hero-genero">${p.genero}</p><p class="hero-sinopsis">${p.texto}</p></div>
+      <div class="hero-info">${p.titulo ? `<p class="hero-titulo">${p.titulo}</p>` : ''}<p class="hero-genero">${p.genero}</p><p class="hero-sinopsis">${p.texto}</p></div>
       <button class="play-btn" aria-label="Leer ${p.alt}" data-leer="${p.id}"${p.pronto ? ' data-pronto="1"' : ''}>${PLAY_}</button></article>`).join('');
     dots.innerHTML = v.length > 1 ? v.map((p, i) => `<button class="dot${i === 0 ? ' activo' : ''}" aria-label="Ir al hero ${i + 1}"></button>`).join('') : '';
     [...dots.children].forEach((d, i) => d.onclick = () => trackSv.scrollTo({ left: i * trackSv.clientWidth, behavior: 'smooth' }));
