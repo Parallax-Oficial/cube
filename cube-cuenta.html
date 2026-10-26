@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cube · cuenta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --fondo:#000; --texto:#f2f2f2; --suave:#8f8f8f; --linea:#262626; --verde:#c6ff00; --error:#ff6b6b; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--fondo); color: var(--texto);
+    font-family: "Poppins", system-ui, sans-serif;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  main { width: 100%; max-width: 360px; }
+  .logo { font-weight: 700; font-size: 3.4rem; letter-spacing: -.03em; margin: 0 0 28px; text-align: center; color: var(--verde); line-height: 1; text-transform: lowercase; }
+  .tabs { display: flex; border-bottom: 1px solid var(--linea); margin-bottom: 22px; }
+  .tabs button {
+    flex: 1; background: none; border: 0; color: var(--suave); font: inherit; font-weight: 500;
+    padding: 12px 0; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tabs button[aria-selected="true"] { color: var(--verde); border-bottom-color: var(--verde); }
+  label { display: block; font-size: .85rem; color: var(--suave); margin: 14px 0 6px; }
+  input {
+    width: 100%; background: #0c0c0c; color: var(--texto); border: 1px solid var(--linea);
+    border-radius: 10px; padding: 13px 14px; font: inherit; font-size: 1rem;
+  }
+  input:focus { border-color: var(--verde); }
+  input:focus-visible, button:focus-visible { outline: 2px solid var(--verde); outline-offset: 2px; }
+  .primario {
+    width: 100%; margin-top: 24px; padding: 14px; border: 0; border-radius: 10px;
+    background: var(--verde); color: #000; font: inherit; font-weight: 600; font-size: 1rem; cursor: pointer;
+  }
+  .primario:disabled { opacity: .5; cursor: wait; }
+  .enlace { background: none; border: 0; color: var(--suave); font: inherit; font-size: .85rem;
+    text-decoration: underline; cursor: pointer; margin-top: 16px; padding: 0; }
+  #mensaje { min-height: 1.4em; margin-top: 16px; font-size: .9rem; line-height: 1.5; text-align: center; }
+  #mensaje.error { color: var(--error); }
+  #mensaje.ok { color: var(--verde); }
+  .oculto { display: none; }
+  .centro { text-align: center; }
+  #nombre-usuario { font-size: 1.5rem; font-weight: 600; margin: 4px 0 22px; color: var(--verde); }
+  @media (prefers-reduced-motion: no-preference) { button { transition: opacity .15s; } }
+</style>
+</head>
+<body>
+<main>
+  <h1 class="logo">cube</h1>
+
+  <!-- Vista: sin sesión -->
+  <section id="vista-entrada">
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-entrar" aria-selected="true">Entrar</button>
+      <button role="tab" id="tab-crear" aria-selected="false">Crear cuenta</button>
+    </div>
+
+    <form id="form-entrar" novalidate>
+      <label for="e-correo">Correo electrónico</label>
+      <input id="e-correo" type="email" autocomplete="email" required>
+      <label for="e-clave">Contraseña</label>
+      <input id="e-clave" type="password" autocomplete="current-password" required>
+      <button class="primario" type="submit">Entrar</button>
+      <div class="centro"><button class="enlace" type="button" id="olvide">Olvidé mi contraseña</button></div>
+    </form>
+
+    <form id="form-crear" class="oculto" novalidate>
+      <label for="c-usuario">Nombre de usuario</label>
+      <input id="c-usuario" type="text" autocomplete="username" maxlength="20" required>
+      <label for="c-correo">Correo electrónico</label>
+      <input id="c-correo" type="email" autocomplete="email" required>
+      <label for="c-clave">Contraseña (mínimo 8 caracteres)</label>
+      <input id="c-clave" type="password" autocomplete="new-password" minlength="8" required>
+      <button class="primario" type="submit">Crear cuenta</button>
+    </form>
+  </section>
+
+  <!-- Vista: con sesión -->
+  <section id="vista-sesion" class="oculto centro">
+    <p>Sesión iniciada como</p>
+    <p id="nombre-usuario"></p>
+    <button class="primario" id="salir" type="button">Salir</button>
+  </section>
+
+  <!-- Vista: nueva contraseña (al llegar desde el correo de recuperación) -->
+  <section id="vista-nueva-clave" class="oculto">
+    <form id="form-nueva-clave" novalidate>
+      <label for="n-clave">Nueva contraseña (mínimo 8 caracteres)</label>
+      <input id="n-clave" type="password" autocomplete="new-password" minlength="8" required>
+      <button class="primario" type="submit">Guardar contraseña</button>
+    </form>
+  </section>
+
+  <p id="mensaje" role="status" aria-live="polite"></p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+  const SUPABASE_URL = "https://qoeylefxmdihbazcfluy.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZXlsZWZ4bWRpaGJhemNmbHV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5ODA0NTgsImV4cCI6MjEwODU1NjQ1OH0.E-RG9b29dnUlaiipXJbe2omPlnRYIXTjV61v9kfmP-Q";
+
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const $ = (id) => document.getElementById(id);
+  const mensaje = $("mensaje");
+
+  function aviso(texto, tipo) { mensaje.textContent = texto; mensaje.className = tipo || ""; }
+
+  function mostrarTab(entrar) {
+    $("tab-entrar").setAttribute("aria-selected", entrar);
+    $("tab-crear").setAttribute("aria-selected", !entrar);
+    $("form-entrar").classList.toggle("oculto", !entrar);
+    $("form-crear").classList.toggle("oculto", entrar);
+    aviso("");
+  }
+  $("tab-entrar").onclick = () => mostrarTab(true);
+  $("tab-crear").onclick = () => mostrarTab(false);
+
+  async function mostrarVista(sesion) {
+    $("vista-entrada").classList.toggle("oculto", !!sesion);
+    $("vista-sesion").classList.toggle("oculto", !sesion);
+    if (sesion) {
+      const { data } = await db.from("profiles").select("username").eq("id", sesion.user.id).maybeSingle();
+      $("nombre-usuario").textContent = data ? data.username : sesion.user.email;
+    }
+  }
+
+  function traducirError(e) {
+    const m = (e.message || "").toLowerCase();
+    if (m.includes("invalid login")) return "Correo o contraseña incorrectos.";
+    if (m.includes("email not confirmed")) return "Aún no verificaste tu correo. Revisa tu bandeja (y spam).";
+    if (m.includes("already registered")) return "Ese correo ya tiene una cuenta. Prueba a entrar.";
+    if (m.includes("password")) return "La contraseña debe tener al menos 8 caracteres.";
+    if (m.includes("rate limit")) return "Demasiados intentos. Espera unos minutos.";
+    if (m.includes("database error")) return "Ese nombre de usuario ya está en uso.";
+    return "Algo salió mal: " + e.message;
+  }
+
+  // Crear cuenta
+  $("form-crear").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const usuario = $("c-usuario").value.trim();
+    const correo = $("c-correo").value.trim();
+    const clave = $("c-clave").value;
+    if (!/^[a-zA-Z0-9_]{3,20}$/.test(usuario)) return aviso("El usuario debe tener 3 a 20 caracteres: letras, números o guion bajo.", "error");
+    if (clave.length < 8) return aviso("La contraseña debe tener al menos 8 caracteres.", "error");
+
+    const btn = ev.submitter; btn.disabled = true; aviso("Creando cuenta…");
+    const { data: existe } = await db.from("profiles").select("id").ilike("username", usuario).maybeSingle();
+    if (existe) { btn.disabled = false; return aviso("Ese nombre de usuario ya está en uso.", "error"); }
+
+    const { error } = await db.auth.signUp({
+      email: correo, password: clave,
+      options: { data: { username: usuario }, emailRedirectTo: location.href.split("#")[0] }
+    });
+    btn.disabled = false;
+    if (error) return aviso(traducirError(error), "error");
+    aviso("Cuenta creada. Te enviamos un correo: abre el enlace para verificarla y luego entra.", "ok");
+    ev.target.reset();
+  });
+
+  // Entrar
+  $("form-entrar").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const btn = ev.submitter; btn.disabled = true; aviso("Entrando…");
+    const { error } = await db.auth.signInWithPassword({ email: $("e-correo").value.trim(), password: $("e-clave").value });
+    btn.disabled = false;
+    if (error) return aviso(traducirError(error), "error");
+    aviso("");
+  });
+
+  // Olvidé mi contraseña
+  $("olvide").onclick = async () => {
+    const correo = $("e-correo").value.trim();
+    if (!correo) return aviso("Escribe tu correo arriba y vuelve a pulsar.", "error");
+    const { error } = await db.auth.resetPasswordForEmail(correo, { redirectTo: location.href.split("#")[0] });
+    if (error) return aviso(traducirError(error), "error");
+    aviso("Si ese correo tiene cuenta, te enviamos un enlace para cambiar la contraseña.", "ok");
+  };
+
+  // Nueva contraseña
+  $("form-nueva-clave").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const { error } = await db.auth.updateUser({ password: $("n-clave").value });
+    if (error) return aviso(traducirError(error), "error");
+    $("vista-nueva-clave").classList.add("oculto");
+    aviso("Contraseña actualizada.", "ok");
+    const { data } = await db.auth.getSession();
+    mostrarVista(data.session);
+  });
+
+  // Salir
+  $("salir").onclick = async () => { await db.auth.signOut(); aviso(""); };
+
+  // Estado de sesión
+  db.auth.onAuthStateChange((evento, sesion) => {
+    if (evento === "PASSWORD_RECOVERY") {
+      $("vista-entrada").classList.add("oculto");
+      $("vista-sesion").classList.add("oculto");
+      $("vista-nueva-clave").classList.remove("oculto");
+      return;
+    }
+    if (evento === "SIGNED_IN" && !location.hash.includes("type=recovery")) aviso("");
+    mostrarVista(sesion);
+  });
+</script>
+</body>
+</html>
