@@ -624,10 +624,10 @@
 
   // ---------- HERO ----------
   const heroes = [
-    { img: "hero-bigfoot.webp", alt: "Bigfoot", titulo: "Bigfoot", genero: "Acción • 2026", sinopsis: "La huida de un monstruo gigante traerá consigo una sorpresa inesperada." },
-    { img: "hero-eternamente-vivo.webp", alt: "Eternamente Vivo 5", titulo: "Eternamente Vivo 5", genero: "Sobrenatural • 2026", sinopsis: "En una realidad paralela, un demonio le ofrece a Martino “lindos recuerdos”." },
-    { img: "hero-golem.webp", alt: "Golem", titulo: "Golem", genero: "Thriller • 2026", sinopsis: "La última noche de su madre judía será la primera de su leyenda." },
-    { img: "hero-la-familia-rani.webp", alt: "La Familia Rani", titulo: "La Familia Rani", genero: "Thriller • 2025", sinopsis: "Un viaje a la mente más espectacular y grotesca de su autor." }
+    { img: "hero-bigfoot.webp", alt: "Bigfoot", titulo: "Bigfoot", genero: "Acción • 2026" },
+    { img: "hero-eternamente-vivo.webp", alt: "Eternamente Vivo 5", titulo: "Eternamente Vivo 5", genero: "Sobrenatural • 2026" },
+    { img: "hero-golem.webp", alt: "Golem", titulo: "Golem", genero: "Thriller • 2026" },
+    { img: "hero-la-familia-rani.webp", alt: "La Familia Rani", titulo: "La Familia Rani", genero: "Thriller • 2025" }
   ];
 
   const track = document.getElementById('heroTrack');
@@ -641,7 +641,6 @@
         <div class="hero-info">
           ${h.titulo ? `<p class="hero-titulo">${h.titulo}</p>` : ''}
           <p class="hero-genero">${h.genero}</p>
-          <p class="hero-sinopsis">${h.sinopsis}</p>
         </div>
         <button class="play-btn" aria-label="Reproducir ${h.alt}">${PLAY}</button>
       </article>`);
@@ -963,11 +962,11 @@
   // TV shows — desde: fecha del primer episodio | episodios (opcional): lista por semana, ej. [1, 2, 4, 5]; si no se pone, cuenta 1, 2, 3...
   // dia: 0=domingo, 1=lunes ... 6=sábado | inicio: hora (21 = 21:00) | dur: horas disponible
   const PROGRAMAS = [
-    { id: 'dont-hug', desde: '2026-10-26', titulo: "Don't Hug Me I'm Scared", dia: 1, inicio: 21, dur: 3, hero: 'hero-dont-hug-me-im-scared.webp', tituloHero: "Don't Hug Me I'm Scared", genero: 'Terror • 2026', sinopsis: '' },
-    { id: 'las-entrevistas', desde: '2026-10-27', titulo: 'Las Entrevistas', dia: 2, inicio: 21, dur: 3, hero: 'hero-las-entrevistas-2.webp', tituloHero: 'Las Entrevistas 2', genero: 'Thriller • 2026', sinopsis: '' },
-    { id: 'extrame-talent', desde: '2026-10-28', titulo: 'Extrame Talent', dia: 3, inicio: 21, dur: 3, hero: 'extrame-talent-hero.webp', genero: 'Talentos • 2026', sinopsis: '' },
-    { id: 'newsweek', desde: '2026-10-30', titulo: 'Newsweek', dia: 5, inicio: 21, dur: 3, hero: 'hero-newsweek.webp', tituloHero: 'Newsweek', genero: 'Noticias • 2026', sinopsis: '' },
-    { id: 'toba-live', desde: '2026-11-01', titulo: 'Toba Live', dia: 0, inicio: 21, dur: 3, hero: 'hero-toba-live.webp', tituloHero: 'Toba Live', fondoClaro: true, genero: 'En vivo • 2026', sinopsis: '' }
+    { id: 'dont-hug', desde: '2026-10-26', titulo: "Don't Hug Me I'm Scared", dia: 1, inicio: 21, dur: 3, hero: 'hero-dont-hug-me-im-scared.webp', tituloHero: "Don't Hug Me I'm Scared", genero: 'Terror • 2026' },
+    { id: 'las-entrevistas', desde: '2026-10-27', titulo: 'Las Entrevistas', dia: 2, inicio: 21, dur: 3, hero: 'hero-las-entrevistas-2.webp', tituloHero: 'Las Entrevistas 2', genero: 'Thriller • 2026' },
+    { id: 'extrame-talent', desde: '2026-10-28', titulo: 'Extrame Talent', dia: 3, inicio: 21, dur: 3, hero: 'extrame-talent-hero.webp', genero: 'Talentos • 2026' },
+    { id: 'newsweek', desde: '2026-10-30', titulo: 'Newsweek', dia: 5, inicio: 21, dur: 3, hero: 'hero-newsweek.webp', tituloHero: 'Newsweek', genero: 'Noticias • 2026' },
+    { id: 'toba-live', desde: '2026-11-01', titulo: 'Toba Live', dia: 0, inicio: 21, dur: 3, hero: 'hero-toba-live.webp', tituloHero: 'Toba Live', fondoClaro: true, genero: 'En vivo • 2026' }
   ];
 
   // Documentals
@@ -980,9 +979,9 @@
   };
   const DOCS = {
     heroes: [
-      { ...C.imputables, img: 'hero-imputables.webp', titulo: 'Imputables', genero: 'Caso real • 2027', texto: 'Un caso real en Argentina que expone una duda incómoda sobre la violencia juvenil.' },
-      { ...C.universe,   img: 'hero-universe.webp', titulo: 'Universe', genero: 'Absurdo • 2028',   texto: 'Tu rutina puede romperse. Conoce las reglas para cruzar a otra realidad.' },
-      { ...C.damaDorada, img: 'hero-la-dama-dorada.webp', titulo: 'La Dama Dorada', genero: 'Lore • 2027',      texto: 'Sumérgete en el universo extendido de Cube y descubre sus secretos más profundos.' }
+      { ...C.imputables, img: 'hero-imputables.webp', titulo: 'Imputables', genero: 'Caso real • 2027' },
+      { ...C.universe,   img: 'hero-universe.webp', titulo: 'Universe', genero: 'Absurdo • 2028' },
+      { ...C.damaDorada, img: 'hero-la-dama-dorada.webp', titulo: 'La Dama Dorada', genero: 'Lore • 2027' }
     ],
     filas: [
       { titulo: 'Recomendadas', portadas: [C.imputables, C.epstein, C.damaRoja] },
@@ -1005,10 +1004,10 @@
   };
   const PLAT = {
     heroes: [
-      { ...P.viral,     img: 'hero-viral.webp', titulo: 'Viral', genero: 'Terror • 2026',        texto: 'Unas cintas VHS siembran un virus que nadie puede explicar… y ya empezó a propagarse.' },
-      { ...P.factions,  img: 'hero-the-factions-tapes.webp', titulo: 'The Faction’s Tapes', genero: 'Found footage • 2027', texto: 'Cada metraje hallado muestra otra cara del universo de Cube.' },
-      { ...P.backrooms, img: 'hero-backrooms.webp', titulo: 'Backrooms', genero: 'Sobrenatural • 2027',  texto: 'Un bromista cae a otra dimensión y se topa con sus propios antepasados.' },
-      { ...P.hoyo,      img: 'hero-el-hoyo.webp', titulo: 'El Hoyo: Un nuevo mensaje', genero: 'Thriller • 2026', texto: 'Jalzar desciende al Hoyo con una sola meta: dominar el sistema y coronarse su rey.' }
+      { ...P.viral,     img: 'hero-viral.webp', titulo: 'Viral', genero: 'Terror • 2026' },
+      { ...P.factions,  img: 'hero-the-factions-tapes.webp', titulo: 'The Faction’s Tapes', genero: 'Found footage • 2027' },
+      { ...P.backrooms, img: 'hero-backrooms.webp', titulo: 'Backrooms', genero: 'Sobrenatural • 2027' },
+      { ...P.hoyo,      img: 'hero-el-hoyo.webp', titulo: 'El Hoyo: Un nuevo mensaje', genero: 'Thriller • 2026' }
     ],
     filas: [
       { titulo: 'Recomendadas', portadas: [P.hoyo, P.programa, P.viral, P.backrooms, P.narcos] },
@@ -1063,7 +1062,7 @@
   function heroItems() {
     if (actualSec === 'tv') {
       return vivos().map(p => ({ id: p.id, img: p.hero, alt: p.titulo, genero: p.genero, titulo: p.tituloHero, claro: p.fondoClaro,
-        texto: `${p.tituloHero ? '' : `<b style="color:#fff">${p.titulo}</b><br>`}${p.sinopsis ? p.sinopsis + ' ' : ''}Disponible hasta las ${hh(p.inicio + p.dur)}` }));
+        texto: `${p.tituloHero ? '' : `<b style="color:#fff">${p.titulo}</b><br>`}Disponible hasta las ${hh(p.inicio + p.dur)}` }));
     }
     if (actualSec === 'documentals') return DOCS.heroes;
     if (actualSec === 'platinum') return PLAT.heroes;
@@ -1076,7 +1075,7 @@
     wrap.style.display = v.length ? '' : 'none';
     trackSv.innerHTML = v.map(p => `<article class="hero${p.claro ? ' hero-claro' : ''}" aria-label="${p.alt}">
       <img class="hero-img" src="${IMG_BASE}${p.img}" alt="${p.alt}" onerror="this.style.display='none'">
-      <div class="hero-info">${p.titulo ? `<p class="hero-titulo">${p.titulo}</p>` : ''}<p class="hero-genero">${p.genero}</p><p class="hero-sinopsis">${p.texto}</p></div>
+      <div class="hero-info">${p.titulo ? `<p class="hero-titulo">${p.titulo}</p>` : ''}<p class="hero-genero">${p.genero}</p>${p.texto ? `<p class="hero-sinopsis">${p.texto}</p>` : ''}</div>
       <button class="play-btn" aria-label="Leer ${p.alt}" data-leer="${p.id}"${p.pronto ? ' data-pronto="1"' : ''}>${PLAY_}</button></article>`).join('');
     dots.innerHTML = v.length > 1 ? v.map((p, i) => `<button class="dot${i === 0 ? ' activo' : ''}" aria-label="Ir al hero ${i + 1}"></button>`).join('') : '';
     [...dots.children].forEach((d, i) => d.onclick = () => trackSv.scrollTo({ left: i * trackSv.clientWidth, behavior: 'smooth' }));
@@ -1222,7 +1221,7 @@
     const est = leer(), ahora = Date.now(), ini = ahora - DIAS_NOTIF * 864e5, out = [];
     ESTRENOS.forEach(e => {
       const ts = Date.parse(e.fecha);
-      if (ts <= ahora && ts >= ini) out.push({ ts, titulo: e.titulo, texto: 'ya llegó a Cube' });
+      if (ts <= ahora && ts >= ini) out.push({ ts, titulo: e.titulo });
     });
     Object.entries(est.subs || {}).forEach(([id, suscritoTs]) => {
       const p = PROGRAMAS.find(x => x.id === id);
