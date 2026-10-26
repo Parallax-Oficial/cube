@@ -1,0 +1,2 @@
+window.CUBE_SUPABASE_URL = "https://qoeylefxmdihbazcfluy.supabase.co";
+window.CUBE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZXlsZWZ4bWRpaGJhemNmbHV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5ODA0NTgsImV4cCI6MjEwODU1NjQ1OH0.E-RG9b29dnUlaiipXJbe2omPlnRYIXTjV61v9kfmP-Q";
