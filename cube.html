@@ -196,7 +196,7 @@
   }
   .dot.activo { background: #fff; }
   .hero-info {
-    position: absolute; left: 7%; right: 22%; bottom: 8%;
+    position: absolute; left: 7%; right: 7%; bottom: 8%;
     z-index: 2;
     font-weight: 400;
     color: var(--texto-suave);
@@ -441,6 +441,15 @@
   .perfil-cuenta[hidden] { display: none; }
   .tv-sheet .sh-bell.on { background: transparent; color: var(--verde); border: 2px solid var(--verde); }
   .tv-sheet .sh-bell.on svg { stroke: var(--verde); }
+  /* ---------- ACCIONES AL TOCAR UNA PORTADA / HERO ---------- */
+  .portada, .hero { cursor: pointer; }
+  .ac-botones { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+  .ac-play { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 22px 0 18px; border-radius: 999px; background: var(--verde); color: #000; font-weight: 700; font-size: .95rem; }
+  .ac-play svg { width: 18px; height: 18px; }
+  .ac-fav { width: 44px; height: 44px; border-radius: 50%; border: 2px solid #333; display: flex; align-items: center; justify-content: center; color: #fff; }
+  .ac-fav svg { width: 22px; height: 22px; }
+  .ac-fav.on { color: var(--verde); border-color: var(--verde); }
+  .ac-fav.on svg { fill: var(--verde); }
 </style>
 </head>
 <body>
@@ -624,10 +633,10 @@
 
   // ---------- HERO ----------
   const heroes = [
-    { img: "hero-bigfoot.webp", alt: "Bigfoot", titulo: "Bigfoot", genero: "Acción • 2026" },
-    { img: "hero-eternamente-vivo.webp", alt: "Eternamente Vivo 5", titulo: "Eternamente Vivo 5", genero: "Sobrenatural • 2026" },
-    { img: "hero-golem.webp", alt: "Golem", titulo: "Golem", genero: "Thriller • 2026" },
-    { img: "hero-la-familia-rani.webp", alt: "La Familia Rani", titulo: "La Familia Rani", genero: "Thriller • 2025" }
+    { img: "hero-bigfoot.webp", alt: "Bigfoot", titulo: "Bigfoot", portada: "bigfoot-2.webp", genero: "Acción • 2026" },
+    { img: "hero-eternamente-vivo.webp", alt: "Eternamente Vivo 5", titulo: "Eternamente Vivo 5", portada: "eternamente-vivo-valak.webp", genero: "Sobrenatural • 2026" },
+    { img: "hero-golem.webp", alt: "Golem", titulo: "Golem", portada: "golem.webp", genero: "Thriller • 2026" },
+    { img: "hero-la-familia-rani.webp", alt: "La Familia Rani", titulo: "La Familia Rani", portada: "la-familia-rani.webp", genero: "Thriller • 2025" }
   ];
 
   const track = document.getElementById('heroTrack');
@@ -636,13 +645,12 @@
 
   heroes.forEach((h, i) => {
     track.insertAdjacentHTML('beforeend',
-      `<article class="hero" aria-label="${h.alt}">
+      `<article class="hero" aria-label="${h.alt}" data-cover="${h.portada || ''}" data-titulo="${h.titulo || h.alt}" data-pronto="0">
         <img class="hero-img" src="${IMG_BASE}${h.img}" alt="${h.alt}">
         <div class="hero-info">
           ${h.titulo ? `<p class="hero-titulo">${h.titulo}</p>` : ''}
           <p class="hero-genero">${h.genero}</p>
         </div>
-        <button class="play-btn" aria-label="Reproducir ${h.alt}">${PLAY}</button>
       </article>`);
     const d = document.createElement('button');
     d.className = 'dot' + (i === 0 ? ' activo' : '');
@@ -872,9 +880,9 @@
 
   // Renderizar listas favoritas / guardados
   function renderLista(tipo) {
-    const u = usuario(), l = ((u && u[tipo]) || []).map(f => catalogo.find(p => p.img === f.img)).filter(Boolean);
+    const u = usuario(), todas = catalogo.concat(window.portadasExtra || []), l = ((u && u[tipo]) || []).map(f => todas.find(p => p.img === f.img)).filter(Boolean);
     document.getElementById('listaTitulo').textContent = tipo === 'favoritos' ? 'Mis favoritos' : 'Guardados para más tarde';
-    document.getElementById('listaGrilla').innerHTML = l.map(p => `<div class="portada"><img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('');
+    document.getElementById('listaGrilla').innerHTML = l.map(p => `<div class="portada">${p.pronto ? '<span class="badge">Próximamente</span>' : ''}<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('');
     document.getElementById('listaVacia').textContent = tipo === 'favoritos' ? 'No tienes historias en favoritos.' : 'No tienes historias guardadas.';
     document.getElementById('listaVacia').hidden = l.length > 0;
     document.body.classList.add('en-lista');
@@ -962,11 +970,11 @@
   // TV shows — desde: fecha del primer episodio | episodios (opcional): lista por semana, ej. [1, 2, 4, 5]; si no se pone, cuenta 1, 2, 3...
   // dia: 0=domingo, 1=lunes ... 6=sábado | inicio: hora (21 = 21:00) | dur: horas disponible
   const PROGRAMAS = [
-    { id: 'dont-hug', desde: '2026-10-26', titulo: "Don't Hug Me I'm Scared", dia: 1, inicio: 21, dur: 3, hero: 'hero-dont-hug-me-im-scared.webp', tituloHero: "Don't Hug Me I'm Scared", genero: 'Terror • 2026' },
-    { id: 'las-entrevistas', desde: '2026-10-27', titulo: 'Las Entrevistas', dia: 2, inicio: 21, dur: 3, hero: 'hero-las-entrevistas-2.webp', tituloHero: 'Las Entrevistas 2', genero: 'Thriller • 2026' },
-    { id: 'extrame-talent', desde: '2026-10-28', titulo: 'Extrame Talent', dia: 3, inicio: 21, dur: 3, hero: 'extrame-talent-hero.webp', genero: 'Talentos • 2026' },
-    { id: 'newsweek', desde: '2026-10-30', titulo: 'Newsweek', dia: 5, inicio: 21, dur: 3, hero: 'hero-newsweek.webp', tituloHero: 'Newsweek', genero: 'Noticias • 2026' },
-    { id: 'toba-live', desde: '2026-11-01', titulo: 'Toba Live', dia: 0, inicio: 21, dur: 3, hero: 'hero-toba-live.webp', tituloHero: 'Toba Live', fondoClaro: true, genero: 'En vivo • 2026' }
+    { id: 'dont-hug', desde: '2026-10-26', portada: 'dont-hug-me-im-scared.webp', titulo: "Don't Hug Me I'm Scared", dia: 1, inicio: 21, dur: 3, hero: 'hero-dont-hug-me-im-scared.webp', tituloHero: "Don't Hug Me I'm Scared", genero: 'Terror • 2026' },
+    { id: 'las-entrevistas', desde: '2026-10-27', portada: 'las-entrevistas-2.webp', titulo: 'Las Entrevistas', dia: 2, inicio: 21, dur: 3, hero: 'hero-las-entrevistas-2.webp', tituloHero: 'Las Entrevistas 2', genero: 'Thriller • 2026' },
+    { id: 'extrame-talent', desde: '2026-10-28', portada: 'extrame-talent.webp', titulo: 'Extrame Talent', dia: 3, inicio: 21, dur: 3, hero: 'extrame-talent-hero.webp', genero: 'Talentos • 2026' },
+    { id: 'newsweek', desde: '2026-10-30', portada: 'newsweek.webp', titulo: 'Newsweek', dia: 5, inicio: 21, dur: 3, hero: 'hero-newsweek.webp', tituloHero: 'Newsweek', genero: 'Noticias • 2026' },
+    { id: 'toba-live', desde: '2026-11-01', portada: 'toba-live.webp', titulo: 'Toba Live', dia: 0, inicio: 21, dur: 3, hero: 'hero-toba-live.webp', tituloHero: 'Toba Live', fondoClaro: true, genero: 'En vivo • 2026' }
   ];
 
   // Documentals
@@ -979,9 +987,9 @@
   };
   const DOCS = {
     heroes: [
-      { ...C.imputables, img: 'hero-imputables.webp', titulo: 'Imputables', genero: 'Caso real • 2027' },
-      { ...C.universe,   img: 'hero-universe.webp', titulo: 'Universe', genero: 'Absurdo • 2028' },
-      { ...C.damaDorada, img: 'hero-la-dama-dorada.webp', titulo: 'La Dama Dorada', genero: 'Lore • 2027' }
+      { ...C.imputables, portada: C.imputables.img, img: 'hero-imputables.webp', titulo: 'Imputables', genero: 'Caso real • 2027' },
+      { ...C.universe, portada: C.universe.img,   img: 'hero-universe.webp', titulo: 'Universe', genero: 'Absurdo • 2028' },
+      { ...C.damaDorada, portada: C.damaDorada.img, img: 'hero-la-dama-dorada.webp', titulo: 'La Dama Dorada', genero: 'Lore • 2027' }
     ],
     filas: [
       { titulo: 'Recomendadas', portadas: [C.imputables, C.epstein, C.damaRoja] },
@@ -1004,10 +1012,10 @@
   };
   const PLAT = {
     heroes: [
-      { ...P.viral,     img: 'hero-viral.webp', titulo: 'Viral', genero: 'Terror • 2026' },
-      { ...P.factions,  img: 'hero-the-factions-tapes.webp', titulo: 'The Faction’s Tapes', genero: 'Found footage • 2027' },
-      { ...P.backrooms, img: 'hero-backrooms.webp', titulo: 'Backrooms', genero: 'Sobrenatural • 2027' },
-      { ...P.hoyo,      img: 'hero-el-hoyo.webp', titulo: 'El Hoyo: Un nuevo mensaje', genero: 'Thriller • 2026' }
+      { ...P.viral, portada: P.viral.img,     img: 'hero-viral.webp', titulo: 'Viral', genero: 'Terror • 2026' },
+      { ...P.factions, portada: P.factions.img,  img: 'hero-the-factions-tapes.webp', titulo: 'The Faction’s Tapes', genero: 'Found footage • 2027' },
+      { ...P.backrooms, portada: P.backrooms.img, img: 'hero-backrooms.webp', titulo: 'Backrooms', genero: 'Sobrenatural • 2027' },
+      { ...P.hoyo, portada: P.hoyo.img,      img: 'hero-el-hoyo.webp', titulo: 'El Hoyo: Un nuevo mensaje', genero: 'Thriller • 2026' }
     ],
     filas: [
       { titulo: 'Recomendadas', portadas: [P.hoyo, P.programa, P.viral, P.backrooms, P.narcos] },
@@ -1061,7 +1069,7 @@
   /* ================== HEROES ================== */
   function heroItems() {
     if (actualSec === 'tv') {
-      return vivos().map(p => ({ id: p.id, img: p.hero, alt: p.titulo, genero: p.genero, titulo: p.tituloHero, claro: p.fondoClaro,
+      return vivos().map(p => ({ id: p.id, img: p.hero, alt: p.titulo, genero: p.genero, titulo: p.tituloHero, claro: p.fondoClaro, portada: p.portada,
         texto: `${p.tituloHero ? '' : `<b style="color:#fff">${p.titulo}</b><br>`}Disponible hasta las ${hh(p.inicio + p.dur)}` }));
     }
     if (actualSec === 'documentals') return DOCS.heroes;
@@ -1073,10 +1081,9 @@
     if (clave === ultimaClave && !forzar) return;
     ultimaClave = clave;
     wrap.style.display = v.length ? '' : 'none';
-    trackSv.innerHTML = v.map(p => `<article class="hero${p.claro ? ' hero-claro' : ''}" aria-label="${p.alt}">
+    trackSv.innerHTML = v.map(p => `<article class="hero${p.claro ? ' hero-claro' : ''}" aria-label="${p.alt}" data-cover="${p.portada || ''}" data-titulo="${p.titulo || p.alt}" data-pronto="${p.pronto ? 1 : 0}">
       <img class="hero-img" src="${IMG_BASE}${p.img}" alt="${p.alt}" onerror="this.style.display='none'">
-      <div class="hero-info">${p.titulo ? `<p class="hero-titulo">${p.titulo}</p>` : ''}<p class="hero-genero">${p.genero}</p>${p.texto ? `<p class="hero-sinopsis">${p.texto}</p>` : ''}</div>
-      <button class="play-btn" aria-label="Leer ${p.alt}" data-leer="${p.id}"${p.pronto ? ' data-pronto="1"' : ''}>${PLAY_}</button></article>`).join('');
+      <div class="hero-info">${p.titulo ? `<p class="hero-titulo">${p.titulo}</p>` : ''}<p class="hero-genero">${p.genero}</p>${p.texto ? `<p class="hero-sinopsis">${p.texto}</p>` : ''}</div></article>`).join('');
     dots.innerHTML = v.length > 1 ? v.map((p, i) => `<button class="dot${i === 0 ? ' activo' : ''}" aria-label="Ir al hero ${i + 1}"></button>`).join('') : '';
     [...dots.children].forEach((d, i) => d.onclick = () => trackSv.scrollTo({ left: i * trackSv.clientWidth, behavior: 'smooth' }));
     trackSv.scrollLeft = 0;
@@ -1085,13 +1092,6 @@
     const i = Math.round(trackSv.scrollLeft / trackSv.clientWidth);
     [...dots.children].forEach((d, n) => d.classList.toggle('activo', n === i));
   }, { passive: true });
-  trackSv.addEventListener('click', e => {
-    const b = e.target.closest('[data-leer]');
-    if (!b) return;
-    if (b.dataset.pronto) alert('Próximamente.');
-    else if (typeof abrirHistoria === 'function') abrirHistoria(b.dataset.leer);
-    else alert('Lectura próximamente.');
-  });
   ['touchstart', 'mouseenter'].forEach(ev => trackSv.addEventListener(ev, () => pausaHero = true, { passive: true }));
   ['touchend', 'touchcancel', 'mouseleave'].forEach(ev => trackSv.addEventListener(ev, () => pausaHero = false, { passive: true }));
   setInterval(() => { // avance automático como en el home
@@ -1203,8 +1203,9 @@
   const DIAS_NOTIF = 7; // cuántos días atrás se muestran las notificaciones
   // Estrenos: una notificación por obra, aparece cuando llega su fecha
   const ESTRENOS = [
-    // { titulo: 'Nombre de la obra', fecha: '2026-11-01T12:00' },
-    { titulo: 'Eternamente Vivo 5', fecha: '2026-10-25T12:00' } // EJEMPLO: bórralo o cámbialo
+    // id = nombre del archivo de la portada. aTodos: true -> le llega a todos; si no, solo a quien tocó la campana en esa portada
+    // { id: 'imputables.webp', titulo: 'Imputables', fecha: '2027-03-01T12:00' },
+    { id: 'eternamente-vivo-valak.webp', titulo: 'Eternamente Vivo 5', fecha: '2026-10-25T12:00', aTodos: true } // EJEMPLO: bórralo o cámbialo
   ];
   const kEst = () => { const u = usuario(); return u ? 'cube_notif_' + u.email : null; };
   function leer() {
@@ -1221,7 +1222,8 @@
     const est = leer(), ahora = Date.now(), ini = ahora - DIAS_NOTIF * 864e5, out = [];
     ESTRENOS.forEach(e => {
       const ts = Date.parse(e.fecha);
-      if (ts <= ahora && ts >= ini) out.push({ ts, titulo: e.titulo });
+      const sus = (est.estrenos || {})[e.id];
+      if (ts <= ahora && ts >= ini && (e.aTodos || (sus && sus <= ts))) out.push({ ts, titulo: e.titulo, texto: 'ya llegó a Cube' });
     });
     Object.entries(est.subs || {}).forEach(([id, suscritoTs]) => {
       const p = PROGRAMAS.find(x => x.id === id);
@@ -1273,6 +1275,72 @@
   document.getElementById('navBuscar').addEventListener('click', () => body.classList.remove('en-notif', 'en-lista'));
   setInterval(actualizarHeader, 60000); // revisa si llegó algo nuevo
   actualizarHeader();
+
+  /* ================== TOCAR UNA PORTADA O HERO ================== */
+  const HEART = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>';
+  const ANIO_PORTADA = { 'imputables.webp': 2027, 'universe.webp': 2028, 'la-dama-roja.webp': 2027, 'la-dama-dorada.webp': 2027 }; // año de estreno de las "Próximamente"
+  window.portadasExtra = [...Object.values(C), ...Object.values(P),
+    { img: 'newsweek.webp', alt: 'Newsweek' }, { img: 'toba-live.webp', alt: 'Toba Live' }, { img: 'extrame-talent.webp', alt: 'Extrame Talent' }];
+  const accion = document.createElement('div');
+  accion.className = 'tv-sheet';
+  document.body.appendChild(accion);
+  let accionActual = null;
+  const esFav = id => { const u = usuario(); return !!(u && (u.favoritos || []).some(f => f.img === id)); };
+  function pintarAccion(info, msg) {
+    const { id, titulo, pronto } = info;
+    if (pronto) {
+      const on = !!(usuario() && (leer().estrenos || {})[id]);
+      accion.innerHTML = `<button class="sh-x" aria-label="Cerrar">&times;</button><b>${titulo}</b><p>Su estreno está programado para ${ANIO_PORTADA[id] || 'otro año'}.</p><button class="sh-bell${on ? ' on' : ''}" data-ac="bell">${BELL} ${on ? 'Notificación activada' : 'Notificarme'}</button><small class="sh-msg">${msg || ''}</small>`;
+    } else {
+      accion.innerHTML = `<button class="sh-x" aria-label="Cerrar">&times;</button><b>${titulo}</b><div class="ac-botones"><button class="ac-play" data-ac="play" aria-label="Reproducir">${PLAY_}<span>Ver</span></button><button class="ac-fav${esFav(id) ? ' on' : ''}" data-ac="fav" aria-label="Favoritos">${HEART}</button></div><small class="sh-msg">${msg || ''}</small>`;
+    }
+  }
+  function cerrarAccion() { accion.classList.remove('abierto'); accionActual = null; }
+  function infoDe(el) {
+    if (el.classList.contains('hero')) {
+      const t = el.dataset.titulo || '';
+      return { id: el.dataset.cover || t, titulo: t, pronto: el.dataset.pronto === '1' };
+    }
+    const img = el.querySelector('img');
+    const id = decodeURIComponent((img.getAttribute('src') || '').split('?')[0].split('/').pop());
+    return { id, titulo: img.alt, pronto: !!el.querySelector('.badge') };
+  }
+  document.addEventListener('click', e => {
+    if (accion.contains(e.target)) return;
+    const el = e.target.closest('.portada, .hero');
+    if (el && el.querySelector('img')) {
+      cerrarSheet();
+      accionActual = infoDe(el);
+      pintarAccion(accionActual);
+      accion.classList.add('abierto');
+    } else cerrarAccion();
+  });
+  accion.addEventListener('click', e => {
+    e.stopPropagation(); // evita que el click global cierre el panel al repintarlo
+    if (e.target.closest('.sh-x')) { cerrarAccion(); return; }
+    const b = e.target.closest('[data-ac]');
+    if (!b || !accionActual) return;
+    const info = accionActual, k = b.dataset.ac;
+    if (k === 'play') {
+      if (typeof abrirHistoria === 'function') abrirHistoria(info.id);
+      else pintarAccion(info, 'La lectura estará disponible muy pronto.');
+      return;
+    }
+    const u = usuario();
+    if (!u) { pintarAccion(info, 'Inicia sesión para usar esta opción.'); abrirModal('auth'); return; }
+    if (k === 'fav') {
+      const f = u.favoritos || [], i = f.findIndex(x => x.img === info.id);
+      if (i >= 0) f.splice(i, 1); else f.push({ img: info.id });
+      u.favoritos = f; guardarUsuario(u);
+      pintarAccion(info, i >= 0 ? 'Quitado de Favoritos.' : 'Guardado en Favoritos.');
+    } else if (k === 'bell') {
+      const est = leer(); est.estrenos = est.estrenos || {};
+      let msg;
+      if (est.estrenos[info.id]) { delete est.estrenos[info.id]; msg = 'Notificación desactivada.'; }
+      else { est.estrenos[info.id] = Date.now(); msg = 'Listo: te avisaremos cuando salga.'; }
+      guardar(est); pintarAccion(info, msg);
+    }
+  });
 
   // TV shows: heroes aparecen/desaparecen y la grilla se refresca sola
   setInterval(() => { if (actualSec === 'tv') { renderGrilla(); renderHeroes(); } }, 30000);
