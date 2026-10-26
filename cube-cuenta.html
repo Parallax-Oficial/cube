@@ -59,8 +59,8 @@
     </div>
 
     <form id="form-entrar" novalidate>
-      <label for="e-correo">Correo electrónico</label>
-      <input id="e-correo" type="email" autocomplete="email" required>
+      <label for="e-correo">Correo o nombre de usuario</label>
+      <input id="e-correo" type="text" autocomplete="username" autocapitalize="none" required>
       <label for="e-clave">Contraseña</label>
       <input id="e-clave" type="password" autocomplete="current-password" required>
       <button class="primario" type="submit">Entrar</button>
@@ -97,12 +97,10 @@
   <p id="mensaje" role="status" aria-live="polite"></p>
 </main>
 
+<script src="cube-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
-  const SUPABASE_URL = "https://qoeylefxmdihbazcfluy.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZXlsZWZ4bWRpaGJhemNmbHV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5ODA0NTgsImV4cCI6MjEwODU1NjQ1OH0.E-RG9b29dnUlaiipXJbe2omPlnRYIXTjV61v9kfmP-Q";
-
-  const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const db = supabase.createClient(window.CUBE_SUPABASE_URL, window.CUBE_SUPABASE_ANON_KEY);
   const $ = (id) => document.getElementById(id);
   const mensaje = $("mensaje");
 
@@ -118,7 +116,10 @@
   $("tab-entrar").onclick = () => mostrarTab(true);
   $("tab-crear").onclick = () => mostrarTab(false);
 
+  const PAGINA_PRINCIPAL = "cube.html";
+
   async function mostrarVista(sesion) {
+    if (sesion) { location.replace(PAGINA_PRINCIPAL); return; }
     $("vista-entrada").classList.toggle("oculto", !!sesion);
     $("vista-sesion").classList.toggle("oculto", !sesion);
     if (sesion) {
@@ -148,7 +149,7 @@
     if (clave.length < 8) return aviso("La contraseña debe tener al menos 8 caracteres.", "error");
 
     const btn = ev.submitter; btn.disabled = true; aviso("Creando cuenta…");
-    const { data: existe } = await db.from("profiles").select("id").ilike("username", usuario).maybeSingle();
+    const { data: existe } = await db.from("profiles").select("id").ilike("username", usuario.replace(/[\\%_]/g, "\\$&")).maybeSingle();
     if (existe) { btn.disabled = false; return aviso("Ese nombre de usuario ya está en uso.", "error"); }
 
     const { error } = await db.auth.signUp({
@@ -165,16 +166,27 @@
   $("form-entrar").addEventListener("submit", async (ev) => {
     ev.preventDefault();
     const btn = ev.submitter; btn.disabled = true; aviso("Entrando…");
-    const { error } = await db.auth.signInWithPassword({ email: $("e-correo").value.trim(), password: $("e-clave").value });
-    btn.disabled = false;
-    if (error) return aviso(traducirError(error), "error");
+    const ident = $("e-correo").value.trim(), clave = $("e-clave").value;
+    if (ident.includes("@")) {
+      const { error } = await db.auth.signInWithPassword({ email: ident, password: clave });
+      btn.disabled = false;
+      if (error) return aviso(traducirError(error), "error");
+    } else {
+      // con nombre de usuario: lo resuelve el servidor sin mostrar el correo de nadie
+      const { data, error } = await db.functions.invoke("login-usuario", { body: { usuario: ident, password: clave } });
+      if (error || !data) { btn.disabled = false; return aviso("No se pudo iniciar sesión. Intenta de nuevo.", "error"); }
+      if (data.error) { btn.disabled = false; return aviso(data.error, "error"); }
+      const { error: e2 } = await db.auth.setSession({ access_token: data.access_token, refresh_token: data.refresh_token });
+      btn.disabled = false;
+      if (e2) return aviso(traducirError(e2), "error");
+    }
     aviso("");
   });
 
   // Olvidé mi contraseña
   $("olvide").onclick = async () => {
     const correo = $("e-correo").value.trim();
-    if (!correo) return aviso("Escribe tu correo arriba y vuelve a pulsar.", "error");
+    if (!correo.includes("@")) return aviso("Para recuperar la contraseña escribe tu correo (no el usuario) y vuelve a pulsar.", "error");
     const { error } = await db.auth.resetPasswordForEmail(correo, { redirectTo: location.href.split("#")[0] });
     if (error) return aviso(traducirError(error), "error");
     aviso("Si ese correo tiene cuenta, te enviamos un enlace para cambiar la contraseña.", "ok");
