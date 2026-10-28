@@ -20,12 +20,10 @@
     --placeholder: #141414;
     --radio: 15px;
     --margen: 4vw;
+    --premium: linear-gradient(135deg, #e5c100, #f9d71c);
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
   html, body { background: var(--fondo); scroll-behavior: smooth; }
-
   body {
     font-family: 'Poppins', sans-serif;
     color: var(--texto);
@@ -33,9 +31,7 @@
     padding-bottom: 0;
   }
   body.buscando, body.en-lista, body.en-notif { padding-bottom: 90px; }
-
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
-
   .app { max-width: 1100px; margin: 0 auto; }
 
   /* ---------- HEADER ---------- */
@@ -47,7 +43,6 @@
     min-height: 64px;
     gap: 18px;
   }
-
   .logo {
     flex: 0 0 auto;
     font-weight: 800;
@@ -59,15 +54,6 @@
     display: flex; align-items: center;
     padding-bottom: 4px;
   }
-
-  .header-nav {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 18px;
-    flex: 0 0 auto;
-  }
-
   .nav-link {
     font-size: clamp(0.95rem, 3.6vw, 1.1rem);
     font-weight: 600;
@@ -76,413 +62,210 @@
     text-decoration: none;
     transition: color 0.2s;
   }
-  .nav-link:hover, .nav-link:active { color: #fff; }
+  .nav-link-con-flecha { display: flex; align-items: center; gap: 6px; }
+  .nav-link-con-flecha svg { width: 16px; height: 16px; }
 
-  /* Dropdown MORE bien a la derecha */
-  .dropdown {
-    position: relative;
-    display: inline-block;
-    flex: 0 0 auto;
-  }
+  /* Dropdown MORE */
+  .dropdown { position: relative; display: inline-block; }
   .dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    background-color: #111;
-    min-width: 150px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
-    border: 1px solid var(--borde);
-    border-radius: 12px;
-    z-index: 50;
-    overflow: hidden;
+    display: none; position: absolute; right: 0;
+    background-color: #111; min-width: 150px;
+    border: 1px solid var(--borde); border-radius: 12px; z-index: 50; overflow: hidden;
   }
   .dropdown-content a {
-    color: #fff;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    font-size: 0.9rem;
+    color: #fff; padding: 12px 16px; text-decoration: none; display: block; font-size: 0.9rem;
   }
   .dropdown-content a:hover { background-color: #222; }
   .dropdown.activo .dropdown-content { display: block; }
 
-  /* ---------- BARRA INFERIOR FLOTANTE CON DESVANECIMIENTO ---------- */
+  /* ---------- BARRA INFERIOR ---------- */
   .bottom-nav {
-    position: fixed;
-    bottom: 16px; left: 50%;
-    transform: translateX(-50%);
-    width: min(92%, 460px);
-    height: 64px;
-    background: rgba(18, 18, 18, 0.72);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    z-index: 100;
-    padding: 0 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-    transition: opacity 0.35s ease, visibility 0.35s ease, transform 0.35s ease;
-    opacity: 1;
-    visibility: visible;
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    width: min(92%, 460px); height: 64px;
+    background: rgba(18, 18, 18, 0.72); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 32px;
+    display: flex; align-items: center; justify-content: space-around;
+    z-index: 100; padding: 0 12px;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
   }
-  .bottom-nav.oculto {
-    opacity: 0;
-    visibility: hidden;
-    transform: translate(-50%, 30px);
-  }
-
+  .bottom-nav.oculto { opacity: 0; visibility: hidden; transform: translate(-50%, 30px); }
   .bottom-nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    color: var(--texto-suave);
-    cursor: pointer;
-    width: 20%;
-    height: 100%;
-    transition: color 0.2s, transform 0.15s;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--texto-suave); width: 20%; height: 100%;
   }
   .bottom-nav-item svg { width: 24px; height: 24px; }
-  .bottom-nav-item:active { transform: scale(0.92); }
-  
   .bottom-nav-item.activo { color: var(--verde); }
-  .bottom-nav-item:not(.activo) { color: var(--texto-suave); }
-  
-  .bottom-nav-avatar {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
 
   /* ---------- HERO ---------- */
-  .hero {
-    position: relative;
-    flex: 0 0 100%;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-    aspect-ratio: 16 / 9;
-    border-radius: var(--radio);
-    border: 2px solid var(--borde);
-    background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
-    overflow: hidden;
-  }
-  .hero::after {
-    content: "";
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,.85) 0%, rgba(0,0,0,0) 55%);
-    pointer-events: none;
-  }
-  .hero-claro::after { background: linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.72) 40%, rgba(0,0,0,0) 85%); }
-  .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
   .hero-wrap { margin: 6px var(--margen) 0; }
   .hero-track {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    border-radius: var(--radio);
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+    scrollbar-width: none; border-radius: var(--radio);
   }
   .hero-track::-webkit-scrollbar { display: none; }
+  .hero {
+    position: relative; flex: 0 0 100%; scroll-snap-align: start;
+    aspect-ratio: 16/9; border-radius: var(--radio); border: 2px solid var(--borde);
+    background: linear-gradient(135deg, #1a1a1a, #0a0a0a); overflow: hidden;
+  }
+  .hero-img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-info { position: absolute; left: 7%; right: 7%; bottom: 8%; z-index: 2; }
+  .hero-titulo { font-size: clamp(1.1rem, 5vw, 1.7rem); font-weight: 700; }
   .dots { display: flex; justify-content: center; gap: 8px; margin-top: 14px; }
-  .dot {
-    width: 8px; height: 8px; padding: 0;
-    border-radius: 50%;
-    background: rgba(255,255,255,.3);
-    transition: background .2s;
-  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.3); border: none; }
   .dot.activo { background: #fff; }
-  .hero-info {
-    position: absolute; left: 7%; right: 7%; bottom: 8%;
-    z-index: 2;
-    font-weight: 400;
-    color: var(--texto-suave);
-    text-shadow: 0 1px 8px rgba(0,0,0,.75);
-  }
-  .hero-titulo { font-weight: 700; color: #fff; font-size: clamp(1.05rem, 4.6vw, 1.6rem); line-height: 1.1; margin-bottom: 4px; }
-  .hero-genero { font-size: clamp(.8rem, 3.2vw, 1.1rem); margin-bottom: 2px; }
-  .hero-sinopsis { font-size: clamp(.85rem, 3.6vw, 1.25rem); line-height: 1.25; }
-
-  .play-btn {
-    position: absolute; right: 7%; bottom: 8%;
-    z-index: 2;
-    width: clamp(52px, 14vw, 84px);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: var(--verde);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .play-btn svg { width: 44%; height: 44%; margin-left: 6%; }
 
   /* ---------- SECCIONES ---------- */
-  .seccion { margin-top: 44px; }
-
-  .seccion h2 {
-    font-weight: 700;
-    font-size: clamp(1.25rem, 5.4vw, 1.9rem);
-    padding: 0 var(--margen);
-    margin-bottom: 18px;
-    letter-spacing: -.2px;
+  .seccion { margin-top: 48px; }
+  .seccion-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 var(--margen); margin-bottom: 16px;
   }
+  .seccion h2 { font-size: clamp(1.25rem, 5vw, 1.8rem); font-weight: 700; }
+  .seccion-ver-mas { color: var(--verde); text-decoration: none; display: flex; align-items: center; gap: 4px; font-size: 0.9rem; }
+
+  /* Colores por sección */
+  .seccion-cube-express h2 { color: var(--verde); }
+  .seccion-cube-adrenaline h2 { color: #ff5555; }
+  .seccion-cube-found-footage h2 { color: #88ccff; }
+  .seccion-cube-forbidden h2 { color: #ff6699; }
+  .seccion-cube-void h2 { color: #777799; }
+  .seccion-cube-parallels h2 { color: #aa88ff; }
+  .seccion-cube-blacklist h2 { color: #cc4444; }
+  .seccion-cube-tv h2 { color: #66cc99; }
+  .seccion-top10 h2 {
+    background: linear-gradient(90deg, #ff4d4d, #ff9500, #ffd500, #4cd964, #0099ff, #9966ff);
+    -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 800;
+  }
+  .seccion-cube-docs h2 { color: #88bb88; }
+  .seccion-cube-platinum h2 { color: #ffd700; }
 
   .carrusel {
-    display: flex;
-    gap: 2.5vw;
-    padding: 0 var(--margen);
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-padding-left: var(--margen);
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    display: flex; gap: 2px; padding: 0 var(--margen); overflow-x: auto;
+    scroll-snap-type: x mandatory; scrollbar-width: none;
   }
   .carrusel::-webkit-scrollbar { display: none; }
-
   .portada {
-    flex: 0 0 calc((100% - 2.5vw) / 2.15);
-    aspect-ratio: 16 / 9;
-    border-radius: var(--radio);
-    background: var(--placeholder);
-    scroll-snap-align: start;
-    overflow: hidden;
-    position: relative;
-    cursor: default;
+    flex: 0 0 calc((100% - 22px) / 2.15);
+    aspect-ratio: 16/9; border-radius: var(--radio); overflow: hidden;
+    position: relative; background: var(--placeholder); cursor: pointer;
   }
+  .portada img { width: 100%; height: 100%; object-fit: cover; }
   .badge {
-    position: absolute; bottom: 8px; right: 8px;
-    z-index: 2;
-    background: rgba(0,0,0,.65);
-    color: var(--verde);
-    font-size: clamp(.45rem, 1.8vw, .58rem);
-    font-weight: 600;
-    letter-spacing: .3px;
-    padding: 3px 7px;
-    border-radius: 999px;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    position: absolute; bottom: 8px; right: 8px; padding: 2px 6px;
+    border-radius: 999px; font-size: .52rem; font-weight: 600;
+    background: rgba(0,0,0,.75); color: var(--verde);
   }
-  .portada img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-  @media (min-width: 700px) {
-    :root { --margen: 28px; }
-    .carrusel { gap: 18px; }
-    .portada { flex-basis: 30%; }
+  .badge.proximamente { font-size: .44rem; padding: 1px 5px; }
+  .badge.premium { background: var(--premium); color: #000; font-weight: 800; }
+  .tv-portada-info {
+    position: absolute; bottom: 0; left: 0; right: 0; padding: 6px 8px;
+    background: linear-gradient(to top, rgba(0,0,0,.9), transparent); font-size: 0.7rem;
   }
+  .tv-portada-dia { font-weight: 700; color: var(--verde); }
+  .tv-portada-hora { color: var(--texto-suave); }
 
   /* ---------- BÚSQUEDA ---------- */
   #buscar { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
   body.buscando #buscar { display: block; }
   body.buscando #home { display: none; }
-
   .buscar-top { display: flex; align-items: center; gap: 10px; }
-  .volver-btn { flex: 0 0 auto; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; margin-left: -6px; }
+  .volver-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
   .volver-btn svg { width: 26px; height: 26px; }
   .buscador {
-    flex: 1; min-width: 0;
-    display: flex; align-items: center; gap: 10px;
-    height: 56px; padding: 0 18px;
-    background: var(--placeholder);
-    border: 2px solid var(--borde);
-    border-radius: 20px;
+    flex: 1; display: flex; align-items: center; gap: 10px;
+    height: 56px; padding: 0 18px; background: var(--placeholder);
+    border: 2px solid var(--borde); border-radius: 20px;
   }
-  .buscador input {
-    flex: 1; min-width: 0;
-    background: none; border: none; outline: none;
-    color: #fff; font-family: inherit; font-size: 1rem;
-  }
-  .buscador input::placeholder { color: #8a8a8a; }
-  .buscador input::-webkit-search-cancel-button { display: none; }
-  .buscador svg { flex: 0 0 auto; width: 26px; height: 26px; }
-  .buscador:focus-within { border-color: #3a3a3a; }
-
-  #buscar h2 {
-    font-weight: 700;
-    font-size: clamp(1.25rem, 5.4vw, 1.9rem);
-    margin: 30px 0 18px;
-    letter-spacing: -.2px;
-  }
-  .grilla { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-  .grilla .portada { flex: none; width: 100%; }
-  .sin-resultados { color: var(--texto-suave); font-size: 1rem; padding: 10px 0; }
-  .sin-resultados[hidden] { display: none; }
+  .buscador input { flex: 1; background: none; border: none; outline: none; color: #fff; font-size: 1rem; }
+  .grilla { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 20px; }
+  .grilla .portada { width: 100%; }
+  .sin-resultados { color: var(--texto-suave); padding: 20px 0; }
   @media (min-width: 700px) {
+    :root { --margen: 28px; }
+    .carrusel { gap: 18px; }
+    .portada { flex-basis: 30%; }
     .grilla { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
   }
 
-  /* ---------- PIE DE PÁGINA (NORMAL) ---------- */
+  /* ---------- LISTA ---------- */
+  #lista, #notifs { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
+  body.en-lista #lista, body.en-notif #notifs { display: block; }
+
+  /* ---------- NOTIFICACIONES ---------- */
+  .notif-lista { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
+  .notif { padding: 14px 16px; background: var(--placeholder); border: 1px solid var(--borde); border-radius: var(--radio); display: flex; gap: 14px; align-items: center; }
+  .notif.nueva { border-color: #34440a; }
+  .notif-cuerpo b { display: block; font-size: .95rem; }
+  .notif-cuerpo span { font-size: .85rem; color: var(--texto-suave); }
+  .notif-limpiar { color: var(--texto-suave); border: 1px solid var(--borde); padding: 8px 12px; border-radius: 9px; font-size: .8rem; margin-bottom: 16px; }
+
+  /* ---------- PERFIL — CORREGIDO ---------- */
+  .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.65); opacity: 0; visibility: hidden; z-index: 150; transition: .25s; }
+  body.perfil-abierto .menu-overlay { opacity: 1; visibility: visible; }
+  .perfil-modal {
+    position: fixed; top: 0; right: 0; bottom: 0; width: min(86vw, 360px); background: #000; border-left: 1px solid var(--borde);
+    padding: 20px; overflow-y: auto; transform: translateX(100%); visibility: hidden;
+    transition: transform .3s cubic-bezier(.22,.8,.3,1), visibility .3s; z-index: 160;
+  }
+  body.perfil-abierto .perfil-modal { transform: none; visibility: visible; }
+  .perfil-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .perfil-info { text-align: center; padding-bottom: 20px; border-bottom: 1px solid var(--borde); margin-bottom: 18px; }
+  .perfil-foto { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--verde); margin-bottom: 8px; }
+  .perfil-opciones { display: flex; flex-direction: column; gap: 8px; }
+  .perfil-opcion {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; padding: 10px 14px; background: var(--placeholder);
+    border: 1px solid #191919; border-radius: 10px;
+    font-size: .9rem; font-weight: 500; text-align: left;
+  }
+  .perfil-opcion .opcion-izq { display: flex; align-items: center; gap: 10px; }
+  .perfil-opcion.salir { color: #ff4d4d; margin-top: 8px; }
+  .notif-ajustes { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 18px 0; padding: 14px; background: #090909; border: 1px solid var(--borde); border-radius: 12px; }
+  .switch { position: relative; width: 42px; height: 24px; }
+  .switch input { opacity: 0; position: absolute; }
+  .switch span { display: block; width: 42px; height: 24px; background: #333; border-radius: 99px; transition: .2s; }
+  .switch span:before {
+    content: ""; position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: .2s;
+  }
+  .switch input:checked + span { background: var(--verde); }
+  .switch input:checked + span:before { transform: translateX(18px); background: #000; }
+
+  /* ---------- PIE ---------- */
   .pie {
-    background: #0a0a0a;
-    margin-top: 70px;
-    padding: 64px var(--margen) calc(60px + env(safe-area-inset-bottom, 0px));
+    background: #0a0a0a; margin-top: 70px;
+    padding: 50px var(--margen) calc(40px + env(safe-area-inset-bottom, 0px));
   }
   body.buscando .pie, body.en-lista .pie, body.en-notif .pie { display: none; }
   .pie-in { max-width: 1100px; margin: 0 auto; }
-
-  .pie-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
-  .pie-linea { padding: 0 14px 16px; border-bottom: 2px solid #1c1c1c; }
-  .pie .logo { margin: 0; padding: 0; font-size: clamp(2.3rem, 10vw, 3rem); }
-  .redes { display: flex; align-items: center; gap: 22px; }
-  .redes a { display: flex; color: #8d8d8d; transition: color .2s, transform .2s; }
-  .redes a:hover, .redes a:active { color: #fff; transform: translateY(-2px); }
-  .redes svg { width: 30px; height: 30px; fill: currentColor; }
-
-  .pie-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 44px; text-align: center; }
-  .pie-cols h4 {
-    font-weight: 600; font-size: .82rem; letter-spacing: .6px; text-transform: uppercase;
-    color: #a3a3a3; margin-bottom: 26px;
-  }
+  .pie-top { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; padding-bottom: 16px; border-bottom: 2px solid #1c1c1c; }
+  .redes { display: flex; gap: 18px; }
+  .redes a { color: #8d8d8d; transition: .2s; }
+  .redes a:hover { color: #fff; }
+  .redes svg { width: 28px; height: 28px; }
+  .pie-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; text-align: center; }
+  .pie-cols h4 { font-size: .8rem; text-transform: uppercase; color: #888; margin-bottom: 16px; }
   .pie-cols ul { list-style: none; }
-  .pie-cols li + li { margin-top: 20px; }
-  .pie-cols a {
-    color: #7d7d7d; font-size: .88rem; line-height: 1.45; text-decoration: none;
-    transition: color .2s;
-  }
-  .pie-cols a:hover, .pie-cols a:active { color: #fff; }
-
-  .pie-legal { margin-top: 56px; padding-top: 34px; border-top: 2px solid #161616; text-align: center; }
-  .pie-legal p { color: #5f5f5f; font-size: .8rem; line-height: 1.7; }
-  .pie-legal .copy { margin-bottom: 16px; }
-  .pie-legal .desc { max-width: 520px; margin: 0 auto 6px; }
-  .pie-enlaces { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-top: 22px; }
-  .pie-enlaces a { color: #5f5f5f; font-size: .76rem; text-decoration: none; transition: color .2s; }
-  .pie-enlaces a:hover { color: #fff; }
-
-  /* ---------- CUENTA / MODAL ---------- */
-  body.auth-abierto, body.perfil-abierto { overflow: hidden; }
-  body.auth-abierto .menu-overlay, body.perfil-abierto .menu-overlay { opacity: 1; visibility: visible; }
-  .menu-overlay {
-    position: fixed; inset: 0; z-index: 150;
-    background: rgba(0,0,0,.65);
-    opacity: 0; visibility: hidden;
-    transition: opacity .25s ease, visibility .25s;
-  }
-  
-  .perfil-modal { position: fixed; top: 0; right: 0; bottom: 0; z-index: 160; width: min(86vw, 360px); padding: 20px; background: #000; border-left: 1px solid var(--borde); display: flex; flex-direction: column; overflow-y: auto; transform: translateX(100%); visibility: hidden; transition: transform .3s cubic-bezier(.22,.8,.3,1), visibility .3s; }
-  body.perfil-abierto .perfil-modal { transform: none; visibility: visible; }
-  .perfil-modal .logo { margin: 0; padding: 0; }
-  .perfil-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-  .perfil-info { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--borde); }
-  .perfil-foto { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--verde); }
-  .perfil-info b { font-size: 1.2rem; }
-  .perfil-info small { color: var(--texto-suave); font-size: .85rem; }
-  .cambiar-foto { font-size: .8rem; color: var(--verde); text-decoration: underline; }
-  .perfil-opciones { display: flex; flex-direction: column; gap: 7px; }
-  .perfil-opcion { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 42px; padding: 10px 12px; background: var(--placeholder); border: 1px solid #191919; border-radius: 10px; font-weight: 500; font-size: .84rem; text-align: left; }
-  .perfil-opcion .opcion-izq { display: flex; align-items: center; gap: 10px; min-width: 0; }
-  .perfil-opcion .opcion-izq svg { width: 17px; height: 17px; color: var(--verde); flex: 0 0 auto; opacity: .95; }
-  .perfil-opcion .opcion-flecha { width: 14px; height: 14px; opacity: .45; flex: 0 0 auto; }
-  .perfil-opcion.salir { margin-top: 12px; color: #ff4d4d; justify-content: flex-start; }
-  .notif-ajustes { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:18px; padding:14px; background:#090909; border:1px solid var(--borde); border-radius:12px; }
-  .notif-ajustes-info { display:flex; align-items:flex-start; gap:10px; min-width:0; }
-  .notif-ajustes-info svg { width:20px; height:20px; color:var(--verde); flex:0 0 auto; }
-  .notif-ajustes-info b { display:block; font-size:.88rem; }
-  .notif-ajustes-info small { display:block; color:var(--texto-suave); font-size:.72rem; line-height:1.45; margin-top:3px; }
-  .switch { position:relative; width:42px; height:24px; flex:0 0 auto; }
-  .switch input { position:absolute; opacity:0; width:1px; height:1px; }
-  .switch span { position:absolute; inset:0; border-radius:99px; background:#333; transition:background .2s; cursor:pointer; }
-  .switch span:before { content:""; position:absolute; width:18px; height:18px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform .2s; }
-  .switch input:checked + span { background:var(--verde); }
-  .switch input:checked + span:before { transform:translateX(18px); background:#000; }
-  .switch input:focus-visible + span { outline:2px solid #fff; outline-offset:3px; }
-
-  body.en-lista #lista { display: block; }
-  body.en-lista #home, body.en-notif #home { display: none; }
-  #lista { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
-
-  /* ---------- SECCIONES (TV shows, Platinum, etc.) ---------- */
-  #seccionView { display: none; }
-  body.en-seccion #seccionView { display: block; }
-  body.en-seccion #home > .hero-wrap, body.en-seccion #secciones { display: none; }
-  body.en-seccion #moreDropdown { display: none; }
-  body.en-seccion .header-nav { justify-content: flex-start; }
-  #cerrarBuscar { display: none; }
-  #secDrop .dropdown-content { left: 0; right: auto; }
-  .tv-scroll { margin-top: 34px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-  .tv-scroll::-webkit-scrollbar { display: none; }
-  .tv-inner { position: relative; }
-  .tv-row { display: flex; height: 104px; border-bottom: 2px solid var(--borde); }
-  .tv-row.hoy { border-bottom-color: var(--verde); }
-  .tv-row.tv-horas { height: 44px; border-bottom: none; }
-  .tv-dia { position: sticky; left: 0; z-index: 3; flex: 0 0 96px; width: 96px; background: #000; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .95rem; color: #fff; padding: 0 6px; text-align: center; }
-  .tv-row.hoy .tv-dia { color: var(--verde); }
-  .tv-horas .tv-dia { justify-content: flex-start; padding-left: var(--margen); font-size: 1.25rem; }
-  .tv-line { position: relative; flex: 0 0 1728px; }
-  .tv-hora { position: absolute; top: 10px; font-size: .85rem; color: var(--texto-suave); font-weight: 500; }
-  .tv-blq { position: absolute; top: 10px; bottom: 10px; padding: 10px 12px; border-radius: 12px; background: var(--placeholder); border: 1px solid var(--borde); text-align: left; display: flex; flex-direction: column; justify-content: center; gap: 4px; overflow: hidden; color: #fff; }
-  .tv-blq small { font-size: .7rem; color: var(--texto-suave); font-weight: 600; letter-spacing: .3px; }
-  .tv-blq b { font-size: .95rem; font-weight: 700; line-height: 1.2; }
-  .tv-blq em { font-style: normal; font-size: .68rem; color: var(--verde); font-weight: 600; }
-  .tv-blq.live { border: 2px solid var(--verde); background: #0d1100; }
-  .tv-blq.vacio { background: transparent; border: 1px dashed #1c1c1c; color: #5f5f5f; font-size: .75rem; align-items: center; justify-content: center; pointer-events: none; }
-  .tv-ahora { position: absolute; top: 44px; bottom: 0; width: 2px; background: var(--verde); z-index: 2; pointer-events: none; opacity: .8; }
-  .tv-vacio { color: var(--texto-suave); padding: 40px var(--margen); text-align: center; line-height: 1.6; }
-  .tv-sheet { position: fixed; left: 50%; bottom: 96px; transform: translate(-50%, 20px); width: min(92%, 460px); z-index: 120; background: #0a0a0a; border: 2px solid var(--borde); border-radius: var(--radio); padding: 18px 20px; opacity: 0; visibility: hidden; transition: all .25s ease; }
-  .tv-sheet.abierto { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
-  .tv-sheet b { display: block; font-size: 1.05rem; margin-bottom: 4px; padding-right: 28px; }
-  .tv-sheet p { color: var(--texto-suave); font-size: .88rem; margin-bottom: 14px; }
-  .tv-sheet .sh-x { position: absolute; top: 8px; right: 12px; font-size: 1.6rem; color: var(--texto-suave); }
-  .tv-sheet .sh-bell { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 999px; background: var(--verde); color: #000; font-weight: 700; font-size: .9rem; }
-  .tv-sheet .sh-bell svg { width: 20px; height: 20px; }
-  .tv-sheet .sh-msg { display: block; margin-top: 10px; color: var(--texto-suave); font-size: .78rem; }
-  /* ---------- NOTIFICACIONES ---------- */
-  #notifs { display: none; max-width: 1100px; margin: 0 auto; padding: 14px var(--margen) 40px; }
-  body.en-notif #notifs { display: block; }
-  .notif-lista { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
-  .notif { position: relative; display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--placeholder); border: 1px solid var(--borde); border-radius: var(--radio); }
-  .notif.nueva { border-color: #34440a; }
-  .notif.nueva::after { content: ""; position: absolute; top: 14px; right: 14px; width: 8px; height: 8px; border-radius: 50%; background: var(--verde); }
-  .notif-ico { flex: 0 0 44px; height: 44px; border-radius: 12px; background: #000; color: var(--verde); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.45rem; }
-  .notif-ico svg { width: 22px; height: 22px; }
-  .notif-cuerpo { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding-right: 14px; }
-  .notif-cuerpo b { font-size: .98rem; font-weight: 700; }
-  .notif-cuerpo span { font-size: .88rem; color: var(--texto-suave); }
-  .notif-cuerpo small { font-size: .72rem; color: #6f6f6f; margin-top: 2px; }
-  .notif-cuerpo { flex:1; }
-  .notif-borrar { flex:0 0 auto; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:8px; color:#777; }
-  .notif-borrar:hover, .notif-borrar:focus-visible { color:#fff; background:#202020; }
-  .notif-borrar svg { width:17px; height:17px; }
-  .notif-acciones { display:flex; justify-content:flex-end; margin-top:12px; }
-  .notif-limpiar { color:var(--texto-suave); border:1px solid var(--borde); padding:8px 12px; border-radius:9px; font-size:.78rem; }
-  .notif-limpiar:hover { color:var(--verde); border-color:#414b22; }
-  .nav-perfil-wrap { position: relative; display: inline-flex; }
-  .notif-dot { position: absolute; top: -3px; left: -3px; width: 11px; height: 11px; border-radius: 50%; background: #ff3b30; border: 2px solid #141414; }
-  .perfil-cuenta { display: inline-block; min-width: 20px; margin-left: 8px; padding: 1px 6px; border-radius: 999px; background: #ff3b30; color: #fff; font-size: .72rem; font-weight: 700; text-align: center; }
-  .perfil-cuenta[hidden] { display: none; }
-  .tv-sheet .sh-bell.on { background: transparent; color: var(--verde); border: 2px solid var(--verde); }
-  .tv-sheet .sh-bell.on svg { stroke: var(--verde); }
-  /* ---------- ACCIONES AL TOCAR UNA PORTADA / HERO ---------- */
-  .portada, .hero { cursor: pointer; }
-  .ac-botones { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
-  .ac-play { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 22px 0 18px; border-radius: 999px; background: var(--verde); color: #000; font-weight: 700; font-size: .95rem; }
-  .ac-play svg { width: 18px; height: 18px; }
-  .ac-fav { width: 44px; height: 44px; border-radius: 50%; border: 2px solid #333; display: flex; align-items: center; justify-content: center; color: #fff; }
-  .ac-fav svg { width: 22px; height: 22px; }
-  .ac-fav.on { color: var(--verde); border-color: var(--verde); }
-  .ac-fav.on svg { fill: var(--verde); }
+  .pie-cols li { margin-bottom: 10px; }
+  .pie-cols a { color: #666; text-decoration: none; font-size: .85rem; }
+  .pie-cols a:hover { color: #fff; }
+  .pie-legal { margin-top: 40px; padding-top: 24px; border-top: 1px solid #222; text-align: center; font-size: .8rem; color: #666; }
+  .pie-enlaces { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  .pie-enlaces a { color: #555; text-decoration: none; font-size: .75rem; }
 </style>
 </head>
 <body>
 <div class="app">
-
 <div id="home">
-
-  <!-- HEADER -->
   <header>
     <div class="logo">cube</div>
-    <nav class="header-nav">
-      <a href="#" class="nav-link">TV shows</a>
-      <a href="#" class="nav-link">Platinum</a>
-    </nav>
     <div class="dropdown" id="moreDropdown">
       <a href="#" class="nav-link" id="moreBtn">More ▾</a>
       <div class="dropdown-content">
-        <a href="#" class="dropdown-link">Interactive</a>
-        <a href="#" class="dropdown-link">Documentals</a>
-        <a href="#" class="dropdown-link">Underground</a>
+        <a href="#" class="dropdown-link" style="display:none;">Interactive</a>
+        <a href="#" class="dropdown-link" style="display:none;">Documentals</a>
+        <a href="#" class="dropdown-link" style="display:none;">Underground</a>
       </div>
     </div>
   </header>
@@ -493,93 +276,177 @@
     <div class="dots" id="dots"></div>
   </section>
 
-  <!-- SECCIONES -->
+  <!-- SECCIONES DINÁMICAS -->
   <main id="secciones"></main>
-
-</div><!-- /home -->
+</div>
 
 <!-- BÚSQUEDA -->
-<section id="buscar" aria-label="Buscar historias">
+<section id="buscar">
   <div class="buscar-top">
-    <button class="volver-btn" id="cerrarBuscar" aria-label="Volver">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    <button class="volver-btn" id="cerrarBuscar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
-    <label class="buscador">
-      <input id="campoBuscar" type="search" placeholder="¿Qué quieres ver hoy?" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Buscar historias">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    </label>
+    <div class="buscador">
+      <input id="campoBuscar" type="search" placeholder="¿Qué quieres ver hoy?">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
   </div>
   <h2 id="tituloBuscar">Todas las historias</h2>
   <div class="grilla" id="grilla"></div>
   <p class="sin-resultados" id="sinResultados" hidden>No encontramos historias con ese nombre.</p>
 </section>
 
-<!-- LISTA (favoritos / guardados) -->
-<section id="lista" aria-label="Lista">
+<!-- LISTA -->
+<section id="lista">
   <div class="buscar-top">
-    <button class="volver-btn" id="cerrarLista" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <h1 id="listaTitulo" style="font-size: 1.3rem; font-weight:700;"></h1>
+    <button class="volver-btn" id="cerrarLista">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1 id="listaTitulo" style="font-size: 1.2rem; font-weight:700;"></h1>
   </div>
-  <div class="grilla" id="listaGrilla" style="margin-top:22px"></div>
-  <p class="sin-resultados" id="listaVacia" hidden></p>
+  <div class="grilla" id="listaGrilla"></div>
+  <p class="sin-resultados" id="listaVacia" hidden>Tu lista está vacía.</p>
 </section>
 
 <!-- NOTIFICACIONES -->
-<section id="notifs" aria-label="Notificaciones">
+<section id="notifs">
   <div class="buscar-top">
-    <button class="volver-btn" id="cerrarNotifs" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <h1 style="font-size: 1.3rem; font-weight:700;">Notificaciones</h1>
+    <button class="volver-btn" id="cerrarNotifs">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1 style="font-size: 1.2rem; font-weight:700;">Notificaciones</h1>
   </div>
   <div class="notif-ajustes">
-    <div class="notif-ajustes-info">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
-      <div><b>Notificaciones Push</b><small>Recibe avisos en tu dispositivo cuando CUBE tenga novedades. Requiere permiso del navegador.</small></div>
+    <div style="display:flex;align-items:flex-start;gap:10px;">
+      <svg       viewBox="0 0 24 24" fill="none" stroke="var(--verde)" stroke-width="2">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+      <div>
+        <b>Notificaciones</b>
+        <small>Recibir avisos de nuevos episodios</small>
+      </div>
     </div>
-    <label class="switch" aria-label="Activar o desactivar notificaciones push">
-      <input type="checkbox" id="pushToggle">
+    <label class="switch">
+      <input type="checkbox" id="toggleNotifs" checked>
       <span></span>
     </label>
   </div>
-  <div class="notif-acciones"><button class="notif-limpiar" id="borrarTodasNotif" type="button">Borrar todas</button></div>
-  <div class="notif-lista" id="notifLista"></div>
-  <p class="sin-resultados" id="notifVacia" hidden>No tienes notificaciones.</p>
+  <button class="notif-limpiar" id="limpiarNotifs">Limpiar notificaciones</button>
+  <div class="notif-lista" id="notifLista">
+    <!-- Notificaciones dinámicas -->
+    <p class="sin-resultados" style="text-align:center; padding:30px 0;">No tienes notificaciones nuevas</p>
+  </div>
 </section>
 
-<!-- PERFIL MODAL (Sustituido con Supabase) -->
-<aside class="perfil-modal" id="perfilModal" aria-label="Perfil">
-  <div class="perfil-header"><div class="logo">cube</div><button class="volver-btn" id="cerrarPerfil" aria-label="Cerrar perfil"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></button></div>
-  <div class="perfil-info">
-    <img class="perfil-foto" id="perfilFoto" alt="Avatar">
-    <b id="perfilNombre"></b><small id="perfilEmail"></small>
-    <button class="cambiar-foto" id="btnFoto">Cambiar foto de perfil</button>
-    <input type="file" id="inputFoto" accept="image/*" hidden>
+<!-- PANEL DE PERFIL -->
+<div class="menu-overlay" id="cerrarPerfil"></div>
+<aside class="perfil-modal" id="perfilPanel">
+  <div class="perfil-header">
+    <div class="logo">cube</div>
+    <button id="cerrarPerfilBtn" style="font-size:1.5rem; color:var(--texto-suave);">&times;</button>
   </div>
+
+  <div class="perfil-info">
+    <img src="https://cdn.jsdelivr.net/gh/Parallax-Oficial/cube@main/avatar.png" alt="Perfil" class="perfil-foto" id="avatarPreview" onerror="this.src='https://via.placeholder.com/80'">
+    <b id="nombreUsuario">Invitado</b>
+    <small id="correoUsuario">Inicia sesión para ver tu cuenta</small>
+    <a href="#" class="cambiar-foto" id="cambiarFoto">Cambiar foto</a>
+  </div>
+
   <div class="perfil-opciones">
-    <button class="perfil-opcion" id="irFavoritos"><span class="opcion-izq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>Favoritos</span><svg class="opcion-flecha" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
-    <button class="perfil-opcion" id="irNotificaciones"><span class="opcion-izq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg><span>Notificaciones</span><b class="perfil-cuenta" id="notifCuenta" hidden>0</b></span><svg class="opcion-flecha" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
-    <button class="perfil-opcion salir" id="btnSalir"><span class="opcion-izq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/></svg>Cerrar sesión</span></button>
+    <button class="perfil-opcion">
+      <span class="opcion-izq">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        Mi Perfil
+      </span>
+      <svg class="opcion-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+
+    <button class="perfil-opcion">
+      <span class="opcion-izq">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 11H5m14 0a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2m14 0V9a2 2 0 0 0-2-2M5 11V9a2 2 0 0 1 2-2m0 0V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2M8 7h8"/>
+        </svg>
+        Mi Lista
+      </span>
+      <svg class="opcion-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+
+    <button class="perfil-opcion">
+      <span class="opcion-izq">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .55-2.25 1.65 1.65 0 0 0-.55-2.25l1.1-1.1a1.65 1.65 0 0 0 0-2.35l-1.3-1.3a1.65 1.65 0 0 0-2.35 0l-1.1 1.1a1.65 1.65 0 0 0-2.25-.55 1.65 1.65 0 0 0-2.25-.55l-1.1-1.1a1.65 1.65 0 0 0-2.35 0l-1.3 1.3a1.65 1.65 0 0 0 0 2.35l1.1 1.1a1.65 1.65 0 0 0-.55 2.25 1.65 1.65 0 0 0 .55 2.25l-1.1 1.1a1.65 1.65 0 0 0 0 2.35l1.3 1.3a1.65 1.65 0 0 0 2.35 0l1.1-1.1a1.65 1.65 0 0 0 2.25.55 1.65 1.65 0 0 0 2.25.55l1.1 1.1a1.65 1.65 0 0 0 2.35 0l1.3-1.3a1.65 1.65 0 0 0 0-2.35l-1.1-1.1z"/>
+        </svg>
+        Configuración
+      </span>
+      <svg class="opcion-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+
+    <button class="perfil-opcion">
+      <span class="opcion-izq">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        Ayuda y Soporte
+      </span>
+      <svg class="opcion-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+
+    <button class="perfil-opcion salir" id="cerrarSesion">
+      <span class="opcion-izq">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Cerrar sesión
+      </span>
+    </button>
   </div>
 </aside>
-<div class="menu-overlay" id="menuOverlay"></div>
 
-</div>
-
-<!-- BARRA INFERIOR FLOTANTE -->
-<nav class="bottom-nav" id="bottomNav" aria-label="Navegación inferior">
-  <button class="bottom-nav-item activo" id="navHome" aria-label="Home">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+<!-- BARRA DE NAVEGACIÓN INFERIOR -->
+<nav class="bottom-nav" id="bottomNav">
+  <button class="bottom-nav-item activo" data-pagina="inicio">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
   </button>
-  <button class="bottom-nav-item" id="navRanking" aria-label="Ranking">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3.5" width="18" height="13.5" rx="2"/><path d="M7 20.5l1.2-3.5M17 20.5l-1.2-3.5"/><line x1="10" y1="8.5" x2="17" y2="8.5"/><line x1="10" y1="12" x2="17" y2="12"/><circle cx="7" cy="8.5" r=".6" fill="currentColor"/><circle cx="7" cy="12" r=".6" fill="currentColor"/></svg>
+  <button class="bottom-nav-item" data-pagina="buscar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
   </button>
-  <button class="bottom-nav-item" id="navBuscar" aria-label="Buscar">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+  <button class="bottom-nav-item" data-pagina="lista">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+    </svg>
   </button>
-  <button class="bottom-nav-item" id="navOrbe" aria-label="Orbe">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
+  <button class="bottom-nav-item" data-pagina="notifs">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
   </button>
-  <button class="bottom-nav-item" id="navPerfil" aria-label="Perfil">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+  <button class="bottom-nav-item" id="abrirPerfil">
+    <img src="https://cdn.jsdelivr.net/gh/Parallax-Oficial/cube@main/avatar.png" alt="Perfil" class="bottom-nav-avatar" onerror="this.style.display='none'">
   </button>
 </nav>
 
@@ -587,933 +454,427 @@
 <footer class="pie">
   <div class="pie-in">
     <div class="pie-top">
-      <div class="pie-linea"><div class="logo">cube</div></div>
-      <div class="pie-linea redes">
-        <a href="#" aria-label="Instagram de Cube">
-          <svg viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm4.5 3.2a4.8 4.8 0 1 1 0 9.6 4.8 4.8 0 0 1 0-9.6Zm0 2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6Zm5.1-3.5a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3Z"/></svg>
-        </a>
-        <a href="#" aria-label="Discord de Cube">
-          <svg viewBox="0 0 24 24"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.2.5a18.4 18.4 0 0 0-6.4 0L8.6 3a19.7 19.7 0 0 0-4.9 1.4C.6 9 -.3 13.5.1 18a19.9 19.9 0 0 0 6 3l1.3-2.1c-.7-.3-1.4-.6-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1L17.9 21a19.9 19.9 0 0 0 6-3c.5-5.2-.8-9.7-3.6-13.6ZM8.5 15.2c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Zm7 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Z"/></svg>
-        </a>
+      <div class="logo">cube</div>
+      <div class="redes">
+        <a href="#"><svg viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg></a>
+        <a href="#"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+        <a href="#"><svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg></a>
       </div>
     </div>
 
     <div class="pie-cols">
-      <nav aria-label="Ayuda">
-        <h4>Ayuda</h4>
+      <div>
+        <h4>Explorar</h4>
         <ul>
-          <li><a href="#">Centro de ayuda</a></li>
-          <li><a href="#">Reportar problemas</a></li>
-          <li><a href="#">Contáctanos</a></li>
+          <li><a href="#">Cubo Express</a></li>
+          <li><a href="#">Cubo TV</a></li>
+          <li><a href="#">Top 10</a></li>
         </ul>
-      </nav>
-      <nav aria-label="Empresa">
-        <h4>Empresa</h4>
+      </div>
+      <div>
+        <h4>Nosotros</h4>
         <ul>
-          <li><a href="#">Acerca de nosotros</a></li>
-          <li><a href="#">Nuestra marca</a></li>
-          <li><a href="#">¿Qué es Cube?</a></li>
+          <li><a href="#">Sobre Cube</a></li>
+          <li><a href="#">Parallax</a></li>
+          <li><a href="#">Trabaja con nosotros</a></li>
         </ul>
-      </nav>
-      <nav aria-label="Socios">
-        <h4>Socios</h4>
+      </div>
+      <div>
+        <h4>Legal</h4>
         <ul>
-          <li><a href="#">Asóciate con nosotros</a></li>
-          <li><a href="#">Negocia con nosotros</a></li>
+          <li><a href="#">Términos de uso</a></li>
+          <li><a href="#">Privacidad</a></li>
+          <li><a href="#">Contacto</a></li>
         </ul>
-      </nav>
+      </div>
     </div>
 
     <div class="pie-legal">
-      <p class="copy">Propiedad intelectual © <span id="anio">2026</span> Cube, Inc.</p>
-      <p class="desc">Cube es una plataforma de streaming literario que prioriza el entretenimiento y consumo rápido.</p>
-      <p>Todos los derechos reservados.</p>
+      <p class="copy">© 2026 Cube · Una marca de Parallax. Todos los derechos reservados.</p>
+      <p class="desc">Cube es una plataforma de narración digital. Las historias, personajes y marcas aquí mencionadas son propiedad de sus respectivos creadores.</p>
       <div class="pie-enlaces">
-        <a href="#">Términos de uso</a>
-        <a href="#">Política de privacidad</a>
-        <a href="#">Cookies</a>
+        <a href="#">Política de Privacidad</a>
+        <a href="#">Términos de Servicio</a>
+        <a href="#">DMCA</a>
+        <a href="#">Soporte</a>
       </div>
     </div>
   </div>
 </footer>
 
+</div><!-- /fin .app -->
+
 <script>
-  const IMG_BASE = "https://cdn.jsdelivr.net/gh/Parallax-Oficial/cube@main/";
+// ================== DATOS DE TODAS LAS HISTORIAS ==================
+const historias = [
+  // Cube Express
+  {id:1, nombre:"El Mensaje", seccion:"express", img:"", descripcion:"Una señal inesperada", esPremium:false, proximamente:false},
+  {id:2, nombre:"Última Llamada", seccion:"express", img:"", descripcion:"Tiempo límite: 60 segundos", esPremium:false, proximamente:false},
+  {id:3, nombre:"Despertar", seccion:"express", img:"", descripcion:"No sabes dónde estás", esPremium:false, proximamente:false},
+  {id:4, nombre:"La Puerta", seccion:"express", img:"", descripcion:"Nunca la abras", esPremium:false, proximamente:false},
 
-  // ---------- HERO ----------
-  const heroes = [
-    { img: "hero-bigfoot.webp", alt: "Bigfoot", titulo: "Bigfoot", portada: "bigfoot-2.webp", genero: "Acción • 2026" },
-    { img: "hero-golem.webp", alt: "Golem", titulo: "Golem", portada: "golem.webp", genero: "Thriller • 2026" },
-    { img: "hero-la-familia-rani.webp", alt: "La Familia Rani", titulo: "La Familia Rani", portada: "la-familia-rani.webp", genero: "Thriller • 2025" }
-  ];
+  // Cube Adrenaline
+  {id:5, nombre:"Bigfoot", seccion:"adrenaline", img:"", descripcion:"La criatura del bosque", esPremium:false, proximamente:false},
+  {id:6, nombre:"Behemoth", seccion:"adrenaline", img:"", descripcion:"Algo gigante despierta", esPremium:false, proximamente:false},
+  {id:7, nombre:"Hydra: The Lost Island", seccion:"adrenaline", img:"", descripcion:"Nadie sale vivo", esPremium:false, proximamente:false},
+  {id:8, nombre:"Moby Dick", seccion:"adrenaline", img:"", descripcion:"La caza comienza", esPremium:false, proximamente:false},
+  {id:9, nombre:"Ultimate", seccion:"adrenaline", img:"", descripcion:"Solo uno sobrevive", esPremium:false, proximamente:false},
+  {id:10, nombre:"Valentine", seccion:"adrenaline", img:"", descripcion:"Amor mortal", esPremium:false, proximamente:false},
+  {id:11, nombre:"Cuarentena Revival", seccion:"adrenaline", img:"", descripcion:"Ellos volvieron", esPremium:false, proximamente:false},
+  {id:12, nombre:"El Club de Clubes 1", seccion:"adrenaline", img:"", descripcion:"La primera regla", esPremium:false, proximamente:false},
+  {id:13, nombre:"El Club de Clubes 2", seccion:"adrenaline", img:"", descripcion:"La verdad", esPremium:false, proximamente:false},
+  {id:14, nombre:"El Club de Clubes 3", seccion:"adrenaline", img:"", descripcion:"El final", esPremium:false, proximamente:false},
+  {id:15, nombre:"Los Sapos", seccion:"adrenaline", img:"", descripcion:"Cuidado con el estanque", esPremium:false, proximamente:false},
+  {id:16, nombre:"Narcos", seccion:"adrenaline", img:"", descripcion:"El imperio", esPremium:true, proximamente:true},
 
-  const track = document.getElementById('heroTrack');
-  const dotsBox = document.getElementById('dots');
-  const PLAY = '<svg viewBox="0 0 24 24"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z" fill="#000"/></svg>';
+  // Cube Found Footage
+  {id:17, nombre:"Ratman", seccion:"found-footage", img:"", descripcion:"Grabaciones perdidas", esPremium:false, proximamente:false},
+  {id:18, nombre:"Metalosis Maligna", seccion:"found-footage", img:"", descripcion:"El metal se propaga", esPremium:false, proximamente:false},
+  {id:19, nombre:"Atraco", seccion:"found-footage", img:"", descripcion:"Cámaras de seguridad", esPremium:false, proximamente:false},
+  {id:20, nombre:"El Cigüeñón", seccion:"found-footage", img:"", descripcion:"Lo grabaron ellos mismos", esPremium:false, proximamente:false},
+  {id:21, nombre:"Frogman", seccion:"found-footage", img:"", descripcion:"En las profundidades", esPremium:false, proximamente:false},
+  {id:22, nombre:"Without Warning", seccion:"found-footage", img:"", descripcion:"Sin aviso previo", esPremium:false, proximamente:false},
+  {id:23, nombre:"Apollo 18", seccion:"found-footage", img:"", descripcion:"La misión secreta", esPremium:true, proximamente:true},
+  {id:24, nombre:"Vigilia", seccion:"found-footage", img:"", descripcion:"No duermas", esPremium:false, proximamente:false},
+  {id:25, nombre:"The Chernobyl Tapes", seccion:"found-footage", img:"", descripcion:"Lo que realmente pasó", esPremium:false, proximamente:false},
+  {id:26, nombre:"The Faction's Tapes", seccion:"found-footage", img:"", descripcion:"Archivos prohibidos", esPremium:true, proximamente:true},
 
-  heroes.forEach((h, i) => {
-    track.insertAdjacentHTML('beforeend',
-      `<article class="hero" aria-label="${h.alt}" data-cover="${h.portada || ''}" data-titulo="${h.titulo || h.alt}" data-pronto="0">
-        <img class="hero-img" src="${IMG_BASE}${h.img}" alt="${h.alt}">
-        <div class="hero-info">
-          ${h.titulo ? `<p class="hero-titulo">${h.titulo}</p>` : ''}
-          <p class="hero-genero">${h.genero}</p>
-        </div>
-      </article>`);
-    const d = document.createElement('button');
-    d.className = 'dot' + (i === 0 ? ' activo' : '');
-    d.setAttribute('aria-label', 'Ir al banner ' + (i + 1));
-    d.onclick = () => { irA(i); iniciarAuto(); };
-    dotsBox.appendChild(d);
-  });
+  // Cube Forbidden
+  {id:27, nombre:"La Familia Rani", seccion:"forbidden", img:"", descripcion:"Secretos de familia", esPremium:false, proximamente:false},
+  {id:28, nombre:"Retorcidos", seccion:"forbidden", img:"", descripcion:"No confíes en nadie", esPremium:false, proximamente:false},
+  {id:29, nombre:"Retorcidos 2", seccion:"forbidden", img:"", descripcion:"La pesadilla continúa", esPremium:true, proximamente:true},
+  {id:30, nombre:"Mama Dogs", seccion:"forbidden", img:"", descripcion:"Ella te protege", esPremium:false, proximamente:false},
+  {id:31, nombre:"El Teléfono", seccion:"forbidden", img:"", descripcion:"Contesta bajo tu riesgo", esPremium:false, proximamente:false},
+  {id:32, nombre:"Obedece", seccion:"forbidden", img:"", descripcion:"Sigue las reglas", esPremium:false, proximamente:false},
+  {id:33, nombre:"Gorgeous Vortex", seccion:"forbidden", img:"", descripcion:"No mires demasiado tiempo", esPremium:false, proximamente:false},
 
-  track.addEventListener('scroll', () => {
-    const i = Math.round(track.scrollLeft / track.clientWidth);
-    [...dotsBox.children].forEach((d, n) => d.classList.toggle('activo', n === i));
-  }, { passive: true });
+  // Cube Void
+  {id:34, nombre:"Eternamente Vivo: Origen", seccion:"void", img:"", descripcion:"La inmortalidad", esPremium:false, proximamente:false},
+  {id:35, nombre:"Eternamente Vivo: Renacer", seccion:"void", img:"", descripcion:"La búsqueda", esPremium:false, proximamente:false},
+  {id:36, nombre:"Eternamente Vivo: Final", seccion:"void", img:"", descripcion:"El último paso", esPremium:false, proximamente:false},
+  {id:37, nombre:"El Programa Epstein", seccion:"void", img:"", descripcion:"Poder y silencio", esPremium:false, proximamente:false},
+  {id:38, nombre:"Divina Comedia", seccion:"void", img:"", descripcion:"A través del infierno", esPremium:false, proximamente:false},
+  {id:39, nombre:"Oso Negro", seccion:"void", img:"", descripcion:"La bestia acecha", esPremium:false, proximamente:false},
 
-  const SEGUNDOS_AUTO = 5;
-  let timerAuto = null;
-  function irA(i) { track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }); }
-  function actual() { return Math.round(track.scrollLeft / track.clientWidth); }
-  function detenerAuto() { clearInterval(timerAuto); timerAuto = null; }
-  function iniciarAuto() {
-    detenerAuto();
-    timerAuto = setInterval(() => irA((actual() + 1) % heroes.length), SEGUNDOS_AUTO * 1000);
-  }
+  // Cube Parallels
+  {id:40, nombre:"Backrooms", seccion:"parallels", img:"", descripcion:"No entres", esPremium:true, proximamente:true},
+  {id:41, nombre:"Viral", seccion:"parallels", img:"", descripcion:"Se propaga rápido", esPremium:false, proximamente:false},
+  {id:42, nombre:"C·C·H", seccion:"parallels", img:"", descripcion:"La ciudad oculta", esPremium:true, proximamente:true},
+  {id:43, nombre:"C·C·H: El Comienzo del Fin", seccion:"parallels", img:"", descripcion:"Todo cambia", esPremium:true, proximamente:true},
+  {id:44, nombre:"Triangle Room 1", seccion:"parallels", img:"", descripcion:"No puedes salir", esPremium:false, proximamente:false},
+  {id:45, nombre:"Triangle Room 2", seccion:"parallels", img:"", descripcion:"El laberinto crece", esPremium:false, proximamente:false},
+  {id:46, nombre:"Un Eternauta", seccion:"parallels", img:"", descripcion:"Viajero del tiempo", esPremium:false, proximamente:false},
+  {id:47, nombre:"Don't Hug Me I'm Scared", seccion:"parallels", img:"", descripcion:"Aprende con nosotros", esPremium:false, proximamente:false},
 
-  track.addEventListener('touchstart', detenerAuto, { passive: true });
-  track.addEventListener('touchend', iniciarAuto, { passive: true });
-  track.addEventListener('touchcancel', iniciarAuto, { passive: true });
-  track.addEventListener('mouseenter', detenerAuto);
-  track.addEventListener('mouseleave', iniciarAuto);
-  document.addEventListener('visibilitychange', () => document.hidden ? detenerAuto() : iniciarAuto());
-  iniciarAuto();
+  // Cube Blacklist
+  {id:48, nombre:"Las Entrevistas", seccion:"blacklist", img:"", descripcion:"Voces del otro lado", esPremium:false, proximamente:false},
+  {id:49, nombre:"Las Entrevistas 2", seccion:"blacklist", img:"", descripcion:"Más allá del miedo", esPremium:false, proximamente:false},
+  {id:50, nombre:"La Dama Roja", seccion:"blacklist", img:"", descripcion:"Sangre en el vestido", esPremium:false, proximamente:false},
+  {id:51, nombre:"La Dama Dorada", seccion:"blacklist", img:"", descripcion:"Belleza mortal", esPremium:false, proximamente:false},
+  {id:52, nombre:"El Hoyo", seccion:"blacklist", img:"", descripcion:"Mira hacia abajo", esPremium:false, proximamente:false},
+  {id:53, nombre:"Cuarentena", seccion:"blacklist", img:"", descripcion:"Día 1", esPremium:false, proximamente:false},
+  {id:54, nombre:"Cuarentena II", seccion:"blacklist", img:"", descripcion:"Día 30", esPremium:false, proximamente:false},
+  {id:55, nombre:"Cuarentena III", seccion:"blacklist", img:"", descripcion:"El brote", esPremium:false, proximamente:false},
+  {id:56, nombre:"Cuarentena IV", seccion:"blacklist", img:"", descripcion:"El final", esPremium:true, proximamente:true},
 
-  // ---------- SECCIONES ----------
-  const secciones = [
-    { titulo: "Te Recomendamos", portadas: [
-      { img: "eternamente-vivo.webp",  alt: "Eternamente Vivo con Amadeus Shell" },
-      { img: "las-entrevistas.webp",   alt: "Las Entrevistas" },
-      { img: "metalosis-maligna.webp", alt: "Metalosis Maligna" },
-      { img: "gorgeous-vortex.webp",   alt: "Gorgeous Vortex" },
-      { img: "retorcidos.webp",        alt: "Retorcidos" }
-    ]},
-    { titulo: "Cero Capítulos", portadas: [
-      { img: "muevete-al-minuto.webp", alt: "Muévete al Minuto" },
-      { img: "metalosis-maligna.webp", alt: "Metalosis Maligna" },
-      { img: "retorcidos.webp",        alt: "Retorcidos" },
-      { img: "nada.webp",              alt: "Nada" },
-      { img: "retorcidos-2.webp",      alt: "Retorcidos 2" },
-      { img: "strike.webp",            alt: "Strike" },
-      { img: "gorgeous-vortex.webp",   alt: "Gorgeous Vortex" },
-      { img: "obedece.webp",           alt: "Obedece" },
-      { img: "ultimate.webp",          alt: "Ultimate" },
-      { img: "valentine.webp",         alt: "Valentine" }
-    ]},
-    { titulo: "Tres Capítulos", portadas: [
-      { img: "mama-dogs.webp", alt: "Mama Dogs" },
-      { img: "el-telefono.webp", alt: "El Teléfono" },
-      { img: "bigfoot-2.webp", alt: "Bigfoot" },
-      { img: "ratman.webp", alt: "Ratman" },
-      { img: "without-warning.webp", alt: "Without Warning" },
-      { img: "golem.webp", alt: "Golem" },
-      { img: "el-ciguenon.webp", alt: "El Cigüeñon", pronto: true },
-      { img: "atraco.webp", alt: "Atraco", pronto: true },
-      { img: "frogman.webp", alt: "Frogman", pronto: true },
-      { img: "cuarentena.webp", alt: "Cuarentena", pronto: true },
-      { img: "cuarentena-revival.webp", alt: "Cuarentena Revival", pronto: true },
-      { img: "vigilia.webp", alt: "Vigilia", pronto: true },
-      { img: "cuarentena-2.webp", alt: "Cuarentena 2", pronto: true },
-      { img: "moby-dick-profundo.webp", alt: "Moby Dick Profundo", pronto: true },
-      { img: "cuarentena-iv.webp", alt: "Cuarentena IV", pronto: true },
-      { img: "apollo-18.webp", alt: "Apollo 18", pronto: true },
-      { img: "musaranas.webp", alt: "Musarañas: Relatos de C·C·H", pronto: true },
-      { img: "behemoth.webp", alt: "Behemoth", pronto: true },
-      { img: "hydra-the-lost-island.webp", alt: "Hydra: The Lost Island", pronto: true }
-    ]},
-    { titulo: "Cuatro o Cinco Capítulos", portadas: [
-      { img: "eternamente-vivo.webp", alt: "Eternamente Vivo con Amadeus Shell" },
-      { img: "fenomeno-vulgar.webp", alt: "Fenómeno Vulgar" },
-      { img: "eternamente-vivo-dante.webp", alt: "Eternamente Vivo con Dante el Grande" },
-      { img: "dont-hug-me-im-scared.webp", alt: "Don't Hug Me I'm Scared", pronto: true },
-      { img: "un-eternauta.webp", alt: "Un Eternauta", pronto: true },
-      { img: "la-dama-roja.webp", alt: "La Dama Roja", pronto: true },
-      { img: "las-entrevistas-2.webp", alt: "Las Entrevistas 2", pronto: true },
-      { img: "la-familia-rani.webp", alt: "La Familia Rani" },
-      { img: "el-club-de-clubes.webp", alt: "El Club de Clubes", pronto: true },
-      { img: "cuando-el-mal-acecha.webp", alt: "Cuando el Mal Acecha", pronto: true },
-      { img: "triangle-room-2.webp", alt: "Triangle Room 2", pronto: true },
-      { img: "la-dama-dorada.webp", alt: "La Dama Dorada", pronto: true },
-      { img: "eternamente-vivo-valak.webp", alt: "Eternamente Vivo con Valak Seraphel" },
-      { img: "el-club-de-clubes-2.webp", alt: "El Club de Clubes II", pronto: true },
-      { img: "menem.webp", alt: "Menem" },
-      { img: "oso-negro.webp", alt: "Oso Negro", pronto: true },
-      { img: "cch-metal-crujiente.webp", alt: "C·C·H Metal Crujiente", pronto: true },
-      { img: "chernobyl-tapes.webp", alt: "The Chernobyl Tapes", pronto: true },
-      { img: "el-club-de-clubes-3.webp", alt: "El Club de Clubes 3", pronto: true },
-      { img: "los-sapos.webp", alt: "Los Sapos", pronto: true }
-    ]}
-  ];
+  // Cube TV
+  {id:57, nombre:"The Match Preview", seccion:"tv", img:"https://pbs.twimg.com/media/E9zK7sOX0AMz98j.jpg", descripcion:"Deporte · 30 min", dia:"Lunes", hora:"20:00", esPremium:false, proximamente:false},
+  {id:58, nombre:"Sharks", seccion:"tv", img:"https://pbs.twimg.com/media/GXxWbT6agAAItik.jpg", descripcion:"Emprendimiento · 45 min", dia:"Miércoles", hora:"21:00", esPremium:true, proximamente:true},
 
+  // Cube Docs
+  {id:59, nombre:"Jeffrey Epstein: Lo que no te contaron", seccion:"docs", img:"", descripcion:"Documental · 3 episodios", esPremium:true, proximamente:true},
+  {id:60, nombre:"El Origen de los Secretos", seccion:"docs", img:"", descripcion:"Investigación", esPremium:false, proximamente:false},
+
+  // Cube Platinum
+  {id:61, nombre:"The Faction's Tapes", seccion:"platinum", img:"", descripcion:"Exclusivo", esPremium:true, proximamente:true},
+  {id:62, nombre:"Backrooms", seccion:"platinum", img:"", descripcion:"Acceso anticipado", esPremium:true, proximamente:true},
+  {id:63, nombre:"Apollo 18", seccion:"platinum", img:"", descripcion:"Versión extendida", esPremium:true, proximamente:true},
+  {id:64, nombre:"Narcos", seccion:"platinum", img:"", descripcion:"Serie completa", esPremium:true, proximamente:true},
+  {id:65, nombre:"Retorcidos 2", seccion:"platinum", img:"", descripcion:"Estreno exclusivo", esPremium:true, proximamente:true},
+  {id:66, nombre:"Cuarentena IV", seccion:"platinum", img:"", descripcion:"Capítulo final", esPremium:true, proximamente:true},
+  {id:67, nombre:"C·C·H", seccion:"platinum", img:"", descripcion:"La saga completa", esPremium:true, proximamente:true},
+  {id:68, nombre:"C·C·H: El Comienzo del Fin", seccion:"platinum", img:"", descripcion:"Precuela exclusiva", esPremium:true, proximamente:true},
+  {id:69, nombre:"Sharks", seccion:"platinum", img:"https://pbs.twimg.com/media/GXxWbT6agAAItik.jpg", descripcion:"Temporada completa", esPremium:true, proximamente:true},
+
+  // Top 10
+  {id:70, nombre:"Backrooms", seccion:"top10", img:"", descripcion:"#1 · La más vista", puesto:1, esPremium:true, proximamente:true},
+  {id:71, nombre:"Cuarentena IV", seccion:"top10", img:"", descripcion:"#2 · Estreno", puesto:2, esPremium:true, proximamente:true},
+  {id:72, nombre:"C·C·H", seccion:"top10", img:"", descripcion:"#3 · Favorita", puesto:3, esPremium:true, proximamente:true},
+  {id:73, nombre:"Retorcidos 2", seccion:"top10", img:"", descripcion:"#4 · Tendencia", puesto:4, esPremium:true, proximamente:true},
+  {id:74, nombre:"El Hoyo", seccion:"top10", img:"", descripcion:"#5 · Impactante", puesto:5, esPremium:false, proximamente:false},
+  {id:75, nombre:"La Dama Roja", seccion:"top10", img:"", descripcion:"#6 · Misterio", puesto:6, esPremium:false, proximamente:false},
+  {id:76, nombre:"Viral", seccion:"top10", img:"", descripcion:"#7 · Adictiva", puesto:7, esPremium:false, proximamente:false},
+  {id:77, nombre:"Don't Hug Me I'm Scared", seccion:"top10", img:"", descripcion:"#8 · Única", puesto:8, esPremium:false, proximamente:false},
+  {id:78, nombre:"Jeffrey Epstein: Lo que no te contaron", seccion:"top10", img:"", descripcion:"#9 · Documental", puesto:9, esPremium:true, proximamente:true},
+  {id:79, nombre:"Apollo 18", seccion:"top10", img:"", descripcion:"#10 · Ciencia ficción", puesto:10, esPremium:true, proximamente:true}
+];
+
+// ================== SECCIONES ==================
+const secciones = [
+  {id:'express', nombre:'Cube Express', descripcion:'Historias cortas, gran impacto'},
+  {id:'adrenaline', nombre:'Cube Adrenaline', descripcion:'Acción y emoción pura'},
+  {id:'found-footage', nombre:'Cube Found Footage', descripcion:'Grabaciones reales'},
+  {id:'forbidden', nombre:'Cube Forbidden', descripcion:'No apto para todos'},
+  {id:'void', nombre:'Cube Void', descripcion:'Misterio y profundidad'},
+  {id:'parallels', nombre:'Cube Parallels', descripcion:'Mundos que se cruzan'},
+  {id:'blacklist', nombre:'Cube Blacklist', descripcion:'Lo que pocos ven'},
+  {id:'tv', nombre:'Cube TV', descripcion:'Programación en vivo'},
+  {id:'docs', nombre:'Cube Docs', descripcion:'La verdad, sin filtros'},
+  {id:'platinum', nombre:'Cube Platinum', descripcion:'Exclusivos y próximamente'},
+  {id:'top10', nombre:'Top 10', descripcion:'Lo más visto hoy'}
+];
+
+// Estado de la app
+let paginaActual = 'inicio';
+let miLista = JSON.parse(localStorage.getItem('cubeLista') || '[]');
+let terminoBusqueda = '';
+
+// ================== RENDERIZAR SECCIONES ==================
+function renderizarSecciones() {
   const contenedor = document.getElementById('secciones');
-  secciones.forEach(({ titulo, portadas }) => {
-    const sec = document.createElement('section');
-    sec.className = 'seccion';
-    const items = portadas.map(p => `<div class="portada">${p.pronto ? '<span class="badge">Próximamente</span>' : ''}<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('');
-    sec.innerHTML = `<h2>${titulo}</h2><div class="carrusel">${items}</div>`;
-    contenedor.appendChild(sec);
+  contenedor.innerHTML = '';
+
+  secciones.forEach(sec => {
+    const items = historias.filter(h => h.seccion === sec.id);
+    if (items.length === 0 && sec.id !== 'top10') return;
+
+    contenedor.innerHTML += `
+      <section class="seccion seccion-${sec.id}">
+        <div class="seccion-header">
+          <h2>${sec.nombre}</h2>
+          ${sec.id === 'tv' ? '' : `<a href="#" class="seccion-ver-todas" data-seccion="${sec.id}">Ver todas →</a>`}
+        </div>
+        <p style="color:var(--texto-suave); font-size:0.85rem; margin:-8px 0 12px;">${sec.descripcion}</p>
+        <div class="carrusel">
+          ${items.map(h => renderizarTarjeta(h, true)).join('')}
+        </div>
+      </section>
+    `;
   });
 
-  // ---------- BÚSQUEDA ----------
-  const catalogo = [];
-  const vistas = new Set();
-  secciones.forEach(sec => (sec.portadas || []).forEach(p => {
-    if (!vistas.has(p.img)) { vistas.add(p.img); catalogo.push(p); }
-  }));
-  catalogo.sort((a, b) => a.alt.localeCompare(b.alt, 'es', { sensitivity: 'base' }));
+  // Enlaces "Ver todas"
+  document.querySelectorAll('.seccion-ver-todas').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const secId = link.dataset.seccion;
+      const sec = secciones.find(s => s.id === secId);
+      document.getElementById('tituloBuscar').textContent = sec.nombre;
+      mostrarPagina('buscar');
+      terminoBusqueda = secId;
+      filtrarHistorias();
+    });
+  });
+}
 
-  const normal  = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
-  const compacto = t => normal(t).replace(/[^a-z0-9]/g, '');
+// ================== RENDERIZAR TARJETA ==================
+function renderizarTarjeta(h, compacto = false) {
+  const enLista = miLista.some(item => item.id === h.id);
+  const placeholder = 'https://via.placeholder.com/400x220/1a1a1a/cccccc?text=' + encodeURIComponent(h.nombre);
+  const imgSrc = h.img || placeholder;
 
+  return `
+    <div class="tarjeta" data-id="${h.id}">
+      <img src="${imgSrc}" alt="${h.nombre}" loading="lazy">
+      ${h.puesto ? `<div class="puesto-top">${h.puesto}</div>` : ''}
+      ${h.esPremium ? `<div class="etiqueta-premium">${h.proximamente ? '🔜 Próximamente' : '💎 Premium'}</div>` : ''}
+      <div class="tarjeta-info">
+        <h3>${h.nombre}</h3>
+        <p>${h.descripcion}</p>
+        ${h.dia ? `<span style="font-size:0.75rem; color:var(--verde)">📅 ${h.dia} · ${h.hora}</span>` : ''}
+        <div class="tarjeta-acciones">
+          <button class="agregar-lista" data-id="${h.id}" title="${enLista ? 'Quitar de mi lista' : 'Agregar a mi lista'}">
+            ${enLista ? '✓' : '+'}
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ================== FILTRAR HISTORIAS ==================
+function filtrarHistorias() {
   const grilla = document.getElementById('grilla');
-  const campo = document.getElementById('campoBuscar');
-  const tituloBuscar = document.getElementById('tituloBuscar');
   const sinResultados = document.getElementById('sinResultados');
+  let resultados = [];
 
-  const tarjetas = catalogo.map(p => {
-    const el = document.createElement('div');
-    el.className = 'portada';
-    el.innerHTML = (p.pronto ? '<span class="badge">Próximamente</span>' : '') +
-      `<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy">`;
-    grilla.appendChild(el);
-    return { el, normal: normal(p.alt), compacto: compacto(p.alt) };
+  if (terminoBusqueda && secciones.some(s => s.id === terminoBusqueda)) {
+    resultados = historias.filter(h => h.seccion === terminoBusqueda);
+  } else if (terminoBusqueda) {
+    resultados = historias.filter(h =>
+      h.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
+      h.descripcion.toLowerCase().includes(terminoBusqueda.toLowerCase())
+    );
+  } else {
+    resultados = historias;
+  }
+
+  if (resultados.length === 0) {
+    grilla.innerHTML = '';
+    sinResultados.hidden = false;
+  } else {
+    sinResultados.hidden = true;
+    grilla.innerHTML = resultados.map(h => renderizarTarjeta(h)).join('');
+  }
+
+  // Botones agregar/quitar lista
+  enlazarBotonesLista();
+}
+
+// ================== MOSTRAR / OCULTAR PÁGINAS ==================
+function mostrarPagina(nombre) {
+  paginaActual = nombre;
+  document.getElementById('home').style.display = nombre === 'inicio' ? 'block' : 'none';
+  document.getElementById('buscar').style.display = nombre === 'buscar' ? 'block' : 'none';
+  document.getElementById('lista').style.display = nombre === 'lista' ? 'block' : 'none';
+  document.getElementById('notifs').style.display = nombre === 'notifs' ? 'block' : 'none';
+
+  // Resaltar botón de navegación
+  document.querySelectorAll('.bottom-nav-item').forEach(btn => {
+    btn.classList.toggle('activo', btn.dataset.pagina === nombre);
   });
 
-  function filtrar() {
-    const q = normal(campo.value), qc = compacto(campo.value);
-    let visibles = 0;
-    tarjetas.forEach(t => {
-      const coincide = !q || t.normal.includes(q) || (qc && t.compacto.includes(qc));
-      t.el.style.display = coincide ? '' : 'none';
-      if (coincide) visibles++;
-    });
-    tituloBuscar.textContent = q ? 'Resultados' : 'Todas las historias';
-    sinResultados.hidden = visibles > 0;
+  if (nombre === 'buscar') {
+    document.getElementById('campoBuscar').value = '';
+    terminoBusqueda = '';
+    filtrarHistorias();
   }
-  campo.addEventListener('input', filtrar);
-  campo.addEventListener('keydown', e => { if (e.key === 'Enter') campo.blur(); });
-
-  // ---------- Dropdown MORE ----------
-  const moreBtn = document.getElementById('moreBtn');
-  const moreDropdown = document.getElementById('moreDropdown');
-  moreBtn.onclick = (e) => {
-    e.preventDefault();
-    moreDropdown.classList.toggle('activo');
-  };
-  window.onclick = (e) => {
-    if (!moreDropdown.contains(e.target)) moreDropdown.classList.remove('activo');
-  };
-
-  // ---------- Cuentas / Sesión (Funciones base que Supabase sobrescribirá o usará) ----------
-  const AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c6ff00'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
-  
-  window.usuario = function() {
-    try { return JSON.parse(localStorage.getItem('cube_sesion_activa') || 'null'); } catch(e) { return null; }
-  };
-
-  window.actualizarHeader = function() {
-    const u = window.usuario();
-    const navPerfilBtn = document.getElementById('navPerfil');
-    if (u) {
-      const punto = (typeof hayNotifNuevas === 'function' && hayNotifNuevas()) ? '<span class="notif-dot"></span>' : '';
-      navPerfilBtn.innerHTML = `<span class="nav-perfil-wrap"><img class="bottom-nav-avatar" src="${u.foto || AVATAR}" alt="Perfil">${punto}</span>`;
-    } else {
-      navPerfilBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
-    }
-    if (typeof actualizarContadorNotif === 'function') actualizarContadorNotif();
+  if (nombre === 'lista') {
+    renderizarMiLista();
   }
+}
 
-  function activarItemNav(idBtn) {
-    document.querySelectorAll('.bottom-nav-item').forEach(el => el.classList.remove('activo'));
-    document.getElementById(idBtn).classList.add('activo');
+// ================== MI LISTA ==================
+function renderizarMiLista() {
+  const grilla = document.getElementById('listaGrilla');
+  const vacia = document.getElementById('listaVacia');
+  document.getElementById('listaTitulo').textContent = 'Mi Lista';
+
+  if (miLista.length === 0) {
+    grilla.innerHTML = '';
+    vacia.hidden = false;
+  } else {
+    vacia.hidden = true;
+    grilla.innerHTML = miLista.map(h => renderizarTarjeta(h)).join('');
+    enlazarBotonesLista();
   }
+}
 
-  window.abrirModal = function(tipo) {
-    if (tipo === 'perfil') {
-      const u = window.usuario();
-      if (!u) return window.abrirModal('auth');
-      document.getElementById('perfilNombre').textContent = u.nombre;
-      document.getElementById('perfilEmail').textContent = u.email;
-      document.getElementById('perfilFoto').src = u.foto || AVATAR;
-      document.body.classList.add('perfil-abierto');
-    }
+function enlazarBotonesLista() {
+  document.querySelectorAll('.agregar-lista').forEach(btn => {
+    btn.onclick = () => {
+      const id = parseInt(btn.dataset.id);
+      const idx = miLista.findIndex(h => h.id === id);
+      if (idx >= 0) {
+        miLista.splice(idx, 1);
+      } else {
+        const h = historias.find(item => item.id === id);
+        if (h) miLista.push(h);
+      }
+      localStorage.setItem('cubeLista', JSON.stringify(miLista));
+      renderizarSecciones();
+      filtrarHistorias();
+      if (paginaActual === 'lista') renderizarMiLista();
+    };
+  });
+}
+
+// ================== HERO SLIDER ==================
+function iniciarHero() {
+  const destacados = historias.filter(h => h.seccion === 'top10').slice(0, 5);
+  const track = document.getElementById('heroTrack');
+  const dots = document.getElementById('dots');
+
+  destacados.forEach((h, i) => {
+    const placeholder = 'https://via.placeholder.com/800x450/1a1a2e/ffffff?text=' + encodeURIComponent(h.nombre);
+    track.innerHTML += `
+      <div class="hero" style="background:linear-gradient(to bottom, transparent, rgba(0,0,0,.8)), url(${h.img || placeholder}) center/cover;">
+        <div class="hero-info">
+          <h2 class="hero-titulo">${h.nombre}</h2>
+          <p class="hero-desc">${h.descripcion}</p>
+          <div style="display:flex;gap:10px;margin-top:12px;">
+            <button style="padding:8px 16px; background:var(--verde); color:#000; border:none; border-radius:6px; font-weight:600;">▶ Ver ahora</button>
+            <button class="agregar-lista" data-id="${h.id}" style="padding:8px 12px; background:rgba(255,255,255,.2); color:#fff; border:none; border-radius:6px;">+ Lista</button>
+          </div>
+        </div>
+      </div>
+    `;
+    dots.innerHTML += `<button class="dot ${i===0?'activo':''}" data-index="${i}"></button>`;
+  });
+
+  // Navegación con puntos
+  const heroElements = track.querySelectorAll('.hero');
+  dots.querySelectorAll('.dot').forEach(dot => {
+    dot.onclick = () => {
+      const idx = parseInt(dot.dataset.index);
+      track.scrollTo({ left: heroElements[idx].offsetLeft, behavior: 'smooth' });
+      dots.querySelectorAll('.dot').forEach(d => d.classList.remove('activo'));
+      dot.classList.add('activo');
+    };
+  });
+
+  // Actualizar punto activo al desplazarse
+  track.onscroll = () => {
+    let index = Math.round(track.scrollLeft / track.clientWidth);
+    dots.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('activo', i === index));
   };
 
-  function cerrarModales() {
-    document.body.classList.remove('auth-abierto', 'perfil-abierto', 'buscando', 'en-lista', 'en-notif');
-    activarItemNav('navHome');
-    window.scrollTo(0, 0);
-    iniciarAuto();
-  }
+  enlazarBotonesLista();
+}
 
-  // Interacción de la Barra Inferior
-  document.getElementById('navHome').onclick = () => { cerrarModales(); };
-  document.getElementById('navRanking').onclick = () => {
-    activarItemNav('navRanking');
-    alert('Sección de Ranking próximamente.');
-  };
-  document.getElementById('navBuscar').onclick = () => {
-    detenerAuto();
-    document.body.classList.add('buscando');
-    activarItemNav('navBuscar');
-    document.getElementById('campoBuscar').focus();
-  };
-  document.getElementById('navOrbe').onclick = () => {
-    activarItemNav('navOrbe');
-    alert('Orbe activada.');
-  };
-  document.getElementById('navPerfil').onclick = () => {
-    const u = window.usuario();
-    if (u) {
-      activarItemNav('navPerfil');
-      window.abrirModal('perfil');
-    } else {
-      window.abrirModal('auth');
-    }
-  };
+// ================== INICIALIZACIÓN ==================
+document.addEventListener('DOMContentLoaded', () => {
+  renderizarSecciones();
+  iniciarHero();
 
-  // Renderizar listas favoritas / guardados
-  function renderLista(tipo) {
-    const u = window.usuario(), todas = catalogo.concat(window.portadasExtra || []), l = ((u && u[tipo]) || []).map(f => todas.find(p => p.img === f.img)).filter(Boolean);
-    document.getElementById('listaTitulo').textContent = tipo === 'favoritos' ? 'Mis favoritos' : 'Guardados para más tarde';
-    document.getElementById('listaGrilla').innerHTML = l.map(p => `<div class="portada">${p.pronto ? '<span class="badge">Próximamente</span>' : ''}<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('');
-    document.getElementById('listaVacia').textContent = tipo === 'favoritos' ? 'No tienes historias en favoritos.' : 'No tienes historias guardadas.';
-    document.getElementById('listaVacia').hidden = l.length > 0;
-    document.body.classList.add('en-lista');
-  }
+  // Búsqueda en tiempo real
+  document.getElementById('campoBuscar').addEventListener('input', e => {
+    terminoBusqueda = e.target.value.trim();
+    filtrarHistorias();
+  });
 
-  document.getElementById('irFavoritos').onclick = () => { renderLista('favoritos'); };
+  // Cerrar búsqueda
+  document.getElementById('cerrarBuscar').onclick = () => mostrarPagina('inicio');
+  document.getElementById('cerrarLista').onclick = () => mostrarPagina('inicio');
+  document.getElementById('cerrarNotifs').onclick = () => mostrarPagina('inicio');
 
-  document.getElementById('cerrarPerfil').onclick = () => {
+  // Navegación inferior
+  document.querySelectorAll('.bottom-nav-item').forEach(btn => {
+    const pagina = btn.dataset.pagina;
+    if (pagina) btn.onclick = () => mostrarPagina(pagina);
+  });
+
+  // Perfil
+  document.getElementById('abrirPerfil').onclick = () => {
+    document.body.classList.add('perfil-abierto');
+  };
+  document.getElementById('cerrarPerfil').onclick = document.getElementById('cerrarPerfilBtn').onclick = () => {
     document.body.classList.remove('perfil-abierto');
-    activarItemNav('navHome');
-  };
-  document.getElementById('cerrarBuscar').onclick = () => cerrarModales();
-  document.getElementById('cerrarLista').onclick = () => cerrarModales();
-  document.getElementById('menuOverlay').onclick = () => cerrarModales();
-
-  document.getElementById('btnFoto').onclick = () => document.getElementById('inputFoto').click();
-  document.getElementById('inputFoto').onchange = e => {
-    const f = e.target.files[0]; if (!f) return;
-    const rd = new FileReader();
-    rd.onload = ev => {
-      const im = new Image();
-      im.onload = () => {
-        const c = document.createElement('canvas'), k = Math.min(1, 256 / Math.max(im.width, im.height));
-        c.width = im.width * k; c.height = im.height * k;
-        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
-        const u = window.usuario(); 
-        if (u) {
-          u.foto = c.toDataURL('image/jpeg', .85);
-          if (typeof guardarUsuario === 'function') guardarUsuario(u);
-          document.getElementById('perfilFoto').src = u.foto; 
-          actualizarHeader();
-        }
-      };
-      im.src = ev.target.result;
-    };
-    rd.readAsDataURL(f);
   };
 
-  // ---------- Control de Desvanecimiento de la barra inferior al llegar al pie de página ----------
-  const bottomNav = document.getElementById('bottomNav');
-  window.addEventListener('scroll', () => {
-    if (['buscando', 'en-lista', 'en-notif'].some(c => document.body.classList.contains(c))) {
-      bottomNav.classList.remove('oculto');
-      return;
-    }
-    const scrollPos = window.scrollY + window.innerHeight;
-    const pieEl = document.querySelector('.pie');
-    const footerTop = pieEl ? pieEl.offsetTop : document.body.scrollHeight - 600;
-    if (scrollPos >= footerTop + 50) {
-      bottomNav.classList.add('oculto');
-    } else {
-      bottomNav.classList.remove('oculto');
-    }
-  }, { passive: true });
-
-  actualizarHeader();
-  document.getElementById('anio').textContent = new Date().getFullYear();
-</script>
-
-<!-- ================= SECCIONES: TV shows, Platinum, Interactive, Documentals, Underground ================= -->
-<script>
-(function () {
-  const PROGRAMAS = [
-    { id: 'dont-hug', desde: '2026-10-26', portada: 'dont-hug-me-im-scared.webp', titulo: "Don't Hug Me I'm Scared", dia: 1, inicio: 21, dur: 3, hero: 'hero-dont-hug-me-im-scared.webp', tituloHero: "Don't Hug Me I'm Scared", genero: 'Terror • 2026' },
-    { id: 'las-entrevistas', desde: '2026-10-27', portada: 'las-entrevistas-2.webp', titulo: 'Las Entrevistas', dia: 2, inicio: 21, dur: 3, hero: 'hero-las-entrevistas-2.webp', tituloHero: 'Las Entrevistas 2', genero: 'Thriller • 2026' },
-    { id: 'extrame-talent', desde: '2026-10-28', portada: 'extrame-talent.webp', titulo: 'Extrame Talent', dia: 3, inicio: 21, dur: 3, hero: 'extrame-talent-hero.webp', genero: 'Talentos • 2026' },
-    { id: 'newsweek', desde: '2026-10-30', portada: 'newsweek.webp', titulo: 'Newsweek', dia: 5, inicio: 21, dur: 3, hero: 'hero-newsweek.webp', tituloHero: 'Newsweek', genero: 'Noticias • 2026' },
-    { id: 'toba-live', desde: '2026-11-01', portada: 'toba-live.webp', titulo: 'Toba Live', dia: 0, inicio: 21, dur: 3, hero: 'hero-toba-live.webp', tituloHero: 'Toba Live', fondoClaro: true, genero: 'En vivo • 2026' }
-  ];
-
-  const C = {
-    imputables: { id: 'imputables', img: 'imputables.webp', alt: 'Imputables', pronto: true },
-    epstein:    { id: 'epstein', img: 'the-epstein-files.webp', alt: 'The Epstein Files', pronto: true },
-    universe:   { id: 'universe', img: 'universe.webp', alt: 'Universe', pronto: true },
-    damaRoja:   { id: 'dama-roja', img: 'la-dama-roja.webp', alt: 'La Dama Roja', pronto: true },
-    damaDorada: { id: 'dama-dorada', img: 'la-dama-dorada.webp', alt: 'La Dama Dorada', pronto: true }
-  };
-  const DOCS = {
-    heroes: [
-      { ...C.imputables, portada: C.imputables.img, img: 'hero-imputables.webp', titulo: 'Imputables', genero: 'Caso real • 2027' },
-      { ...C.universe, portada: C.universe.img,   img: 'hero-universe.webp', titulo: 'Universe', genero: 'Absurdo • 2028' },
-      { ...C.damaDorada, portada: C.damaDorada.img, img: 'hero-la-dama-dorada.webp', titulo: 'La Dama Dorada', genero: 'Lore • 2027' }
-    ],
-    filas: [
-      { titulo: 'Recomendadas', portadas: [C.imputables, C.epstein, C.damaRoja] },
-      { titulo: 'Tres Capítulos', portadas: [C.imputables, C.universe] },
-      { titulo: 'Cuatro o Cinco Capítulos', portadas: [C.damaRoja, C.damaDorada, C.epstein] }
-    ]
-  };
-
-  const P = {
-    viral:     { id: 'viral', img: 'viral.webp', alt: 'Viral' },
-    hoyo:      { id: 'el-hoyo', img: 'el-hoyo.webp', alt: 'El Hoyo' },
-    factions:  { id: 'factions-tapes', img: 'the-factions-tapes.webp', alt: 'The Faction’s Tapes' },
-    narcos:    { id: 'narcos', img: 'narcos.webp', alt: 'Narcos' },
-    programa:  { id: 'programa-epstein', img: 'el-programa-epstein.webp', alt: 'El Programa Epstein' },
-    cch:       { id: 'cch', img: 'cch.webp', alt: 'C·C·H' },
-    cchFin:    { id: 'cch-fin', img: 'cch-el-comienzo-del-fin.webp', alt: 'C·C·H: El Comienzo del Fin' },
-    jeffrey:   { id: 'jeffrey-epstein', img: 'jeffrey-epstein.webp', alt: 'Jeffrey Epstein' },
-    backrooms: { id: 'backrooms', img: 'backrooms.webp', alt: 'Backrooms' }
-  };
-  const PLAT = {
-    heroes: [
-      { ...P.viral, portada: P.viral.img,     img: 'hero-viral.webp', titulo: 'Viral', genero: 'Terror • 2026' },
-      { ...P.factions, portada: P.factions.img,  img: 'hero-the-factions-tapes.webp', titulo: 'The Faction’s Tapes', genero: 'Found footage • 2027' },
-      { ...P.backrooms, portada: P.backrooms.img, img: 'hero-backrooms.webp', titulo: 'Backrooms', genero: 'Sobrenatural • 2027' },
-      { ...P.hoyo, portada: P.hoyo.img,      img: 'hero-el-hoyo.webp', titulo: 'El Hoyo: Un nuevo mensaje', genero: 'Thriller • 2026' }
-    ],
-    filas: [
-      { titulo: 'Recomendadas', portadas: [P.hoyo, P.programa, P.viral, P.backrooms, P.narcos] },
-      { titulo: 'Sobrenaturales', portadas: [P.viral, P.cch, P.cchFin, P.backrooms, P.factions] },
-      { titulo: 'Oscuras y Atrapantes', portadas: [P.jeffrey, P.programa, P.hoyo, P.narcos] }
-    ]
-  };
-
-  const SECCIONES = [
-    { id: 'tv', n: 'TV shows' }, { id: 'platinum', n: 'Platinum' }, { id: 'interactive', n: 'Interactive' },
-    { id: 'documentals', n: 'Documentals' }, { id: 'underground', n: 'Underground' }
-  ];
-  const DIAS = [{ n: 'Lunes', d: 1 }, { n: 'Martes', d: 2 }, { n: 'Miércoles', d: 3 }, { n: 'Jueves', d: 4 }, { n: 'Viernes', d: 5 }, { n: 'Sábado', d: 6 }, { n: 'Domingo', d: 0 }];
-  const NOM_DIA = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-  const HW = 72, COL = 96;
-
-  const body = document.body, home = document.getElementById('home');
-  const nav = document.querySelector('.header-nav');
-  const navOriginal = nav.innerHTML;
-  const vista = document.createElement('div');
-  vista.id = 'seccionView';
-  vista.innerHTML = '<section class="hero-wrap" id="svHeroWrap"><div class="hero-track" id="svTrack"></div><div class="dots" id="svDots"></div></section><div id="svCuerpo"></div>';
-  home.appendChild(vista);
-  const sheet = document.createElement('div');
-  sheet.className = 'tv-sheet';
-  document.body.appendChild(sheet);
-  const wrap = document.getElementById('svHeroWrap'), trackSv = document.getElementById('svTrack'), dots = document.getElementById('svDots'), cuerpo = document.getElementById('svCuerpo');
-  const PLAY_ = '<svg viewBox="0 0 24 24"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z" fill="#000"/></svg>';
-  const BELL = '<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
-  let actualSec = 'home', ultimaClave = '', primeraVez = true, pausaHero = false;
-
-  const hh = h => String(h % 24).padStart(2, '0') + ':00';
-  function estado(p, ahora) {
-    const h = ahora.getHours() + ahora.getMinutes() / 60;
-    if (ahora.getDay() === p.dia) {
-      if (h >= p.inicio && h < p.inicio + p.dur) return 'live';
-      if (h >= p.inicio + p.dur) return 'ended';
-    }
-    return 'later';
-  }
-  const vivos = () => PROGRAMAS.filter(p => estado(p, new Date()) === 'live');
-  function proxima(p) {
-    const e = estado(p, new Date());
-    if (e === 'ended') return `Ya terminó hoy. Vuelve el ${NOM_DIA[p.dia]} a las ${hh(p.inicio)}.`;
-    if (new Date().getDay() === p.dia) return `Disponible hoy a las ${hh(p.inicio)} (${p.dur} h).`;
-    return `Disponible el ${NOM_DIA[p.dia]} a las ${hh(p.inicio)} (${p.dur} h).`;
-  }
-
-  function heroItems() {
-    if (actualSec === 'tv') {
-      return vivos().map(p => ({ id: p.id, img: p.hero, alt: p.titulo, genero: p.genero, titulo: p.tituloHero, claro: p.fondoClaro, portada: p.portada,
-        texto: `${p.tituloHero ? '' : `<b style="color:#fff">${p.titulo}</b><br>`}Disponible hasta las ${hh(p.inicio + p.dur)}` }));
-    }
-    if (actualSec === 'documentals') return DOCS.heroes;
-    if (actualSec === 'platinum') return PLAT.heroes;
-    return [];
-  }
-  function renderHeroes(forzar) {
-    const v = heroItems(), clave = actualSec + ':' + v.map(p => p.id).join();
-    if (clave === ultimaClave && !forzar) return;
-    ultimaClave = clave;
-    wrap.style.display = v.length ? '' : 'none';
-    trackSv.innerHTML = v.map(p => `<article class="hero${p.claro ? ' hero-claro' : ''}" aria-label="${p.alt}" data-cover="${p.portada || ''}" data-titulo="${p.titulo || p.alt}" data-pronto="${p.pronto ? 1 : 0}">
-      <img class="hero-img" src="${IMG_BASE}${p.img}" alt="${p.alt}" onerror="this.style.display='none'">
-      <div class="hero-info">${p.titulo ? `<p class="hero-titulo">${p.titulo}</p>` : ''}<p class="hero-genero">${p.genero}</p>${p.texto ? `<p class="hero-sinopsis">${p.texto}</p>` : ''}</div></article>`).join('');
-    dots.innerHTML = v.length > 1 ? v.map((p, i) => `<button class="dot${i === 0 ? ' activo' : ''}" aria-label="Ir al hero ${i + 1}"></button>`).join('') : '';
-    [...dots.children].forEach((d, i) => d.onclick = () => trackSv.scrollTo({ left: i * trackSv.clientWidth, behavior: 'smooth' }));
-    trackSv.scrollLeft = 0;
-  }
-  trackSv.addEventListener('scroll', () => {
-    const i = Math.round(trackSv.scrollLeft / trackSv.clientWidth);
-    [...dots.children].forEach((d, n) => d.classList.toggle('activo', n === i));
-  }, { passive: true });
-  ['touchstart', 'mouseenter'].forEach(ev => trackSv.addEventListener(ev, () => pausaHero = true, { passive: true }));
-  ['touchend', 'touchcancel', 'mouseleave'].forEach(ev => trackSv.addEventListener(ev, () => pausaHero = false, { passive: true }));
-  setInterval(() => {
-    if (pausaHero || document.hidden || (actualSec !== 'tv' && actualSec !== 'documentals' && actualSec !== 'platinum')) return;
-    const n = trackSv.children.length;
-    if (n < 2) return;
-    const i = Math.round(trackSv.scrollLeft / trackSv.clientWidth);
-    trackSv.scrollTo({ left: ((i + 1) % n) * trackSv.clientWidth, behavior: 'smooth' });
-  }, 5000);
-
-  function filaHTML(dia, ahora) {
-    const progs = PROGRAMAS.filter(p => p.dia === dia.d).sort((a, b) => a.inicio - b.inicio);
-    const vacio = (a, b) => b > a ? `<div class="tv-blq vacio" style="left:${a * HW}px;width:${(b - a) * HW - 6}px"><span>Sin programación</span></div>` : '';
-    let bl = '', cur = 0;
-    progs.forEach(p => {
-      const live = estado(p, ahora) === 'live';
-      bl += vacio(cur, p.inicio);
-      bl += `<button class="tv-blq${live ? ' live' : ''}" data-id="${p.id}" style="left:${p.inicio * HW}px;width:${p.dur * HW - 6}px"><small>${hh(p.inicio)} - ${hh(p.inicio + p.dur)}</small><b>${p.titulo}</b>${live ? '<em>Disponible ahora</em>' : ''}</button>`;
-      cur = p.inicio + p.dur;
-    });
-    bl += vacio(cur, 24);
-    return `<div class="tv-row${dia.d === ahora.getDay() ? ' hoy' : ''}"><div class="tv-dia">${dia.n}</div><div class="tv-line">${bl}</div></div>`;
-  }
-  function renderGrilla() {
-    const sc = document.getElementById('tvScroll');
-    if (!sc) return;
-    const ahora = new Date(), x = sc.scrollLeft;
-    const horas = Array.from({ length: 24 }, (_, i) => `<span class="tv-hora" style="left:${i * HW}px">${hh(i)}</span>`).join('');
-    const fecha = String(ahora.getDate()).padStart(2, '0') + '/' + String(ahora.getMonth() + 1).padStart(2, '0');
-    const pos = COL + (ahora.getHours() + ahora.getMinutes() / 60) * HW;
-    sc.innerHTML = `<div class="tv-inner" style="width:${COL + 24 * HW}px">
-      <div class="tv-row tv-horas"><div class="tv-dia">${fecha}</div><div class="tv-line">${horas}</div></div>
-      ${DIAS.map(d => filaHTML(d, ahora)).join('')}
-      <div class="tv-ahora" style="left:${pos}px"></div></div>`;
-    sc.scrollLeft = primeraVez ? Math.max(0, ahora.getHours() * HW - 40) : x;
-    primeraVez = false;
-  }
-  cuerpo.addEventListener('click', e => {
-    const b = e.target.closest('[data-id]');
-    if (!b) return;
-    const p = PROGRAMAS.find(x => x.id === b.dataset.id);
-    if (estado(p, new Date()) === 'live') {
-      cerrarSheet();
-      renderHeroes();
-      const i = vivos().findIndex(x => x.id === p.id);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      trackSv.scrollTo({ left: i * trackSv.clientWidth, behavior: 'smooth' });
-    } else {
-      pintarSheet(p);
-      sheet.classList.add('abierto');
-    }
-  });
-  function cerrarSheet() { sheet.classList.remove('abierto'); }
-  sheet.addEventListener('click', e => {
-    if (e.target.closest('.sh-x')) cerrarSheet();
-    const b = e.target.closest('.sh-bell');
-    if (!b) return;
-    const p = PROGRAMAS.find(x => x.id === b.dataset.prog);
-    if (!window.usuario()) { pintarSheet(p, 'Inicia sesión para activar las notificaciones.'); window.abrirModal('auth'); return; }
-    const est = leer(); est.subs = est.subs || {};
-    if (est.subs[p.id]) { delete est.subs[p.id]; guardar(est); pintarSheet(p, 'Notificación desactivada.'); }
-    else { est.subs[p.id] = Date.now(); guardar(est); pintarSheet(p, 'Listo: te avisaremos cuando llegue cada episodio.'); }
-  });
-
-  function filasHTML(filas) {
-    return filas.map(f => `<section class="seccion"><h2>${f.titulo}</h2><div class="carrusel">${
-      f.portadas.map(p => `<div class="portada">${p.pronto ? '<span class="badge">Próximamente</span>' : ''}<img src="${IMG_BASE}${p.img}" alt="${p.alt}" loading="lazy"></div>`).join('')
-    }</div></section>`).join('');
-  }
-  function enlazarHome() {
-    nav.querySelectorAll('a').forEach((a, i) => a.onclick = e => { e.preventDefault(); mostrar(i === 0 ? 'tv' : 'platinum'); });
-  }
-  function mostrar(id) {
-    actualSec = id; cerrarSheet(); ultimaClave = '';
-    if (id === 'home') {
-      body.classList.remove('en-seccion');
-      nav.innerHTML = navOriginal; enlazarHome();
-    } else {
-      body.classList.add('en-seccion');
-      const s = SECCIONES.find(x => x.id === id);
-      nav.innerHTML = `<div class="dropdown" id="secDrop"><a href="#" class="nav-link" id="secBtn">${s.n} ▾</a>
-        <div class="dropdown-content">${SECCIONES.filter(x => x.id !== id).map(x => `<a href="#" data-sec="${x.id}">${x.n}</a>`).join('')}</div></div>`;
-      document.getElementById('secBtn').onclick = e => { e.preventDefault(); document.getElementById('secDrop').classList.toggle('activo'); };
-      nav.querySelectorAll('[data-sec]').forEach(a => a.onclick = e => { e.preventDefault(); mostrar(a.dataset.sec); });
-      if (id === 'tv') { cuerpo.innerHTML = '<div class="tv-scroll" id="tvScroll"></div>'; primeraVez = true; renderGrilla(); }
-      else if (id === 'documentals') cuerpo.innerHTML = filasHTML(DOCS.filas);
-      else if (id === 'platinum') cuerpo.innerHTML = filasHTML(PLAT.filas);
-      else cuerpo.innerHTML = `<p class="tv-vacio">Aún no hay contenido en ${s.n}.<br>Pronto verás aquí su programación.</p>`;
-      renderHeroes(true);
-    }
-    window.scrollTo(0, 0);
-    setTimeout(() => window.dispatchEvent(new Event('scroll')), 60);
-  }
-  enlazarHome();
-  document.querySelectorAll('#moreDropdown .dropdown-link').forEach((a, i) => a.onclick = e => {
+  // Más menú desplegable
+  document.getElementById('moreBtn').onclick = e => {
     e.preventDefault();
-    document.getElementById('moreDropdown').classList.remove('activo');
-    mostrar(['interactive', 'documentals', 'underground'][i]);
-  });
+    document.getElementById('moreDropdown').classList.toggle('activo');
+  };
   document.addEventListener('click', e => {
-    const d = document.getElementById('secDrop');
-    if (d && !d.contains(e.target)) d.classList.remove('activo');
-  });
-  document.getElementById('navHome').addEventListener('click', () => mostrar('home'));
-
-  const DIAS_NOTIF = 7;
-  // No se precargan estrenos ficticios: las notificaciones nacen de eventos reales.
-  const kEst = () => { const u = window.usuario(); return u ? 'cube_notif_' + u.email : null; };
-  function leer() {
-    const k = kEst(); if (!k) return {};
-    try { return JSON.parse(localStorage.getItem(k) || '{}'); } catch (e) { return {}; }
-  }
-  function guardar(o) { const k = kEst(); if (k) localStorage.setItem(k, JSON.stringify(o)); }
-  function hace(ts) {
-    const m = Math.floor((Date.now() - ts) / 6e4);
-    if (m < 1) return 'ahora';
-    if (m < 60) return `hace ${m} min`;
-    const h = Math.floor(m / 60);
-    if (h < 24) return `hace ${h} h`;
-    const d = Math.floor(h / 24);
-    return d === 1 ? 'ayer' : `hace ${d} días`;
-  }
-  const ICONOS_NOTIF = {
-    bienvenida: '<path d="M20 7l-8 5-8-5"/><rect x="3" y="5" width="18" height="14" rx="2"/>',
-    estreno: '<path d="m8 5 11 7-11 7z"/>',
-    tv: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m8 2 4 3 4-3"/>',
-    evento: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
-    oferta: '<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1"/>',
-    sistema: '<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>'
-  };
-  function nuevaNotificacion({ id, tipo = 'sistema', titulo, texto, url = '', ts = Date.now() }) {
-    if (!window.usuario()) return null;
-    const est = leer();
-    est.items = Array.isArray(est.items) ? est.items : [];
-    if (id && est.items.some(n => n.id === id)) return est.items.find(n => n.id === id);
-    const n = { id: id || ('n-' + ts + '-' + Math.random().toString(36).slice(2, 8)), tipo, titulo, texto, url, ts, leida: false };
-    est.items.unshift(n);
-    guardar(est);
-    window.dispatchEvent(new CustomEvent('cube:notification-created', { detail: n }));
-    actualizarHeader();
-    return n;
-  }
-  function generar() {
-    if (!window.usuario()) return [];
-    const est = leer();
-    const items = Array.isArray(est.items) ? est.items : [];
-    return items.filter(n => !(est.borradas || []).includes(n.id)).sort((a, b) => b.ts - a.ts);
-  }
-  const pendientes = () => generar().filter(n => !n.leida);
-  window.hayNotifNuevas = () => pendientes().length > 0;
-  window.actualizarContadorNotif = () => {
-    const c = document.getElementById('notifCuenta'); if (!c) return;
-    const n = pendientes().length; c.textContent = n; c.hidden = n === 0;
-    const navPerfilBtn = document.getElementById('navPerfil');
-    if (navPerfilBtn && window.usuario()) {
-      const punto = n ? '<span class="notif-dot"></span>' : '';
-      const img = navPerfilBtn.querySelector('img');
-      if (img) {
-        const wrap = navPerfilBtn.querySelector('.nav-perfil-wrap');
-        if (wrap) wrap.innerHTML = `<img class="bottom-nav-avatar" src="${window.usuario().foto || AVATAR}" alt="Perfil">${punto}`;
-      }
-    }
-  };
-  function iconoNotif(tipo) {
-    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONOS_NOTIF[tipo] || ICONOS_NOTIF.sistema}</svg>`;
-  }
-  function renderNotificaciones() {
-    const est = leer(), lista = generar();
-    document.getElementById('notifLista').innerHTML = lista.map(n =>
-      `<article class="notif${n.leida ? '' : ' nueva'}" data-notif-id="${String(n.id).replace(/"/g, '&quot;')}">
-        <div class="notif-ico">${iconoNotif(n.tipo)}</div>
-        <div class="notif-cuerpo"><b>${n.titulo}</b><span>${n.texto}</span><small>${hace(n.ts)}</small></div>
-        ${n.url ? `<button class="notif-borrar notif-abrir" data-url="${n.url}" aria-label="Abrir notificación"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></button>` : ''}
-        <button class="notif-borrar" data-borrar-notif="${String(n.id).replace(/"/g, '&quot;')}" aria-label="Borrar notificación"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m-9 0 1 14h8l1-14M10 10v6M14 10v6"/></svg></button>
-      </article>`).join('');
-    document.getElementById('notifVacia').hidden = lista.length > 0;
-    const toggle = document.getElementById('pushToggle');
-    if (toggle) toggle.checked = !!est.pushEnabled;
-  }
-  function abrirNotificaciones() {
-    const est = leer();
-    est.items = (est.items || []).map(n => ({ ...n, leida: true }));
-    guardar(est);
-    body.classList.remove('perfil-abierto', 'buscando', 'en-lista');
-    body.classList.add('en-notif');
-    renderNotificaciones();
-    actualizarHeader();
-    window.scrollTo(0, 0);
-    setTimeout(() => window.dispatchEvent(new Event('scroll')), 60);
-  }
-  document.getElementById('notifLista').addEventListener('click', e => {
-    const borrar = e.target.closest('[data-borrar-notif]');
-    if (borrar) {
-      const id = borrar.dataset.borrarNotif, est = leer();
-      est.items = (est.items || []).filter(n => n.id !== id);
-      est.borradas = [...new Set([...(est.borradas || []), id])];
-      guardar(est); renderNotificaciones(); actualizarHeader(); return;
-    }
-    const abrir = e.target.closest('[data-url]');
-    if (abrir && abrir.dataset.url) window.location.href = abrir.dataset.url;
-  });
-  document.getElementById('borrarTodasNotif').addEventListener('click', () => {
-    const est = leer();
-    est.borradas = [...new Set([...(est.borradas || []), ...(est.items || []).map(n => n.id)])];
-    est.items = [];
-    guardar(est); renderNotificaciones(); actualizarHeader();
-  });
-  document.getElementById('pushToggle').addEventListener('change', async e => {
-    const toggle = e.target, est = leer();
-    if (toggle.checked) {
-      if (!('Notification' in window)) {
-        toggle.checked = false;
-        alert('Este navegador no admite notificaciones del sistema.');
-        return;
-      }
-      let permiso = Notification.permission;
-      if (permiso === 'default') permiso = await Notification.requestPermission();
-      if (permiso !== 'granted') {
-        toggle.checked = false;
-        alert('No se concedió el permiso de notificaciones. Puedes activarlo desde los ajustes del navegador.');
-        return;
-      }
-      est.pushEnabled = true;
-      guardar(est);
-      // Notificación de prueba local para verificar el permiso. Push remoto requiere backend y suscripción push.
-      try {
-        if ('serviceWorker' in navigator) {
-          const reg = await navigator.serviceWorker.ready.catch(() => null);
-          if (reg && reg.showNotification) await reg.showNotification('Notificaciones de CUBE activadas', { body: 'Recibirás avisos compatibles con este dispositivo.', icon: 'cube-logo.png', badge: 'cube-logo.png' });
-          else new Notification('Notificaciones de CUBE activadas', { body: 'El permiso quedó habilitado.' });
-        } else new Notification('Notificaciones de CUBE activadas', { body: 'El permiso quedó habilitado.' });
-      } catch (err) { console.warn('No se pudo mostrar la notificación de prueba', err); }
-    } else {
-      est.pushEnabled = false;
-      guardar(est);
-      // Desactivar aquí la preferencia; una suscripción push remota debe cancelarse en cube-push.js/backend.
-    }
-  });
-  document.getElementById('irNotificaciones').onclick = abrirNotificaciones;
-  document.getElementById('cerrarNotifs').onclick = () => cerrarModales();
-  // El resto del sistema puede crear notificaciones reales llamando a window.cubeNotificar(...)
-  window.cubeNotificar = nuevaNotificacion;
-  setInterval(actualizarHeader, 60000);
-  actualizarHeader();
-
-  document.getElementById('navBuscar').addEventListener('click', () => body.classList.remove('en-notif', 'en-lista'));
-  setInterval(actualizarHeader, 60000);
-  actualizarHeader();
-
-  const HEART = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>';
-  const ANIO_PORTADA = { 'imputables.webp': 2027, 'universe.webp': 2028, 'la-dama-roja.webp': 2027, 'la-dama-dorada.webp': 2027 };
-  window.portadasExtra = [...Object.values(C), ...Object.values(P),
-    { img: 'newsweek.webp', alt: 'Newsweek' }, { img: 'toba-live.webp', alt: 'Toba Live' }, { img: 'extrame-talent.webp', alt: 'Extrame Talent' }];
-  const accion = document.createElement('div');
-  accion.className = 'tv-sheet';
-  document.body.appendChild(accion);
-  let accionActual = null;
-  const esFav = id => { const u = window.usuario(); return !!(u && (u.favoritos || []).some(f => f.img === id)); };
-  function pintarAccion(info, msg) {
-    const { id, titulo, pronto } = info;
-    if (pronto) {
-      const on = !!(window.usuario() && (leer().estrenos || {})[id]);
-      accion.innerHTML = `<button class="sh-x" aria-label="Cerrar">&times;</button><b>${titulo}</b><p>Su estreno está programado para ${ANIO_PORTADA[id] || 'otro año'}.</p><button class="sh-bell${on ? ' on' : ''}" data-ac="bell">${BELL} ${on ? 'Notificación activada' : 'Notificarme'}</button><small class="sh-msg">${msg || ''}</small>`;
-    } else {
-      accion.innerHTML = `<button class="sh-x" aria-label="Cerrar">&times;</button><b>${titulo}</b><div class="ac-botones"><button class="ac-play" data-ac="play" aria-label="Reproducir">${PLAY_}<span>Ver</span></button><button class="ac-fav${esFav(id) ? ' on' : ''}" data-ac="fav" aria-label="Favoritos">${HEART}</button></div><small class="sh-msg">${msg || ''}</small>`;
-    }
-  }
-  function cerrarAccion() { accion.classList.remove('abierto'); accionActual = null; }
-  function infoDe(el) {
-    if (el.classList.contains('hero')) {
-      const t = el.dataset.titulo || '';
-      return { id: el.dataset.cover || t, titulo: t, pronto: el.dataset.pronto === '1' };
-    }
-    const img = el.querySelector('img');
-    const id = decodeURIComponent((img.getAttribute('src') || '').split('?')[0].split('/').pop());
-    return { id, titulo: img.alt, pronto: !!el.querySelector('.badge') };
-  }
-  document.addEventListener('click', e => {
-    if (accion.contains(e.target)) return;
-    const el = e.target.closest('.portada, .hero');
-    if (el && el.querySelector('img')) {
-      cerrarSheet();
-      accionActual = infoDe(el);
-      pintarAccion(accionActual);
-      accion.classList.add('abierto');
-    } else cerrarAccion();
-  });
-  accion.addEventListener('click', e => {
-    e.stopPropagation();
-    if (e.target.closest('.sh-x')) { cerrarAccion(); return; }
-    const b = e.target.closest('[data-ac]');
-    if (!b || !accionActual) return;
-    const info = accionActual, k = b.dataset.ac;
-    if (k === 'play') {
-      if (typeof abrirHistoria === 'function') abrirHistoria(info.id);
-      else pintarAccion(info, 'La lectura estará disponible muy pronto.');
-      return;
-    }
-    const u = window.usuario();
-    if (!u) { pintarAccion(info, 'Inicia sesión para usar esta opción.'); window.abrirModal('auth'); return; }
-    if (k === 'fav') {
-      const f = u.favoritos || [], i = f.findIndex(x => x.img === info.id);
-      if (i >= 0) f.splice(i, 1); else f.push({ img: info.id });
-      u.favoritos = f; if(typeof guardarUsuario === 'function') guardarUsuario(u);
-      pintarAccion(info, i >= 0 ? 'Quitado de Favoritos.' : 'Guardado en Favoritos.');
-    } else if (k === 'bell') {
-      const est = leer(); est.estrenos = est.estrenos || {};
-      let msg;
-      if (est.estrenos[info.id]) { delete est.estrenos[info.id]; msg = 'Notificación desactivada.'; }
-      else { est.estrenos[info.id] = Date.now(); msg = 'Listo: te avisaremos cuando salga.'; }
-      guardar(est); pintarAccion(info, msg);
+    if (!e.target.closest('#moreDropdown')) {
+      document.getElementById('moreDropdown').classList.remove('activo');
     }
   });
 
-  setInterval(() => { if (actualSec === 'tv') { renderGrilla(); renderHeroes(); } }, 30000);
-})();
-</script>
+  // Limpiar notificaciones
+  document.getElementById('limpiarNotifs')?.addEventListener('click', () => {
+    alert('Notificaciones limpiadas');
+  });
 
-<!-- ================= SUPABASE INTEGRATION ================= -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="cube-config.js"></script>
-<script>
-(function () {
-  const db = supabase.createClient(window.CUBE_SUPABASE_URL, window.CUBE_SUPABASE_ANON_KEY);
-  const KS = 'cube_sesion_activa';
-  const _set = Storage.prototype.setItem;
-  let ultimaFoto = null, cargadoId = null, temporizador = null;
-
-  localStorage.removeItem('cube_usuarios_registrados');
-  try { const s = JSON.parse(localStorage.getItem(KS) || 'null'); if (s && !s.supa) localStorage.removeItem(KS); }
-  catch (e) { localStorage.removeItem(KS); }
-
-  Storage.prototype.setItem = function (k, v) {
-    _set.call(this, k, v);
-    if (this === window.localStorage && String(k).indexOf('cube_notif_') === 0) programarSync();
-  };
-
-  function programarSync() { clearTimeout(temporizador); temporizador = setTimeout(sync, 800); }
-
-  async function sync() {
-    const u = window.usuario();
-    if (!u || !u.supa) return;
-    try {
-      let notif = {};
-      try { notif = JSON.parse(localStorage.getItem('cube_notif_' + u.email) || '{}'); } catch (e) {}
-      await db.from('datos_usuario').upsert({
-        id: u.id, favoritos: u.favoritos || [], guardados: u.guardados || [],
-        notif: notif, updated_at: new Date().toISOString()
-      });
-      if (u.foto && u.foto !== ultimaFoto && u.foto.indexOf('data:image/jpeg') === 0) {
-        const { error } = await db.from('profiles').update({ avatar: u.foto }).eq('id', u.id);
-        if (!error) ultimaFoto = u.foto;
-      }
-    } catch (e) { console.warn('No se pudo sincronizar', e); }
-  }
-
-  window.guardarUsuario = function (u) {
-    localStorage.setItem(KS, JSON.stringify(u));
-    programarSync();
-  };
-
-  window.abrirModal = function (tipo) {
-    if (tipo === 'auth') { location.href = 'cube-cuenta.html'; return; }
-    if (tipo === 'perfil') {
-      const u = window.usuario();
-      if (!u) return window.abrirModal('auth');
-      document.getElementById('perfilNombre').textContent = u.nombre;
-      document.getElementById('perfilEmail').textContent = u.email;
-      document.getElementById('perfilFoto').src = u.foto || AVATAR;
-      document.body.classList.add('perfil-abierto');
-    }
-  };
-
-  const btnSalir = document.getElementById('btnSalir');
-  if (btnSalir) {
-    btnSalir.onclick = async function () {
+  // Cerrar sesión
+  document.getElementById('cerrarSesion').onclick = () => {
+    if (confirm('¿Cerrar sesión?')) {
       document.body.classList.remove('perfil-abierto');
-      localStorage.removeItem(KS);
-      actualizarHeader();
-      await db.auth.signOut();
-    };
-  }
-
-  async function cargarUsuario(sesion) {
-    if (!sesion) { cargadoId = null; localStorage.removeItem(KS); actualizarHeader(); return; }
-    const uid = sesion.user.id;
-    const [p, d] = await Promise.all([
-      db.from('profiles').select('username,avatar').eq('id', uid).maybeSingle(),
-      db.from('datos_usuario').select('*').eq('id', uid).maybeSingle()
-    ]);
-    const perfil = p.data, datos = d.data;
-    const u = {
-      supa: true, id: uid, email: sesion.user.email,
-      nombre: perfil ? perfil.username : sesion.user.email,
-      foto: (perfil && perfil.avatar) || AVATAR,
-      favoritos: (datos && datos.favoritos) || [],
-      guardados: (datos && datos.guardados) || []
-    };
-    ultimaFoto = perfil && perfil.avatar ? perfil.avatar : null;
-    const kn = 'cube_notif_' + u.email;
-    if (datos && datos.notif && Object.keys(datos.notif).length) _set.call(localStorage, kn, JSON.stringify(datos.notif));
-    else if (localStorage.getItem(kn)) programarSync();
-    localStorage.setItem(KS, JSON.stringify(u));
-    cargadoId = uid;
-    actualizarHeader();
-    // Una bienvenida por sesión de autenticación; también queda en la bandeja interna.
-    if (sesion && sesion.user && window.cubeNotificar) {
-      const welcomeKey = 'cube_bienvenida_sesion_' + uid;
-      if (sessionStorage.getItem(welcomeKey) !== '1') {
-        sessionStorage.setItem(welcomeKey, '1');
-        window.cubeNotificar({
-          id: 'bienvenida-' + uid + '-' + sesion.access_token.slice(-10),
-          tipo: 'bienvenida',
-          titulo: 'Bienvenido a CUBE',
-          texto: 'Tu sesión está activa. Descubre historias, programas y novedades.',
-          ts: Date.now()
-        });
-        // Aviso del sistema si el usuario lo habilitó y el navegador ya concedió permiso.
-        try {
-          const pref = JSON.parse(localStorage.getItem('cube_notif_' + u.email) || '{}');
-          if (pref.pushEnabled && 'Notification' in window && Notification.permission === 'granted') {
-            if ('serviceWorker' in navigator) {
-              navigator.serviceWorker.ready.then(reg => reg.showNotification('Bienvenido a CUBE', {
-                body: 'Tu sesión está activa. Descubre historias, programas y novedades.',
-                icon: 'cube-logo.png', badge: 'cube-logo.png'
-              })).catch(() => {});
-            } else new Notification('Bienvenido a CUBE', { body: 'Tu sesión está activa. Descubre historias, programas y novedades.' });
-          }
-        } catch (err) { console.warn('No se pudo mostrar la bienvenida del sistema', err); }
-      }
     }
-  }
-
-  db.auth.onAuthStateChange(function (evento, sesion) {
-    if (evento === 'TOKEN_REFRESHED') return;
-    if (evento === 'SIGNED_IN' && sesion && sesion.user.id === cargadoId) return;
-    setTimeout(function () { cargarUsuario(sesion); }, 0);
-  });
-})();
+  };
+});
 </script>
-<script src="cube-username.js"></script>
-<script src="cube-listas.js"></script>
-<script src="cube-historial.js"></script>
-<script src="cube-config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="cube-supabase.js"></script>
-<script src="cube-push.js"></script>
+
 </body>
 </html>
